@@ -1,4 +1,4 @@
-## This just is temp test
+## This is just a test
 #### God with me  ,,,
 
 #### Those who sow in tears will reap with songs of joy.
