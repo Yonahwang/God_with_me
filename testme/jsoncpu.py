@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+#get cpu,disk ,mem,and timerun,,,
+#by Yonah
+
 
 import psutil
 import time
