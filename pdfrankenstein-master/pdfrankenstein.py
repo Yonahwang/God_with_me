@@ -10,7 +10,7 @@ import multiprocessing
 from Queue import Empty
 
 import cfg
-from lib.scandir import scandir
+from scandir import scandir
 from storage import StorageFactory
 from sdhasher import make_sdhash
 import huntterp
