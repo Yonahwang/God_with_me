@@ -394,7 +394,7 @@ try:
                             pdf.setDetectionRate(None)
                     else:
                         pdf.addError('Bad response from VirusTotal!!')
-            statsDict = pdf.getStats()
+            statsDict = pdf.getStats
 
         if options.xmlOutput:
             try:

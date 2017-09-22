@@ -1358,7 +1358,7 @@ class PDFConsole(cmd.Cmd):
         else:
             beforeStaticLabel = ''
         if len(args) == 0:
-            statsDict = self.pdfFile.getStats()
+            statsDict = self.pdfFile.getStats
             stats += beforeStaticLabel + 'File: ' + self.resetColor + statsDict['File'] + newLine
             stats += beforeStaticLabel + 'MD5: ' + self.resetColor + statsDict['MD5'] + newLine
             stats += beforeStaticLabel + 'SHA1: ' + self.resetColor + statsDict['SHA1'] + newLine
@@ -1509,9 +1509,9 @@ class PDFConsole(cmd.Cmd):
             else:
                 xrefArray = ret[1]
             if xrefArray[0] != None:
-                statsDict = xrefArray[0].getStats()
+                statsDict = xrefArray[0].getStats
             if xrefArray[1] != None:
-                statsStream = xrefArray[1].getStats()
+                statsStream = xrefArray[1].getStats
                 for key in statsStream:
                     if not statsDict.has_key(key):
                         statsDict[key] = statsStream[key]
@@ -1542,9 +1542,9 @@ class PDFConsole(cmd.Cmd):
             else:
                 trailerArray = ret[1]
             if trailerArray[0] != None:
-                statsDict = trailerArray[0].getStats()
+                statsDict = trailerArray[0].getStats
             if trailerArray[1] != None:
-                statsStream = trailerArray[1].getStats()
+                statsStream = trailerArray[1].getStats
                 for key in statsStream:
                     if not statsDict.has_key(key):
                         statsDict[key] = statsStream[key]
@@ -1579,7 +1579,7 @@ class PDFConsole(cmd.Cmd):
                 message = '*** Error: Object not found!!'
                 self.log_output('info ' + argv, message)
                 return False
-            statsDict = indirectObject.getStats()
+            statsDict = indirectObject.getStats
             if statsDict['Offset'] != None:
                 stats += beforeStaticLabel + 'Offset: ' + self.resetColor + statsDict['Offset'] + newLine
             stats += beforeStaticLabel + 'Size: ' + self.resetColor + statsDict['Size'] + newLine

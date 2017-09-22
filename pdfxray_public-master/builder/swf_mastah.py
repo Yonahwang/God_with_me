@@ -11,7 +11,7 @@ from PDFCore import PDFParser
 def snatch(file, out):
     pdfParser = PDFParser()
     ret,pdf = pdfParser.parse(file, True, False)
-    statsDict = pdf.getStats()
+    statsDict = pdf.getStats
     objs = []
     count = 0
     for version in range(len(statsDict['Versions'])):

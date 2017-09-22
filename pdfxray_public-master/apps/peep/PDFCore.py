@@ -2700,7 +2700,7 @@ class PDFIndirectObject :
         return self.size
 
     def getStats(self):
-        stats = self.object.getStats()
+        stats = self.object.getStats
         if self.offset != -1:
             stats['Offset'] = str(self.offset)
         else:
