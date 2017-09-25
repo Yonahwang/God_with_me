@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "peepdf/peepdf.py", line 425, in <module>
+    statsDict = pdf.getStats()
+TypeError: 'dict' object is not callable
+Traceback (most recent call last):
+  File "peepdf/peepdf.py", line 425, in <module>
+    statsDict = pdf.getStats()
+TypeError: 'dict' object is not callable
+Traceback (most recent call last):
+  File "peepdf/peepdf.py", line 425, in <module>
+    statsDict = pdf.getStats()
+TypeError: 'dict' object is not callable
+Traceback (most recent call last):
+  File "peepdf/peepdf.py", line 425, in <module>
+    statsDict = pdf.getStats()
+TypeError: 'dict' object is not callable
+Traceback (most recent call last):
+  File "peepdf/peepdf.py", line 425, in <module>
+    statsDict = pdf.getStats()
+TypeError: 'dict' object is not callable
