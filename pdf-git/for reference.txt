@@ -2,6 +2,7 @@
 # !/usr/bin/python
 
 # 导入需要用到的库
+form __futurn __ import division
 import os
 import random
 from sklearn import metrics
