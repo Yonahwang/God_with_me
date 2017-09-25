@@ -3234,7 +3234,7 @@ class PDFIndirectObject:
         return self.size
 
     def getStats(self):
-        stats = self.object.getStats()
+        stats = self.object.getStats
         if self.offset != -1:
             stats['Offset'] = str(self.offset)
         else:
@@ -6711,7 +6711,7 @@ class PDFParser:
                 pdfFile.addError('Bad PDF header')
                 errorMessage = 'Bad PDF header'
             else:
-                sys.exit('Error: Bad PDF header!! (' + versionLine + ')')
+                raise('Error: Bad PDF header!! (' + versionLine + ')')
         else:
             pdfFile.setVersion(matchVersion[0][1])
         if garbageHeader != '':
@@ -6758,7 +6758,7 @@ class PDFParser:
                     pdfFile.addError(errorMessage)
                     self.fileParts.append(fileContent)
                 else:
-                    sys.exit(errorMessage)
+                    raise(errorMessage)
         pdfFile.setUpdates(len(self.fileParts) - 1)
 
         # Getting the body, cross reference table and trailer of each part of the file
@@ -6808,7 +6808,7 @@ class PDFParser:
                     if forceMode:
                         pdfFile.addError(errorMessage)
                     else:
-                        sys.exit('Error: ' + errorMessage + '!!')
+                        raise('Error: ' + errorMessage + '!!')
 
 
             # Converting the body content in PDFObjects
@@ -6859,17 +6859,17 @@ class PDFParser:
                                         xrefStreamSection = ret[1]
                             else:
                                 if not forceMode:
-                                    sys.exit('Error: An error has occurred while parsing an indirect object!!')
+                                    raise('Error: An error has occurred while parsing an indirect object!!')
                                 else:
                                     pdfFile.addError('Object is None')
                         else:
                             if not forceMode:
-                                sys.exit('Error: Bad indirect object!!')
+                                raise('Error: Bad indirect object!!')
                             else:
                                 pdfFile.addError('Indirect object is None')
                     else:
                         if not forceMode:
-                            sys.exit('Error: An error has occurred while parsing an indirect object!!')
+                            raise('Error: An error has occurred while parsing an indirect object!!')
                         else:
                             pdfFile.addError('Error parsing object: ' + str(objectHeader) + ' (' + str(ret[1]) + ')')
             else:
@@ -7621,7 +7621,7 @@ class PDFParser:
                     pdfFile.addError('Unknown object type while parsing object')
                     return (-1, 'Unknown object type')
                 else:
-                    sys.exit('Error: Unknown object type!!')
+                    raise('Error: Unknown object type!!')
         else:
             delimiters = self.delimiters
         for delim in delimiters:

@@ -2,19 +2,21 @@
 # !/usr/bin/python
 
 # 导入需要用到的库
-form __futurn __ import division
+#form __futurn __ import division
 import os
 import random
 from sklearn import metrics
+from peepdf.PDFCore import *
+import multiprocessing
 
 # 全局参数配置，根据需要自己修改以下六个参数
-Benign_File_Root = 1  # 正常样本数据集的文件路径
-Melicious_File_Root =  2  # 恶意样本数据集的文件路径
+Benign_File_Root = r"/home/yonah/PDFdata/pdfnormal" # 正常样本数据集的文件路径
+Melicious_File_Root = r"/home/yonah/PDFdata/malPDF" # 恶意样本数据集的文件路径
 
-Benign_File_For_Trainning =3  # 用于训练的正常样本的个数
-Melicious_File_For_Trainning =4  # 用于训练的恶意样本的个数
-Benign_File_For_Test =5  # 用于测试的正常样本的个数
-Melicious_File_For_Test =6  # 用于测试的恶意样本的个数
+Benign_File_For_Trainning =10  # 用于训练的正常样本的个数
+Melicious_File_For_Trainning =10  # 用于训练的恶意样本的个数
+Benign_File_For_Test =10  # 用于测试的正常样本的个数
+Melicious_File_For_Test =10  # 用于测试的恶意样本的个数
 
 
 # Random Forest Classifier
@@ -24,17 +26,23 @@ def random_forest_classifier(train_x, train_y):
     model.fit(train_x, train_y)
     return model
 
+#判断是否为PDF文件
 def fakeFile_check(filePath):
-    #判断是否为PDF文件
-    return True
+    from peepdf.PDFCore import PDFParser
+    try:
+        pdfParser = PDFParser()
+        _, pdf = pdfParser.parse(filePath)
+        return pdf
+    except Exception:
+        return None
+
 # 载入数据集
 def load_file(PEfile_Path):
     test_files = list()
     for dirpath, dirname, filenames in os.walk(PEfile_Path):
         for filename in filenames:
             rfpath = os.path.join(dirpath, filename)
-            if (fakeFile_check(rfpath)):  # 此处根据自己的需要修改，判别是否为PDF文件
-                test_files.append(rfpath)
+            test_files.append(rfpath)
     return test_files
 
 
@@ -66,10 +74,24 @@ def datebase_divide(*arg):
     testlist = testlist_normal + testlist_melicious
     return trainlist, testlist
 
-def feature_extract(froot): #对输入文件进行特征提取
-
+def feature_extract(pdf): #对输入文件进行特征提取
     '''***********************'''
-    return []
+    feature = dict()
+    statsDict = pdf.getStats
+    md5 = pdf.getMD5()
+    for g in range(len(md5)):
+        feature['md5_'+ str(g)] = int(md5[g],16)
+    version =pdf.getVersion()
+    feature['ver'] = float(version)
+    feature['numstream'] = pdf.numStreams
+    feature['size'] = pdf.getSize()
+    feature['numofobject'] = pdf.numObjects
+    feature['update'] = pdf.getNumUpdates()
+    feature['comments'] = len(pdf.comments)
+    feature['error'] = len(pdf.errors)
+    print('OK')
+    return [feature[k] for k in feature]
+
 
 # 数据处理与特征提取，，此处需你重点修改
 def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, btotal):
@@ -84,28 +106,35 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
 
     for i in trainSampleMark:
         try:
+            cla = 0
             if i<btotal:
                 froot = gcroot_normal[i]
-                train_class.append(0)
             else:
                 froot=gcroot_melicious[i - btotal]
-                train_class.append(1)
+                cla = 1
             #*******************************************************************
-            train_feature.append(feature_extract(froot)) #对输入文件进行特征提取
+            pdf = fakeFile_check(froot)
+            if pdf:
+                train_class.append(cla)
+                train_feature.append(feature_extract(pdf)) #对输入文件进行特征提取
         except Exception:
             print('file %s feature extracting meet ERROR'%froot)
             continue
 
     for i in testSampleMark:
         try:
+            cla = 0
             if i<btotal:
                 froot = gcroot_normal[i]
-                test_class.append(0)
             else:
                 froot=gcroot_melicious[i - btotal]
-                test_class.append(1)
-            # *******************************************************************
-            test_feature.append(feature_extract(froot)) #对输入文件进行特征提取
+                cla = 1
+
+                 # *******************************************************************
+            pdf = fakeFile_check(froot)
+            if pdf:
+                test_class.append(cla)
+                test_feature.append(feature_extract(pdf)) #对输入文件进行特征提取
         except Exception:
             print('file %s feature extracting meet ERROR' % froot)
             continue
