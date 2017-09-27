@@ -6,18 +6,19 @@
 import os
 import random
 from sklearn import metrics
-from peepdf.PDFCore import *
-from feature import featureEX
+
+
+from featureEX import *
 import multiprocessing
 
 # 全局参数配置，根据需要自己修改以下六个参数
 Benign_File_Root = r"/Users/fengjiaowang/Downloads/small_data/normalpdf" # 正常样本数据集的文件路径
 Melicious_File_Root = r"/Users/fengjiaowang/Downloads/small_data/malpdf" # 恶意样本数据集的文件路径
 
-Benign_File_For_Trainning =10  # 用于训练的正常样本的个数
-Melicious_File_For_Trainning =10  # 用于训练的恶意样本的个数
-Benign_File_For_Test =10  # 用于测试的正常样本的个数
-Melicious_File_For_Test =10  # 用于测试的恶意样本的个数
+Benign_File_For_Trainning =20  # 用于训练的正常样本的个数
+Melicious_File_For_Trainning =20  # 用于训练的恶意样本的个数
+Benign_File_For_Test =30  # 用于测试的正常样本的个数
+Melicious_File_For_Test =30  # 用于测试的恶意样本的个数
 
 
 # Random Forest Classifier
@@ -27,15 +28,6 @@ def random_forest_classifier(train_x, train_y):
     model.fit(train_x, train_y)
     return model
 
-''''#判断是否为PDF文件
-def fakeFile_check(filePath):
-    from peepdf.PDFCore import PDFParser
-    try:
-        pdfParser = PDFParser()
-        _, pdf = pdfParser.parse(filePath)
-        return pdf
-    except Exception:
-        return None'''
 
 # 载入数据集
 def load_file(PEfile_Path):
@@ -84,6 +76,7 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
     test_feature = []
     test_class = []
 
+
     print("normal sample number is %d" % len(gcroot_normal))
     print("malware sample number is %d" % len(gcroot_melicious))
     print('begin to read the dataset')
@@ -98,11 +91,12 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
                 froot=gcroot_melicious[i - btotal]
                 cla = 1
             #*******************************************************************
-            pdf = featureEX.fakeFile_check(froot)
+            pdf = fakeFile_check(froot)
             #pdf = fakeFile_check(froot)
             if pdf:
                 train_class.append(cla)
-                train_feature.append(featureEX.feature_extract(pdf)) #对输入文件进行特征提取
+                train_feature.append(feature_extract(pdf)) #对输入文件进行特征提取
+
         except Exception:
             print('file %s feature extracting meet ERROR'%froot)
             continue
@@ -117,10 +111,10 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
                 cla = 1
 
                  # *******************************************************************
-            pdf = featureEX.fakeFile_check(froot)
+            pdf = fakeFile_check(froot)
             if pdf:
                 test_class.append(cla)
-                test_feature.append(featureEX.feature_extract(pdf)) #对输入文件进行特征提取
+                test_feature.append(feature_extract(pdf)) #对输入文件进行特征提取
         except Exception:
             print('file %s feature extracting meet ERROR' % froot)
             continue
@@ -149,6 +143,7 @@ def predect_calcu(predict, test_y, binary_class=True):
         TN = confusion[0, 0]
         FP = confusion[0, 1]
         FN = confusion[1, 0]
+
         print("TP:%d *** TN:%d *** FP:%d *** FN:%d " % (TP, TN, FP, FN))
         print('precision: %.2f%%, recall: %.2f%%' % (100 * precision, 100 * recall))
     accuracy = metrics.accuracy_score(test_y, predict)
