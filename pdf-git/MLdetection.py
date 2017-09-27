@@ -7,11 +7,12 @@ import os
 import random
 from sklearn import metrics
 from peepdf.PDFCore import *
+from feature import featureEX
 import multiprocessing
 
 # 全局参数配置，根据需要自己修改以下六个参数
-Benign_File_Root = r"/home/yonah/PDFdata/pdfnormal" # 正常样本数据集的文件路径
-Melicious_File_Root = r"/home/yonah/PDFdata/malPDF" # 恶意样本数据集的文件路径
+Benign_File_Root = r"/Users/fengjiaowang/Downloads/small_data/normalpdf" # 正常样本数据集的文件路径
+Melicious_File_Root = r"/Users/fengjiaowang/Downloads/small_data/malpdf" # 恶意样本数据集的文件路径
 
 Benign_File_For_Trainning =10  # 用于训练的正常样本的个数
 Melicious_File_For_Trainning =10  # 用于训练的恶意样本的个数
@@ -26,7 +27,7 @@ def random_forest_classifier(train_x, train_y):
     model.fit(train_x, train_y)
     return model
 
-#判断是否为PDF文件
+''''#判断是否为PDF文件
 def fakeFile_check(filePath):
     from peepdf.PDFCore import PDFParser
     try:
@@ -34,7 +35,7 @@ def fakeFile_check(filePath):
         _, pdf = pdfParser.parse(filePath)
         return pdf
     except Exception:
-        return None
+        return None'''
 
 # 载入数据集
 def load_file(PEfile_Path):
@@ -74,26 +75,9 @@ def datebase_divide(*arg):
     testlist = testlist_normal + testlist_melicious
     return trainlist, testlist
 
-def feature_extract(pdf): #对输入文件进行特征提取
-    '''***********************'''
-    feature = dict()
-    statsDict = pdf.getStats
-    md5 = pdf.getMD5()
-    for g in range(len(md5)):
-        feature['md5_'+ str(g)] = int(md5[g],16)
-    version =pdf.getVersion()
-    feature['ver'] = float(version)
-    feature['numstream'] = pdf.numStreams
-    feature['size'] = pdf.getSize()
-    feature['numofobject'] = pdf.numObjects
-    feature['update'] = pdf.getNumUpdates()
-    feature['comments'] = len(pdf.comments)
-    feature['error'] = len(pdf.errors)
-    print('OK')
-    return [feature[k] for k in feature]
 
 
-# 数据处理与特征提取，，此处需你重点修改
+# 数据处理与特征提取，，此处需重点修改
 def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, btotal):
     train_feature = []
     train_class = []
@@ -104,6 +88,7 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
     print("malware sample number is %d" % len(gcroot_melicious))
     print('begin to read the dataset')
 
+
     for i in trainSampleMark:
         try:
             cla = 0
@@ -113,10 +98,11 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
                 froot=gcroot_melicious[i - btotal]
                 cla = 1
             #*******************************************************************
-            pdf = fakeFile_check(froot)
+            pdf = featureEX.fakeFile_check(froot)
+            #pdf = fakeFile_check(froot)
             if pdf:
                 train_class.append(cla)
-                train_feature.append(feature_extract(pdf)) #对输入文件进行特征提取
+                train_feature.append(featureEX.feature_extract(pdf)) #对输入文件进行特征提取
         except Exception:
             print('file %s feature extracting meet ERROR'%froot)
             continue
@@ -131,10 +117,10 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
                 cla = 1
 
                  # *******************************************************************
-            pdf = fakeFile_check(froot)
+            pdf = featureEX.fakeFile_check(froot)
             if pdf:
                 test_class.append(cla)
-                test_feature.append(feature_extract(pdf)) #对输入文件进行特征提取
+                test_feature.append(featureEX.feature_extract(pdf)) #对输入文件进行特征提取
         except Exception:
             print('file %s feature extracting meet ERROR' % froot)
             continue
