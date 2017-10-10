@@ -16,6 +16,7 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
 
     '''***********************'''
 
+
     feature = dict()
     statsDict = pdf.getStats
     name = pdf.getFileName()
@@ -24,11 +25,11 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
         feature['md5_' + str(g)] = int(md5[g], 16)
 
     sha1 = pdf.getSHA1()
-    for h in range(len(sha1)):
+    '''for h in range(len(sha1)):
         feature['sha1_' + str(h)] = int(sha1[h], 16)
     sha256 = pdf.getSHA256()
     for s in range(len(sha256)):
-        feature['sha256_' +str(s) ] = int(sha256[s],16)
+        feature['sha256_' +str(s) ] = int(sha256[s],16)'''
     version = pdf.getVersion()
     feature['ver'] = float(version)
     feature['numstream'] = pdf.numStreams
@@ -39,6 +40,6 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
     feature['error'] = len(pdf.errors)
 
 
-    print('fileneme: %s'%name)
+    #print('fileneme: %s'%name)
 
     return [feature[k] for k in feature]

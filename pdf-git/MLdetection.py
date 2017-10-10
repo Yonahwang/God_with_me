@@ -15,10 +15,10 @@ import multiprocessing
 Benign_File_Root = r"/Users/fengjiaowang/Downloads/small_data/normalpdf" # 正常样本数据集的文件路径
 Melicious_File_Root = r"/Users/fengjiaowang/Downloads/small_data/malpdf" # 恶意样本数据集的文件路径
 
-Benign_File_For_Trainning =20  # 用于训练的正常样本的个数
-Melicious_File_For_Trainning =20  # 用于训练的恶意样本的个数
-Benign_File_For_Test =30  # 用于测试的正常样本的个数
-Melicious_File_For_Test =30  # 用于测试的恶意样本的个数
+Benign_File_For_Trainning =10  # 用于训练的正常样本的个数
+Melicious_File_For_Trainning =10  # 用于训练的恶意样本的个数
+Benign_File_For_Test =10  # 用于测试的正常样本的个数
+Melicious_File_For_Test =10  # 用于测试的恶意样本的个数
 
 
 # Random Forest Classifier
@@ -75,6 +75,7 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
     train_class = []
     test_feature = []
     test_class = []
+    tename = []
 
 
     print("normal sample number is %d" % len(gcroot_normal))
@@ -92,7 +93,6 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
                 cla = 1
             #*******************************************************************
             pdf = fakeFile_check(froot)
-            #pdf = fakeFile_check(froot)
             if pdf:
                 train_class.append(cla)
                 train_feature.append(feature_extract(pdf)) #对输入文件进行特征提取
@@ -115,11 +115,14 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
             if pdf:
                 test_class.append(cla)
                 test_feature.append(feature_extract(pdf)) #对输入文件进行特征提取
+
+                tname = froot.split('/')[-1]
+                tename.append(tname)
         except Exception:
             print('file %s feature extracting meet ERROR' % froot)
             continue
 
-    return train_feature, train_class, test_feature, test_class
+    return train_feature, train_class, test_feature, test_class,tename
 
 
 # 对测试数据分类
@@ -150,6 +153,12 @@ def predect_calcu(predict, test_y, binary_class=True):
     print('accuracy: %.2f%%' % (100 * accuracy))
     return accuracy, confusion
 
+def tabledemo(name,test_y,predict):
+    table = {'name': name, 'test':test_y , 'predint': predict}
+    import pandas as pand
+    frame = pand.DataFrame(table)
+    return frame
+
 
 def main():
     print('start processing')
@@ -162,13 +171,20 @@ def main():
     mfiles = load_file(Melicious_File_Root)  # 载入恶意文件路径
     DatabaseTotalNums_Normal = Benign_File_For_Trainning + Benign_File_For_Test  # 所有正常样本的个数
 
-    train_x, train_y, test_x, test_y = data_get(bfiles, mfiles, trainSampleMark, testSampleMark, DatabaseTotalNums_Normal)
+
+    train_x, train_y, test_x, test_y,tena = data_get(bfiles, mfiles, trainSampleMark, testSampleMark, DatabaseTotalNums_Normal)
+    #print tena
     print('******************** Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)
     predict, predictp = ml_predict(clf, test_x)
+    #print'predint : ',list(predict)
     predect_calcu(predict, test_y)
+    #print'test_y : ',test_y
+    print('******************** flie name analysis *********************')
+    print tabledemo(tena,test_y,predict)
     print('DONE')
 
 if __name__ == '__main__':
     main()
+
