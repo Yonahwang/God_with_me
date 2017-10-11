@@ -1,17 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+
 import urllib.request
 from urllib.parse import quote
+
 import re
 import requests
 import os
 import os.path
 
-baidu_domain = "http://www.baidu.com"
+sogou_domain = "https://www.sogou.com/sogou"
 
 def baidu_search(keyword):
-    html=urllib.request.urlopen("http://www.baidu.com/s?wd="+quote(keyword)).read()
+    html=urllib.request.urlopen("https://www.sogou.com/web?query="+quote(keyword)).read()
     return html
 
 def getList(regex,text):
@@ -43,24 +45,27 @@ def down_file(url,filk_path):
 # 获取下一页的搜索结果
 def get_next_page_url(content):
     page_url = []
-    pages = getMatch(r"<div id=\"page\" >[\s\S]*?<div id=\"content_bottom\">", content)
-    links = getList(r"<a href=\".*?\">",pages)
+    pages = getMatch(r"pagebar_container[\s\S]*?resultbarnum:", content)
+    links = getList(r"href=\".*?\">",pages)
+    print(links)
     for link in links:
         end = link.find('"',9)
-        url = baidu_domain+link[9:end]
+        url = sogou_domain+link[6:end]
         page_url.append(url)
     # page_url[-1] 最后一个url为 下一页的url
     return page_url
 
 # 下载一页的pdf，10个
 def down_one_page_of_pdfs(content):
-    arrList = getList(r"<div class=\"result c-container \" id=.*?>[\s\S]*?\"url\":\"", content)
+    arrList = getList(r"/images/office/pdf.gif[\s\S]*?images/cloud/dldoc.gif", content)
+
+    print(arrList)
     for item in arrList:
-        regex = r"href = \".*?\""
+        regex = r"href=\".*?\">"
         link = getMatch(regex, item)
-        url = link[8:-1]
-        regex = "{\"title\":\".*?\",\""
-        title = getMatch(regex, item)[10:-3]
+        url = link[6:-1]
+        regex = "ext=\"\">.*?</a>"
+        title = getMatch(regex, item)[7:-4]+'.pdf'
         print(url)
         print(title)
         title = title.replace('/','.')
@@ -69,12 +74,16 @@ def down_one_page_of_pdfs(content):
             down_file(url, file_path)
 
 html = baidu_search('inurl:".pdf" filetype:pdf')
+
 content = html.decode('utf-8')
+
+#print(content)
 page_url = get_next_page_url(content)
+
 down_one_page_of_pdfs(content)
 
 # 下载10页
-for i in range(75):
+for i in range(10):
     # page_url[-1] 最后一个url为 下一页的url
     html = urllib.request.urlopen(page_url[-1]).read()
     content = html.decode('utf-8')
