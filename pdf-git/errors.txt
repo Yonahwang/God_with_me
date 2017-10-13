@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/JSAnalysis.py", line 81, in analyseJS
+    code = jsbeautifier.beautify(code)
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 91, in beautify
+    return b.beautify(string, opts)
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 219, in beautify
+    'TK_INLINE_COMMENT': self.handle_inline_comment,
+KeyboardInterrupt

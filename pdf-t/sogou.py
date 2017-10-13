@@ -65,7 +65,7 @@ def down_one_page_of_pdfs(content):
         link = getMatch(regex, item)
         url = link[6:-1]
         regex = "ext=\"\">.*?</a>"
-        title = getMatch(regex, item)[7:-4]+'.pdf'
+        title = getMatch(regex, item)[7:-4]
         print(url)
         print(title)
         title = title.replace('/','.')
