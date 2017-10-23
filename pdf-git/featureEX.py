@@ -18,9 +18,10 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
 
 
     feature = dict()
+
     f_id = []
-    statsDict = pdf.getStats
-    name = pdf.getFileName()
+
+
     md5 = pdf.getMD5()
     for g in range(len(md5)):
         feature['md5_' + str(g)] = int(md5[g], 16)
@@ -44,6 +45,6 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
         f_id.append(i)
 
 
-    #print('fileneme: %s'%name)
+
 
     return [feature[k] for k in feature],f_id

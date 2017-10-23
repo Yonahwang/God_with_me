@@ -125,7 +125,7 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
             if pdf:
                 test_class.append(cla)
 
-                fe_list, fe_key = feature_extract(pdf)
+                fe_list,_ = feature_extract(pdf)
                 test_feature.append(fe_list) #对输入文件进行特征提取
 
                 tname = froot.split('/')[-1]
