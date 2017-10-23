@@ -18,6 +18,7 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
 
 
     feature = dict()
+    f_id = []
     statsDict = pdf.getStats
     name = pdf.getFileName()
     md5 = pdf.getMD5()
@@ -39,7 +40,10 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
     feature['comments'] = len(pdf.comments)
     feature['error'] = len(pdf.errors)
 
+    for i in feature:
+        f_id.append(i)
+
 
     #print('fileneme: %s'%name)
 
-    return [feature[k] for k in feature]
+    return [feature[k] for k in feature],f_id

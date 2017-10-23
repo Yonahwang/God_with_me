@@ -6,14 +6,19 @@
 import os
 import random
 from sklearn import metrics
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 from featureEX import *
 import multiprocessing
 
 # 全局参数配置，根据需要自己修改以下六个参数
-Benign_File_Root = r"/Users/fengjiaowang/Downloads/small_data/normalpdf" # 正常样本数据集的文件路径
-Melicious_File_Root = r"/Users/fengjiaowang/Downloads/small_data/malpdf" # 恶意样本数据集的文件路径
+#Benign_File_Root = r"/Users/fengjiaowang/Downloads/small_data/normalpdf" # 正常样本数据集的文件路径
+#Melicious_File_Root = r"/Users/fengjiaowang/Downloads/small_data/malpdf" # 恶意样本数据集的文件路径
+Benign_File_Root = r"/home/yonah/PDFdata/pdfnormal" # 正常样本数据集的文件路径
+Melicious_File_Root = r"/home/yonah/PDFdata/malPDF" # 恶意样本数据集的文
+
 
 Benign_File_For_Trainning =10  # 用于训练的正常样本的个数
 Melicious_File_For_Trainning =10  # 用于训练的恶意样本的个数
@@ -76,6 +81,7 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
     test_feature = []
     test_class = []
     tename = []
+    fe_key = []
 
 
     print("normal sample number is %d" % len(gcroot_normal))
@@ -95,7 +101,11 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
             pdf = fakeFile_check(froot)
             if pdf:
                 train_class.append(cla)
-                train_feature.append(feature_extract(pdf)) #对输入文件进行特征提取
+
+                fe_list,fe_key = feature_extract(pdf)
+
+                train_feature.append(fe_list) #对输入文件进行特征提取
+
 
         except Exception:
             print('file %s feature extracting meet ERROR'%froot)
@@ -114,7 +124,9 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
             pdf = fakeFile_check(froot)
             if pdf:
                 test_class.append(cla)
-                test_feature.append(feature_extract(pdf)) #对输入文件进行特征提取
+
+                fe_list, fe_key = feature_extract(pdf)
+                test_feature.append(fe_list) #对输入文件进行特征提取
 
                 tname = froot.split('/')[-1]
                 tename.append(tname)
@@ -122,7 +134,7 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
             print('file %s feature extracting meet ERROR' % froot)
             continue
 
-    return train_feature, train_class, test_feature, test_class,tename
+    return train_feature, train_class, test_feature, test_class,tename,fe_key
 
 
 # 对测试数据分类
@@ -159,6 +171,28 @@ def tabledemo(name,test_y,predict):
     frame = pand.DataFrame(table)
     return frame
 
+def plot_importance(f_v,fe_id):
+    f_id = fe_id
+    #f_id = [str(i) for i in range(len(f_v))]
+    f_v = 100.0 * (f_v / f_v.max())
+
+    f_id = np.array(f_id)
+
+    sorted_idx = np.argsort(-f_v)
+
+    pos = np.arange(len(sorted_idx)) + 0.5
+    plt.subplot(1, 2, 2)
+    plt.title('Feature Importance')
+
+    plt.barh(pos[0:30], f_v[sorted_idx][0:30], color='r', align='center')
+    plt.yticks(pos[0:30], f_id[sorted_idx][0:30])
+    plt.xlabel('Relative Importance')
+    plt.draw()
+    plt.show()
+
+
+
+
 
 def main():
     print('start processing')
@@ -172,16 +206,18 @@ def main():
     DatabaseTotalNums_Normal = Benign_File_For_Trainning + Benign_File_For_Test  # 所有正常样本的个数
 
 
-    train_x, train_y, test_x, test_y,tena = data_get(bfiles, mfiles, trainSampleMark, testSampleMark, DatabaseTotalNums_Normal)
+    train_x, train_y, test_x, test_y,tena,f_id= data_get(bfiles, mfiles, trainSampleMark, testSampleMark, DatabaseTotalNums_Normal)
     #print tena
     print('******************** Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)
+    plot_importance(clf.feature_importances_,f_id)
+    #RF_Information_print(clf)
     predict, predictp = ml_predict(clf, test_x)
     #print'predint : ',list(predict)
     predect_calcu(predict, test_y)
     #print'test_y : ',test_y
-    print('******************** flie name analysis *********************')
+    print('******************** flie analysis *********************')
     print tabledemo(tena,test_y,predict)
     print('DONE')
 

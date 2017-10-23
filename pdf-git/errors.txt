@@ -6,3 +6,45 @@ Traceback (most recent call last):
   File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 219, in beautify
     'TK_INLINE_COMMENT': self.handle_inline_comment,
 KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/yonah/God_with_me/pdf-git/peepdf/JSAnalysis.py", line 81, in analyseJS
+    code = jsbeautifier.beautify(code)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 91, in beautify
+    return b.beautify(string, opts)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 203, in beautify
+    token_text, token_type = self.get_next_token()
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 393, in get_next_token
+    if c == '\n':
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/yonah/God_with_me/pdf-git/peepdf/JSAnalysis.py", line 81, in analyseJS
+    code = jsbeautifier.beautify(code)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 91, in beautify
+    return b.beautify(string, opts)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 224, in beautify
+    handlers[token_type](token_text)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 630, in handle_start_expr
+    self.set_mode('(EXPRESSION)')
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 311, in set_mode
+    prev = BeautifierFlags('BLOCK')
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/yonah/God_with_me/pdf-git/peepdf/JSAnalysis.py", line 81, in analyseJS
+    code = jsbeautifier.beautify(code)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 91, in beautify
+    return b.beautify(string, opts)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 224, in beautify
+    handlers[token_type](token_text)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 818, in handle_word
+    self.append_newline()
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 284, in append_newline
+    for i in range(self.flags.indentation_level):
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/home/yonah/God_with_me/pdf-git/peepdf/JSAnalysis.py", line 81, in analyseJS
+    code = jsbeautifier.beautify(code)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 91, in beautify
+    return b.beautify(string, opts)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 216, in beautify
+    'TK_EQUALS': self.handle_equals,
+KeyboardInterrupt

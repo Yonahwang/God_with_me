@@ -6,13 +6,14 @@ import re
 #from peepdf.PDFCore import PDFParser
 from peepdf.PDFCore import *
 
-file = r"F:\PDFdata\VirusShare_PDF_20170404\VirusShare_7df9eb586976d29892dda61823b7cbcc"
-#file = r"F:\PDFdata\small_data\normalpdf\003.PDF"
+#file = r"F:\PDFdata\VirusShare_PDF_20170404\VirusShare_7df9eb586976d29892dda61823b7cbcc"
+file = r"/home/yonah/PDFdata/pdfnormal/003.PDF"
 
 #判断是否为PDF文件
 def feature_extract(froot): #对输入文件进行特征提取
     '''***********************'''
     feature = dict()
+    f_id = []
     pdfParser = PDFParser()
     _, pdf = pdfParser.parse(froot)
     statsDict = pdf.getStats
@@ -29,7 +30,13 @@ def feature_extract(froot): #对输入文件进行特征提取
     feature['error'] = len(pdf.errors)
     for k in feature:
         print(k,feature[k])
-    return [feature[k] for k in feature]
+
+    for i in feature:
+        f_id.append(i)
+    print f_id
+    #return feature
+
+    return [feature[k] for k in feature],f_id
 
 
 
