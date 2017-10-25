@@ -8,7 +8,7 @@ import random
 from sklearn import metrics
 import matplotlib.pyplot as plt
 import numpy as np
-
+import simple_plot as sp
 
 from featureEX import *
 import multiprocessing
@@ -20,10 +20,10 @@ Benign_File_Root = r"/home/yonah/PDFdata/pdfnormal" # 正常样本数据集的�
 Melicious_File_Root = r"/home/yonah/PDFdata/malPDF" # 恶意样本数据集的文
 
 
-Benign_File_For_Trainning =10  # 用于训练的正常样本的个数
-Melicious_File_For_Trainning =10  # 用于训练的恶意样本的个数
-Benign_File_For_Test =10  # 用于测试的正常样本的个数
-Melicious_File_For_Test =10  # 用于测试的恶意样本的个数
+Benign_File_For_Trainning =100  # 用于训练的正常样本的个数
+Melicious_File_For_Trainning =100  # 用于训练的恶意样本的个数
+Benign_File_For_Test =100  # 用于测试的正常样本的个数
+Melicious_File_For_Test =100  # 用于测试的恶意样本的个数
 
 
 # Random Forest Classifier
@@ -189,6 +189,13 @@ def plot_importance(f_v,fe_id):
     plt.xlabel('Relative Importance')
     plt.draw()
     plt.show()
+
+def plot_simle():
+    X_datas = []
+    y_datas = []
+
+    sp.get_plot_2d(1,1,X_datas,y_datas,plot_simle).show()
+
 
 
 
