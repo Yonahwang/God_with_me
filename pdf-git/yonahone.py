@@ -7,8 +7,8 @@ import re
 #from peepdf.PDFCore import PDFParser
 from peepdf.PDFCore import *
 
-#file = r"F:\PDFdata\VirusShare_PDF_20170404\VirusShare_7df9eb586976d29892dda61823b7cbcc"
-file = r"/home/yonah/PDFdata/malPDF/VirusShare_ffc1941e3eb5c85cabf6eea94d742b0e"
+file = r"F:/PDFdata/data2000/pdf/关于证券公司托管证券投资基金所涉及的场内结算业务有关事项的通知.pdf"
+#file = r"/home/yonah/PDFdata/malPDF/VirusShare_ffc1941e3eb5c85cabf6eea94d742b0e"
 #file = r"/home/yonah/PDFdata/pdfnormal/SQL_tutorial_pt1.pdf"
 
 

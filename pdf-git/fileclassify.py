@@ -10,7 +10,7 @@ import shutil
 
 
 # 全局参数配置，根据需要自己修改以下六个参数
-file_root = r"/home/yonah/PDFdata/malPDF/" # 正常样本数据集的文件路径
+file_root = r"F:/PDFdata\data2000/VirusShare5966/" # 正常样本数据集的文件路径
 
 
 def get_data(f_list):

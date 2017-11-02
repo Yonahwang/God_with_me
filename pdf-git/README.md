@@ -9,7 +9,7 @@
  - ~~On Schedule~~ 
 
 ## Research Scientist
- - [Fengjiao Wang](https://weijiang2009.github.io/ "Fengjiao Wang")
+ - [Fengjiao Wang]()
 
 ## OKR
 ### Objective
@@ -19,19 +19,20 @@
 1. (Basic) 在当前PDF检测引擎基础上，从 速度&质量 2方面 改善模型：
 - 1) 编写 单机 检测程序 1个 **DONE**
 - 2) 收集数据样本集 1份 **DONE**
-- ~~4) 数据量达 万级~~
 - 3) 模型分类准确度：在 中型数据集 下，模型识别能力达 >= 50% (注：中型数据集 = 目前实验所用 + Hadoop集群上的数据集)
 - 4) 输出实验报告 1份
+
+- ~~4) 数据量达 万级~~
 - ~~5) 数据量达 十万级~~
 
 2. (Advanced)
-- 1) 模型识别能力达 >= 90%
+- 1) 模型识别能力达 >= 90%    **DONE**  
 
 #### Roadmap
-（Updated on 2017/10/10）
-- 
-- 
-- 
+（Updated on 2017/10/11）
+- 1.针对爬取到的数据，进行清理，分类出可用的做数据测试
+- 2.增加可用测试样本到1000 ，提取样本特征143 个，模型识别能力达 >= 92.98%
+- 3.针对特征提取和分析算法上的改进，参考国内外论文，做一步一步的实践
 
 (Updated on 2017/09/29)
 - 1.平衡PDF数据集样本，爬取测试样本到万 级，恶意样本 到十万 级
@@ -61,9 +62,8 @@ Note: 目前对PDF的特征提取,主要是利用python内置包（如pdfminer�
 - updates
 - ...
 
-<<<<<<< HEAD
-下一步:增加测试数量集，优化特征提取，增加优化算法
-=======
+下一步:
+增加测试数量集，优化特征提取，增加优化算法
 - 1.用爬虫不断增加测试样本数量级，
 - 2.深入分析PDF文件，不断恶意代码识别的优化及算法，参考国内外论文进行下一步深入分析
 
@@ -104,11 +104,6 @@ Note: 目前对PDF的特征提取,主要是利用python内置包（如pdfminer�
 - Size
 - ...
 
-
-
-
-
-
 ## Python Project Structure
 Q: Imagine that you want to develop a non-trivial end-user desktop (not web) application in Python.What is the best way to structure the project's folder hierarchy? Desirable features are ease of maintenance, IDE-friendliness, suitability for source control branching/merging, and easy generation of install packages. In particular:
   - Where do you put the source?
@@ -126,7 +121,7 @@ A: Doesn't too much matter. Whatever makes you happy will work. There aren't a l
   - /apidoc for the Epydoc-generated API docs
 
 ## Q&A
- - (This section should be answered by **Guobin**)
+ - (This section should be answered by **Fengjiao**)
 
 ### Accuracy
   - Upon how much data does the machine learning solution base its decisions? Is it enough?
@@ -159,4 +154,3 @@ A: Doesn't too much matter. Whatever makes you happy will work. There aren't a l
 
 ## References
 - [PlatPal: Detecting Malicious Documents with Platform Diversity USENIXSec 2017](https://www.dropbox.com/sh/5nwwv0algh2jpg6/AABadLuyfTWyB_-Lz6ZzAXdVa?dl=0)
->>>>>>> 7ea3734a15273f6e8823e2f80dba122b17f68a62
