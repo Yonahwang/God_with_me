@@ -56,3 +56,13 @@ Traceback (most recent call last):
   File "D:\Python27\lib\re.py", line 155, in sub
     return _compile(pattern, flags).sub(repl, string, count)
 UnicodeDecodeError: 'ascii' codec can't decode byte 0x83 in position 380: ordinal not in range(128)
+Traceback (most recent call last):
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/JSAnalysis.py", line 81, in analyseJS
+    code = jsbeautifier.beautify(code)
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 91, in beautify
+    return b.beautify(string, opts)
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 224, in beautify
+    handlers[token_type](token_text)
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 867, in handle_string
+    self.append(token_text)
+KeyboardInterrupt

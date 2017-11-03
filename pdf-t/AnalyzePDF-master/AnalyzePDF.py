@@ -30,14 +30,14 @@ example: python AnalyzePDF.py -m tmp/badness -y foo/pdf.yara bar/getsome.pdf
 # Requirements:
 #	- Python 2.x
 #	- YARA (http://plusvic.github.io/yara/)
-#	- pdfid (http://blog.didierstevens.com/programs/pdf-tools/)
+#	- pdfid2 (http://blog.didierstevens.com/programs/pdf-tools/)
 # Optional:	
 #	* This script will work without these but may miss some conditions to evaluate based on the missing data they would provide (i.e. - # of Pages) *
 #	- pdfinfo (www.foolabs.com/xpdf/download.html)
 #	- a "weight" field within the YARA's rule meta should be added to help in the final evaluation
 #		i.e. - rule pdf_example {meta: weight = 3 strings: $s = "evil" condition: $s}
 # To-Do:
-#	- suppress pdfid's output log
+#	- suppress pdfid2's output log
 #	- be able to print out which conditions it met in the rules
 
 import os
@@ -63,11 +63,11 @@ try:
 except ImportError:
     print "[!] PDFiD not installed"
     sys.exit()
-try:
+'''try:
     import yara
 except ImportError:
     print "[!] Yara not installed"
-    sys.exit()	
+    sys.exit()	'''
 	
 # Initialize the list(s) where PDF attribs will be added to
 counter = []

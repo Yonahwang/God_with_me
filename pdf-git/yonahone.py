@@ -6,8 +6,12 @@ import re
 
 #from peepdf.PDFCore import PDFParser
 from peepdf.PDFCore import *
+#import sys
+#reload(sys)
+#sys.setdefaultencoding("utf-8")
 
-file = r"F:/PDFdata/data2000/pdf/关于证券公司托管证券投资基金所涉及的场内结算业务有关事项的通知.pdf"
+file = r"/Users/fengjiaowang/Downloads/data2000/pdf/0d90ce11bc7c9b0a4fc353983b2a938295754fef.pdf"
+#file = r"/Users/fengjiaowang/Downloads/data2000/VirusS/VirusShare_1fc317218f0e0d66413525ad3866d37b"
 #file = r"/home/yonah/PDFdata/malPDF/VirusShare_ffc1941e3eb5c85cabf6eea94d742b0e"
 #file = r"/home/yonah/PDFdata/pdfnormal/SQL_tutorial_pt1.pdf"
 
@@ -51,20 +55,50 @@ def feature_extract(froot): #对输入文件进行特征提取
     XrefSection = pdf.getXrefSection()
     ti = pdf.getTrailer()
     Header = pdf.getHeaderOffset()
-    getVarContent()
-    PDFBody.containsXrefStreams(pdf)
+    #getVarContent()
+   # PDFBody.containsXrefStreams(pdf)
 
 
     Metadata = pdf.getBasicMetadata(0)
-    print len(Metadata)
-    feature['Metadata_len'] =len(Metadata)
-    meta_K =[]
+
+    feature['Metadata_len'] = None_len(Metadata)
+    print Metadata
+    meta_creation = ''
+    meta_producer = ''
+    meta_creator = ''
+    meta_author = ''
+
     for k in Metadata:
-        meta_K.append(k)
-    #feature['creator_len'] = len(Metadata['creator'])
-    #feature['creation_len'] = len(Metadata['creation'])
-    #feature['producer_len'] = len(Metadata['producer'])
-    #feature['author_len'] = len(Metadata['author'])
+        if k == 'creation':
+            meta_creation = Metadata[k]
+        elif k == 'producer':
+            meta_producer = Metadata[k]
+        elif k == 'creator':
+            meta_creator = Metadata[k]
+        elif k == 'author':
+            meta_author = Metadata[k]
+    print meta_creation
+    print 'meta_producer: '+ unicode(meta_producer,"utf_16le")
+    print 'meta_creator:' + str(meta_creator)
+    print meta_author
+
+    '''if len(meta_creation) != 0:
+        for h in range(len(meta_creation)):
+            print meta_creation
+            #feature['sha1_' + str(h)] = int(meta_creation[h], 16)
+    if len(meta_producer) != 0:
+        print(meta_producer[0].unicode(),'*******************************')
+        for h in range(len(meta_producer)):
+            print '1:'+ str(meta_producer)
+            #feature['sha1_' + str(h)] = int(meta_producer[h], 16)
+    if len(meta_creator) != 0:
+        for h in range(len(meta_creator)):
+            print '2:'+ str(meta_creator)
+            #feature['sha1_' + str(h)] = int(meta_creator[h], 16)
+    if len(meta_author) != 0:
+        for h in range(len(meta_author)):
+            print meta_author
+            #feature['sha1_' + str(h)] = int(meta_author[h], 16)'''
 
 
 
@@ -104,6 +138,8 @@ def feature_extract(froot): #对输入文件进行特征提取
 
 
     for version in range(len(statsDict['Versions'])):
+        meta = pdf.getMetadata(0)
+
         statsVersion = statsDict['Versions'][version]
         obj = []
         obj_size = []
@@ -143,7 +179,7 @@ def feature_extract(froot): #对输入文件进行特征提取
     feature['Binary'] = bool_change(statsDict['Binary'])
     feature['Linearized'] = bool_change(statsDict['Linearized'])
     feature['Encrypted'] = bool_change(statsDict['Encrypted'])
-    feature['Metadata'] = None_len(pdf.getMetadata())
+
     feature['version'] = pdf.version
     feature['stream_num'] = pdf.numStreams
     feature['file_size'] = pdf.getSize()

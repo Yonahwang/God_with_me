@@ -16,8 +16,8 @@ from decimal import Decimal
 keys= []
 
 def main():
-    parser = argparse.ArgumentParser(description='Takes pdfid/pdfinfo output and produces a summary to show the most common and least common keywords/attributes with their values/counts')
-    parser.add_argument('Path', help='Path to pdfid/pdfinfo output file(s)')
+    parser = argparse.ArgumentParser(description='Takes pdfid2/pdfinfo output and produces a summary to show the most common and least common keywords/attributes with their values/counts')
+    parser.add_argument('Path', help='Path to pdfid2/pdfinfo output file(s)')
     args = vars(parser.parse_args())
 
     # Verify supplied path exists or die

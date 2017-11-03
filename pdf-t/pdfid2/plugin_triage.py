@@ -35,7 +35,7 @@ class cPDFiDTriage(cPluginParent):
             return 'Sample is likely malicious and requires further analysis'
 
         if score == 0.75:
-            return '/ObjStm detected, analyze sample with pdfid-objstm.bat'
+            return '/ObjStm detected, analyze sample with pdfid2-objstm.bat'
 
         if score == 0.5:
             return 'Sample is likely not malicious but requires further analysis'

@@ -5,7 +5,7 @@
 # Date: 10-11-2012
 #
 # Requirements:
-# 	- pdfid (http://blog.didierstevens.com/programs/pdf-tools/)
+# 	- pdfid2 (http://blog.didierstevens.com/programs/pdf-tools/)
 #	- pdfinfo (http://poppler.freedesktop.org/)
 
 import os
@@ -26,7 +26,7 @@ dup_counter = []
 
 def main():
     # Get program args
-    parser = argparse.ArgumentParser(description='Runs pdfid/pdfinfo on PDF files.')
+    parser = argparse.ArgumentParser(description='Runs pdfid2/pdfinfo on PDF files.')
     parser.add_argument('Path', help='Path to directory/file(s) to be scanned')
     args = vars(parser.parse_args())	
 

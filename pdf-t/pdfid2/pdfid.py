@@ -48,7 +48,7 @@ History:
   2015/08/12: V0.2.2: added option pluginoptions
   2015/08/13: added plugin Instructions method
   2016/04/12: added option literal
-  2017/10/29: added pdfid.ini support
+  2017/10/29: added pdfid2.ini support
 
 Todo:
   - update XML example (entropy, EOF)
@@ -356,7 +356,7 @@ def XMLAddAttribute(xmlDoc, name, value=None):
 def ParseINIFile():
     oConfigParser = ConfigParser.ConfigParser(allow_no_value=True)
     oConfigParser.optionxform = str
-    oConfigParser.read(os.path.join(os.path.dirname(sys.argv[0]), 'pdfid.ini'))
+    oConfigParser.read(os.path.join(os.path.dirname(sys.argv[0]), 'pdfid2.ini'))
     keywords = []
     if oConfigParser.has_section('keywords'):
         for key, value in oConfigParser.items('keywords'):
@@ -835,7 +835,7 @@ def PDFiD2JSON(xmlDoc, force):
         dates.append(date)
 
     data = { 'countEof':countEof, 'countChatAfterLastEof':countChatAfterLastEof, 'totalEntropy':totalEntropy, 'streamEntropy':streamEntropy, 'nonStreamEntropy':nonStreamEntropy, 'errorOccured':errorOccured, 'errorMessage':errorMessage, 'filename':filename, 'header':header, 'isPdf':isPdf, 'version':version, 'entropy':entropy, 'keywords': { 'keyword': keywords }, 'dates': { 'date':dates} }
-    complete = [ { 'pdfid' : data} ]
+    complete = [ { 'pdfid2' : data} ]
     result = json.dumps(complete)
     return result
 

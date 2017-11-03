@@ -8,22 +8,22 @@ import random
 from sklearn import metrics
 import matplotlib.pyplot as plt
 import numpy as np
-import simple_plot as sp
+#import simple_plot as sp
 
 from featureEX import *
 import multiprocessing
 
 # 全局参数配置，根据需要自己修改以下六个参数
-#Benign_File_Root = r"/Users/fengjiaowang/Downloads/small_data/normalpdf" # 正常样本数据集的文件路径
-#Melicious_File_Root = r"/Users/fengjiaowang/Downloads/small_data/malpdf" # 恶意样本数据集的文件路径
-Benign_File_Root = r"/home/yonah/PDFdata/pdfnormal" # 正常样本数据集的文件路径
-Melicious_File_Root = r"/home/yonah/PDFdata/malPDF" # 恶意样本数据集的文
+Benign_File_Root = r"/Users/fengjiaowang/Downloads/data2000/pdf" # 正常样本数据集的文件路径
+Melicious_File_Root = r"/Users/fengjiaowang/Downloads/data2000/VirusS" # 恶意样本数据集的文件路径
+#Benign_File_Root = r"/home/yonah/PDFdata/pdfnormal" # 正常样本数据集的文件路径
+#Melicious_File_Root = r"/home/yonah/PDFdata/malPDF" # 恶意样本数据集的文
 
 
-Benign_File_For_Trainning =100  # 用于训练的正常样本的个数
-Melicious_File_For_Trainning =100  # 用于训练的恶意样本的个数
-Benign_File_For_Test =100  # 用于测试的正常样本的个数
-Melicious_File_For_Test =100  # 用于测试的恶意样本的个数
+Benign_File_For_Trainning =20  # 用于训练的正常样本的个数
+Melicious_File_For_Trainning =20  # 用于训练的恶意样本的个数
+Benign_File_For_Test =20  # 用于测试的正常样本的个数
+Melicious_File_For_Test =20  # 用于测试的恶意样本的个数
 
 
 # Random Forest Classifier
@@ -165,8 +165,16 @@ def predect_calcu(predict, test_y, binary_class=True):
     print('accuracy: %.2f%%' % (100 * accuracy))
     return accuracy, confusion
 
-def tabledemo(name,test_y,predict):
-    table = {'name': name, 'test':test_y , 'predint': predict}
+def tabledemo(name1,test1,predict1):
+    name = []
+    test = []
+    predict= []
+    for i in range(len(predict1)):
+        if test1[i] != predict1[i]:
+            name.append(name1[i])
+            test.append(test1[i])
+            predict.append(predict1[i])
+    table = {'name': name, 'test':test , 'predint': predict}
     import pandas as pand
     frame = pand.DataFrame(table)
     return frame

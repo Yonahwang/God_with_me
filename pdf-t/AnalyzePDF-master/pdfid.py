@@ -643,7 +643,7 @@ def PDFiD2JSON(xmlDoc, force):
         dates.append(date)
 
     data = { 'countEof':countEof, 'countChatAfterLastEof':countChatAfterLastEof, 'totalEntropy':totalEntropy, 'streamEntropy':streamEntropy, 'nonStreamEntropy':nonStreamEntropy, 'errorOccured':errorOccured, 'errorMessage':errorMessage, 'filename':filename, 'header':header, 'isPdf':isPdf, 'version':version, 'entropy':entropy, 'keywords': { 'keyword': keywords }, 'dates': { 'date':dates} }
-    complete = [ { 'pdfid' : data} ]
+    complete = [ { 'pdfid2' : data} ]
     result = json.dumps(complete)
     return result
 
