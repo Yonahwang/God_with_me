@@ -43,6 +43,13 @@ def None_vlue(vlue):
     else:
         return vlue
 
+def YESorNO(vlue):
+    if len(vlue) != 0:
+        return len(vlue)
+    else:
+        return 0
+
+
 #判断是否为PDF文件
 def feature_extract(froot): #对输入文件进行特征提取
     '''***********************'''
@@ -53,21 +60,33 @@ def feature_extract(froot): #对输入文件进行特征提取
     statsDict = pdf.getStats()
 
     XrefSection = pdf.getXrefSection()
+    feature['XrefSection'] = len(XrefSection)
+    feature['Xref_size'] = XrefSection[1][0].size
+    feature['Xref_stream'] =None_int(XrefSection[1][0].streamObject)
+
     ti = pdf.getTrailer()
     Header = pdf.getHeaderOffset()
     #getVarContent()
    # PDFBody.containsXrefStreams(pdf)
 
+    JavascriptCode = pdf.getJavascriptCode()
+    Offsets = pdf.getOffsets()
+    Catalog = pdf.getCatalogObjectId()
+
+    print pdf.getEndLine()
+    print pdf.maxObjectId
+
+
+
+
+
 
     Metadata = pdf.getBasicMetadata(0)
-
     feature['Metadata_len'] = None_len(Metadata)
-    print Metadata
     meta_creation = ''
     meta_producer = ''
     meta_creator = ''
     meta_author = ''
-
     for k in Metadata:
         if k == 'creation':
             meta_creation = Metadata[k]
@@ -77,28 +96,17 @@ def feature_extract(froot): #对输入文件进行特征提取
             meta_creator = Metadata[k]
         elif k == 'author':
             meta_author = Metadata[k]
-    print meta_creation
-    print 'meta_producer: '+ unicode(meta_producer,"utf_16le")
-    print 'meta_creator:' + str(meta_creator)
-    print meta_author
+    feature['meta_cration_num'] = YESorNO(meta_creation)
+    feature['meta_producer_num'] = YESorNO(meta_producer)
+    feature['meta_creator_num'] = YESorNO(meta_creator)
+    feature['meta_author_num'] = YESorNO(meta_author)
+    if len(meta_creation) !=0:
+        timeC = meta_creation[2:16]
+        feature['meta_creation'] = meta_creation[2:16]
+    else:
+        feature['meta_creation'] = 0
 
-    '''if len(meta_creation) != 0:
-        for h in range(len(meta_creation)):
-            print meta_creation
-            #feature['sha1_' + str(h)] = int(meta_creation[h], 16)
-    if len(meta_producer) != 0:
-        print(meta_producer[0].unicode(),'*******************************')
-        for h in range(len(meta_producer)):
-            print '1:'+ str(meta_producer)
-            #feature['sha1_' + str(h)] = int(meta_producer[h], 16)
-    if len(meta_creator) != 0:
-        for h in range(len(meta_creator)):
-            print '2:'+ str(meta_creator)
-            #feature['sha1_' + str(h)] = int(meta_creator[h], 16)
-    if len(meta_author) != 0:
-        for h in range(len(meta_author)):
-            print meta_author
-            #feature['sha1_' + str(h)] = int(meta_author[h], 16)'''
+
 
 
 
@@ -117,12 +125,6 @@ def feature_extract(froot): #对输入文件进行特征提取
     feature['font_count'] = font_count
     feature['Javascript_count'] = Javascript_count
     feature['JS_count'] = JS_count
-
-
-
-    JavascriptCode= pdf.getJavascriptCode()
-    Offsets = pdf.getOffsets()
-    Catalog = pdf.getCatalogObjectId()
 
 
 
