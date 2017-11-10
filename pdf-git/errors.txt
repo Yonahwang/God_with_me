@@ -66,3 +66,11 @@ Traceback (most recent call last):
   File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 867, in handle_string
     self.append(token_text)
 KeyboardInterrupt
+Traceback (most recent call last):
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/JSAnalysis.py", line 81, in analyseJS
+    code = jsbeautifier.beautify(code)
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 91, in beautify
+    return b.beautify(string, opts)
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 210, in beautify
+    'TK_END_EXPR': self.handle_end_expr,
+KeyboardInterrupt

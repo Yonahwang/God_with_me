@@ -37,6 +37,12 @@ def None_vlue(vlue):
     else:
         return vlue
 
+def YESorNO(vlue):
+    if len(vlue) != 0:
+        return len(vlue)
+    else:
+        return 0
+
 
 def feature_extract(pdf):  # 对输入文件进行特征提取
 
@@ -45,7 +51,64 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
     statsDict = pdf.getStats()
     gtree = pdf.getTree()
 
-    feature['JS_MODULE'] = bool_change(JS_MODULE)
+    XrefSection = pdf.getXrefSection()
+    feature['XrefSection'] = len(XrefSection)
+    Xref = XrefSection[1][0]
+    if Xref != None:
+        feature['Xref_size'] = Xref.size
+        feature['Xref_stream'] = None_int(Xref.streamObject)
+        feature['Xref_offset'] = Xref.offset
+        feature['Xref_bytesPerFisId'] = len(Xref.bytesPerField)
+        feature['Xref_errors'] = len(Xref.errors)
+        subsections = XrefSection[1][0].subsections[0]
+        if subsections != None:
+            feature['subsections_size'] = subsections.size
+            feature['subsections_numObjects'] = subsections.numObjects
+            feature['subsections_firstObject'] = subsections.firstObject
+            feature['subsections_offset'] = subsections.offset
+            feature['subsections_entries'] = len(subsections.entries)
+            feature['subsections_errors'] = len(subsections.errors)
+    elif XrefSection[1][0] == None:
+        feature['Xref_size'] = 0
+        feature['Xref_stream'] = 0
+        feature['Xref_offset'] = 0
+        feature['Xref_bytesPerFisId'] = 0
+        feature['Xref_errors'] = 0
+        subsections = XrefSection[1][1].subsections[0]
+        if subsections != None:
+            feature['subsections_size'] = subsections.size
+            feature['subsections_numObjects'] = subsections.numObjects
+            feature['subsections_firstObject'] = subsections.firstObject
+            feature['subsections_offset'] = subsections.offset
+            feature['subsections_entries'] = len(subsections.entries)
+            feature['subsections_errors'] = len(subsections.errors)
+
+    Metadata = pdf.getBasicMetadata(0)
+    feature['Metadata_len'] = None_len(Metadata)
+    meta_creation = ''
+    meta_producer = ''
+    meta_creator = ''
+    meta_author = ''
+    for k in Metadata:
+        if k == 'creation':
+            meta_creation = Metadata[k]
+        elif k == 'producer':
+            meta_producer = Metadata[k]
+        elif k == 'creator':
+            meta_creator = Metadata[k]
+        elif k == 'author':
+            meta_author = Metadata[k]
+    feature['meta_cration_num'] = YESorNO(meta_creation)
+    feature['meta_producer_num'] = YESorNO(meta_producer)
+    feature['meta_creator_num'] = YESorNO(meta_creator)
+    feature['meta_author_num'] = YESorNO(meta_author)
+    '''if len(meta_creation) != 0:
+        timeC = meta_creation[2:16]
+        feature['meta_creation'] = meta_creation[2:16]
+    else:
+        feature['meta_creation'] = 0'''
+
+    gtree = pdf.getTree()
     font_count = 0
     Javascript_count = 0
     JS_count = 0
@@ -60,6 +123,9 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
     feature['font_count'] = font_count
     feature['Javascript_count'] = Javascript_count
     feature['JS_count'] = JS_count
+
+    feature['JS_MODULE'] = bool_change(JS_MODULE)
+
 
     for version in range(len(statsDict['Versions'])):
         statsVersion = statsDict['Versions'][version]

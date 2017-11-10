@@ -42,3 +42,17 @@ Traceback (most recent call last):
   File "/usr/lib/python2.7/cmd.py", line 130, in cmdloop
     line = raw_input(self.prompt)
 KeyboardInterrupt
+Traceback (most recent call last):
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/peepdf.py", line 579, in <module>
+    console.cmdloop()
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/cmd.py", line 130, in cmdloop
+    line = raw_input(self.prompt)
+  File "/Applications/PyCharm CE.app/Contents/helpers/pydev/_pydev_bundle/pydev_console_utils.py", line 148, in readline
+    result = self.original_stdin.readline(*args, **kwargs)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/peepdf.py", line 579, in <module>
+    console.cmdloop()
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/cmd.py", line 130, in cmdloop
+    line = raw_input(self.prompt)
+KeyboardInterrupt

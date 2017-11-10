@@ -10,7 +10,7 @@ from peepdf.PDFCore import *
 #reload(sys)
 #sys.setdefaultencoding("utf-8")
 
-file = r"/Users/fengjiaowang/Downloads/data2000/pdf/0d90ce11bc7c9b0a4fc353983b2a938295754fef.pdf"
+file = r"/Users/fengjiaowang/Downloads/data2000/pdf/03ad6d35f50d7ac18055f182356c71926033ab97.pdf"
 #file = r"/Users/fengjiaowang/Downloads/data2000/VirusS/VirusShare_1fc317218f0e0d66413525ad3866d37b"
 #file = r"/home/yonah/PDFdata/malPDF/VirusShare_ffc1941e3eb5c85cabf6eea94d742b0e"
 #file = r"/home/yonah/PDFdata/pdfnormal/SQL_tutorial_pt1.pdf"
@@ -49,6 +49,12 @@ def YESorNO(vlue):
     else:
         return 0
 
+def exist(vl):
+    if vl:
+        return vl
+    else:
+        return 0
+
 
 #判断是否为PDF文件
 def feature_extract(froot): #对输入文件进行特征提取
@@ -61,8 +67,36 @@ def feature_extract(froot): #对输入文件进行特征提取
 
     XrefSection = pdf.getXrefSection()
     feature['XrefSection'] = len(XrefSection)
-    feature['Xref_size'] = XrefSection[1][0].size
-    feature['Xref_stream'] =None_int(XrefSection[1][0].streamObject)
+    Xref = XrefSection[1][0]
+    if Xref != None:
+        feature['Xref_size'] = Xref.size
+        feature['Xref_stream'] = None_int(Xref.streamObject)
+        feature['Xref_offset'] = Xref.offset
+        feature['Xref_bytesPerFisId'] = len(Xref.bytesPerField)
+        feature['Xref_errors'] = len(Xref.errors)
+        subsections = XrefSection[1][0].subsections[0]
+        if subsections != None:
+            feature['subsections_size'] = subsections.size
+            feature['subsections_numObjects'] = subsections.numObjects
+            feature['subsections_firstObject'] = subsections.firstObject
+            feature['subsections_offset'] = subsections.offset
+            feature['subsections_entries'] = len(subsections.entries)
+            feature['subsections_errors'] = len(subsections.errors)
+    elif Xref == None:
+        feature['Xref_size'] = 0
+        feature['Xref_stream'] = 0
+        feature['Xref_offset'] = 0
+        feature['Xref_bytesPerFisId'] = 0
+        feature['Xref_errors'] = 0
+        subsections = XrefSection[1][1].subsections[0]
+        if subsections != None:
+            feature['subsections_size'] = subsections.size
+            feature['subsections_numObjects'] = subsections.numObjects
+            feature['subsections_firstObject'] = subsections.firstObject
+            feature['subsections_offset'] = subsections.offset
+            feature['subsections_entries'] = len(subsections.entries)
+            feature['subsections_errors'] = len(subsections.errors)
+
 
     ti = pdf.getTrailer()
     Header = pdf.getHeaderOffset()
@@ -74,7 +108,7 @@ def feature_extract(froot): #对输入文件进行特征提取
     Catalog = pdf.getCatalogObjectId()
 
     print pdf.getEndLine()
-    print pdf.maxObjectId
+    # print pdf.maxObjectId
 
 
 
@@ -105,9 +139,6 @@ def feature_extract(froot): #对输入文件进行特征提取
         feature['meta_creation'] = meta_creation[2:16]
     else:
         feature['meta_creation'] = 0
-
-
-
 
 
     gtree = pdf.getTree()
@@ -165,9 +196,7 @@ def feature_extract(froot): #对输入文件进行特征提取
         feature['Xref Streams'] = None_int(statsVersion['Xref Streams'])
         feature['elements'] = None_len(statsVersion['Elements'])
         feature['Events_num'] = None_len(statsVersion['Events'])
-
         feature['Actions_num'] = None_len(statsVersion['Actions'])
-
         feature['Vulns'] = None_len(statsVersion['Vulns'])
         feature['Encoded_num'] = None_int(statsVersion['Encoded'])
         feature['Objects_JS_num'] = None_int(statsVersion['Objects with JS code'])
@@ -181,7 +210,6 @@ def feature_extract(froot): #对输入文件进行特征提取
     feature['Binary'] = bool_change(statsDict['Binary'])
     feature['Linearized'] = bool_change(statsDict['Linearized'])
     feature['Encrypted'] = bool_change(statsDict['Encrypted'])
-
     feature['version'] = pdf.version
     feature['stream_num'] = pdf.numStreams
     feature['file_size'] = pdf.getSize()
