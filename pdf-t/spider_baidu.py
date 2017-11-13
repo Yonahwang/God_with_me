@@ -51,6 +51,7 @@ def get_next_page_url(content):
         page_url.append(url)
     # page_url[-1] 最后一个url为 下一页的url
     return page_url
+    print (page_url)
 
 # 下载一页的pdf，10个
 def down_one_page_of_pdfs(content):
@@ -61,12 +62,12 @@ def down_one_page_of_pdfs(content):
         url = link[8:-1]
         regex = "{\"title\":\".*?\",\""
         title = getMatch(regex, item)[10:-3]
-        print(url)
-        print(title)
-        title = title.replace('/','.')
+        print('url=',url)
+        print('title=',title)
+        '''title = title.replace('/','.')
         file_path = 'pdf/' + title + '.pdf'
         if not os.path.isfile(file_path):
-            down_file(url, file_path)
+            down_file(url, file_path)'''
 
 html = baidu_search('inurl:".pdf" filetype:pdf')
 content = html.decode('utf-8')
@@ -74,9 +75,9 @@ page_url = get_next_page_url(content)
 down_one_page_of_pdfs(content)
 
 # 下载10页
-for i in range(75):
+'''for i in range(75):
     # page_url[-1] 最后一个url为 下一页的url
     html = urllib.request.urlopen(page_url[-1]).read()
     content = html.decode('utf-8')
     page_url = get_next_page_url(content)
-    down_one_page_of_pdfs(content)
+    down_one_page_of_pdfs(content)'''
