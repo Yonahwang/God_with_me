@@ -10,8 +10,8 @@ from peepdf.PDFCore import *
 #reload(sys)
 #sys.setdefaultencoding("utf-8")
 
-file = r"/Users/fengjiaowang/Downloads/data2000/pdf/03ad6d35f50d7ac18055f182356c71926033ab97.pdf"
-#file = r"/Users/fengjiaowang/Downloads/data2000/VirusS/VirusShare_1fc317218f0e0d66413525ad3866d37b"
+file = r"/Users/fengjiaowang/Downloads/data2000/pdf/06b48d974df96e460b585b25d933e7858dec4dd2.pdf"
+#file = r"/Users/fengjiaowang/Downloads/data2000/VirusS/VirusShare_01efa4fbfa69cf8ccb7bc425c7702a92"
 #file = r"/home/yonah/PDFdata/malPDF/VirusShare_ffc1941e3eb5c85cabf6eea94d742b0e"
 #file = r"/home/yonah/PDFdata/pdfnormal/SQL_tutorial_pt1.pdf"
 
@@ -64,6 +64,11 @@ def feature_extract(froot): #对输入文件进行特征提取
     pdfParser = PDFParser()
     _, pdf = pdfParser.parse(froot)
     statsDict = pdf.getStats()
+    
+
+
+
+
 
     XrefSection = pdf.getXrefSection()
     feature['XrefSection'] = len(XrefSection)
@@ -82,21 +87,43 @@ def feature_extract(froot): #对输入文件进行特征提取
             feature['subsections_offset'] = subsections.offset
             feature['subsections_entries'] = len(subsections.entries)
             feature['subsections_errors'] = len(subsections.errors)
+        if subsections == None:
+            feature['subsections_size'] = 0
+            feature['subsections_numObjects'] = 0
+            feature['subsections_firstObject'] = 0
+            feature['subsections_offset'] = 0
+            feature['subsections_entries'] = 0
+            feature['subsections_errors'] = 0
+
     elif Xref == None:
         feature['Xref_size'] = 0
         feature['Xref_stream'] = 0
         feature['Xref_offset'] = 0
         feature['Xref_bytesPerFisId'] = 0
         feature['Xref_errors'] = 0
-        subsections = XrefSection[1][1].subsections[0]
-        if subsections != None:
-            feature['subsections_size'] = subsections.size
-            feature['subsections_numObjects'] = subsections.numObjects
-            feature['subsections_firstObject'] = subsections.firstObject
-            feature['subsections_offset'] = subsections.offset
-            feature['subsections_entries'] = len(subsections.entries)
-            feature['subsections_errors'] = len(subsections.errors)
-
+        if XrefSection[1][1] != None:
+            subsections = XrefSection[1][1].subsections[0]
+            if subsections != None:
+                feature['subsections_size'] = subsections.size
+                feature['subsections_numObjects'] = subsections.numObjects
+                feature['subsections_firstObject'] = subsections.firstObject
+                feature['subsections_offset'] = subsections.offset
+                feature['subsections_entries'] = len(subsections.entries)
+                feature['subsections_errors'] = len(subsections.errors)
+            if subsections == None:
+                feature['subsections_size'] = 0
+                feature['subsections_numObjects'] = 0
+                feature['subsections_firstObject'] = 0
+                feature['subsections_offset'] = 0
+                feature['subsections_entries'] = 0
+                feature['subsections_errors'] = 0
+        if XrefSection[1][1] == None:
+            feature['subsections_size'] = 0
+            feature['subsections_numObjects'] = 0
+            feature['subsections_firstObject'] = 0
+            feature['subsections_offset'] = 0
+            feature['subsections_entries'] = 0
+            feature['subsections_errors'] = 0
 
     ti = pdf.getTrailer()
     Header = pdf.getHeaderOffset()
@@ -130,15 +157,16 @@ def feature_extract(froot): #对输入文件进行特征提取
             meta_creator = Metadata[k]
         elif k == 'author':
             meta_author = Metadata[k]
-    feature['meta_cration_num'] = YESorNO(meta_creation)
-    feature['meta_producer_num'] = YESorNO(meta_producer)
-    feature['meta_creator_num'] = YESorNO(meta_creator)
-    feature['meta_author_num'] = YESorNO(meta_author)
-    if len(meta_creation) !=0:
+    feature['meta_cration_len'] = YESorNO(meta_creation)
+    feature['meta_producer_len'] = YESorNO(meta_producer)
+    feature['meta_creator_len'] = YESorNO(meta_creator)
+    feature['meta_author_len'] = YESorNO(meta_author)
+
+    '''if len(meta_creation) !=0:
         timeC = meta_creation[2:16]
         feature['meta_creation'] = meta_creation[2:16]
     else:
-        feature['meta_creation'] = 0
+        feature['meta_creation'] = '''
 
 
     gtree = pdf.getTree()
@@ -201,7 +229,6 @@ def feature_extract(froot): #对输入文件进行特征提取
         feature['Encoded_num'] = None_int(statsVersion['Encoded'])
         feature['Objects_JS_num'] = None_int(statsVersion['Objects with JS code'])
         feature['Compressd_obj'] = None_int(statsVersion['Compressed Objects'])
-        feature['Xref Streams'] = None_int(statsVersion['Xref Streams'])
         feature['Info'] = None_int(statsVersion['Info'])
         feature['Object Streams'] = None_int(statsVersion['Object Streams'])
         #feature['Decoding Errors'] = None_int(statsVersion['Decoding Errors'])
@@ -218,6 +245,7 @@ def feature_extract(froot): #对输入文件进行特征提取
     feature['comments'] = len(pdf.comments)
     feature['error'] = len(pdf.errors)
     feature['len_URLs'] = len(pdf.getURLs())
+    feature['numEncodedStreams'] = pdf.numEncodedStreams
     #feature['Catalog'] = pdf.getCatalogObjectId()
 
     '''sha1 = pdf.getSHA1()

@@ -51,6 +51,8 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
     statsDict = pdf.getStats()
     gtree = pdf.getTree()
 
+
+
     XrefSection = pdf.getXrefSection()
     feature['XrefSection'] = len(XrefSection)
     Xref = XrefSection[1][0]
@@ -68,20 +70,44 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
             feature['subsections_offset'] = subsections.offset
             feature['subsections_entries'] = len(subsections.entries)
             feature['subsections_errors'] = len(subsections.errors)
-    elif XrefSection[1][0] == None:
+        if subsections == None:
+            feature['subsections_size'] = 0
+            feature['subsections_numObjects'] = 0
+            feature['subsections_firstObject'] = 0
+            feature['subsections_offset'] = 0
+            feature['subsections_entries'] = 0
+            feature['subsections_errors'] = 0
+
+    elif Xref == None:
         feature['Xref_size'] = 0
         feature['Xref_stream'] = 0
         feature['Xref_offset'] = 0
         feature['Xref_bytesPerFisId'] = 0
         feature['Xref_errors'] = 0
-        subsections = XrefSection[1][1].subsections[0]
-        if subsections != None:
-            feature['subsections_size'] = subsections.size
-            feature['subsections_numObjects'] = subsections.numObjects
-            feature['subsections_firstObject'] = subsections.firstObject
-            feature['subsections_offset'] = subsections.offset
-            feature['subsections_entries'] = len(subsections.entries)
-            feature['subsections_errors'] = len(subsections.errors)
+        if XrefSection[1][1] != None:
+            subsections = XrefSection[1][1].subsections[0]
+            if subsections != None:
+                feature['subsections_size'] = subsections.size
+                feature['subsections_numObjects'] = subsections.numObjects
+                feature['subsections_firstObject'] = subsections.firstObject
+                feature['subsections_offset'] = subsections.offset
+                feature['subsections_entries'] = len(subsections.entries)
+                feature['subsections_errors'] = len(subsections.errors)
+            if subsections == None:
+                feature['subsections_size'] = 0
+                feature['subsections_numObjects'] = 0
+                feature['subsections_firstObject'] = 0
+                feature['subsections_offset'] = 0
+                feature['subsections_entries'] = 0
+                feature['subsections_errors'] = 0
+        if XrefSection[1][1] == None:
+            feature['subsections_size'] = 0
+            feature['subsections_numObjects'] = 0
+            feature['subsections_firstObject'] = 0
+            feature['subsections_offset'] = 0
+            feature['subsections_entries'] = 0
+            feature['subsections_errors'] = 0
+
 
     Metadata = pdf.getBasicMetadata(0)
     feature['Metadata_len'] = None_len(Metadata)
@@ -98,10 +124,10 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
             meta_creator = Metadata[k]
         elif k == 'author':
             meta_author = Metadata[k]
-    feature['meta_cration_num'] = YESorNO(meta_creation)
-    feature['meta_producer_num'] = YESorNO(meta_producer)
-    feature['meta_creator_num'] = YESorNO(meta_creator)
-    feature['meta_author_num'] = YESorNO(meta_author)
+    feature['meta_cration_len'] = YESorNO(meta_creation)
+    feature['meta_producer_len'] = YESorNO(meta_producer)
+    feature['meta_creator_len'] = YESorNO(meta_creator)
+    feature['meta_author_len'] = YESorNO(meta_author)
     '''if len(meta_creation) != 0:
         timeC = meta_creation[2:16]
         feature['meta_creation'] = meta_creation[2:16]

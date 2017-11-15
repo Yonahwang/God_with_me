@@ -10,7 +10,8 @@ import shutil
 
 
 # 全局参数配置，根据需要自己修改以下六个参数
-file_root = r"/Users/fengjiaowang/Downloads/data2000/pdf/" # 正常样本数据集的文件路径
+#file_root = r"/Users/fengjiaowang/Downloads/data2000/pdf/" # 正常样本数据集的文件路径
+file_root = r"/Users/fengjiaowang/Downloads/data2000/VirusS/"
 
 
 def get_data(f_list):

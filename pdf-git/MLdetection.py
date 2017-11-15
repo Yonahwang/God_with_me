@@ -198,11 +198,6 @@ def plot_importance(f_v,fe_id):
     plt.draw()
     plt.show()
 
-def plot_simle():
-    X_datas = []
-    y_datas = []
-
-    sp.get_plot_2d(1,1,X_datas,y_datas,plot_simle).show()
 
 
 
