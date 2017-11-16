@@ -49,8 +49,13 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
     feature = dict()
     f_id = []
     statsDict = pdf.getStats()
-    gtree = pdf.getTree()
 
+
+    trailer = pdf.getTrailer()
+    if trailer[0] == 0:
+        feature['trailer_num'] = 0
+    elif trailer[0] != 0:
+        feature['trailer_num'] = trailer[0]
 
 
     XrefSection = pdf.getXrefSection()
@@ -154,23 +159,39 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
 
 
     for version in range(len(statsDict['Versions'])):
-        statsVersion = statsDict['Versions'][version]
-        obj = []
-        obj_size = []
 
-        for ob in statsVersion['Objects'][1]:
+        statsVersion = statsDict['Versions'][version]
+        obj = statsVersion['Objects'][1]
+        obj_size = []
+        for ob in obj:
             obj_one = pdf.getObject(ob).getValue()
-            obj.append(obj_one)
             obj_size.append(len(obj_one))
-        obj_size.sort(cmp=None, key=None, reverse=True);  # 对这个存有10个最大值数组（TopK数组）进行降序排序
+        obj_size.sort(cmp=None, key=None, reverse=True)  # 进行降序排序从大到小排序
         if len(obj_size) >= 10:
             for h in range(10):
                 feature['obj_10_' + str(h)] = obj_size[h]
         else:
-            while 10-len(obj_size)> 0:
+            while 10 - len(obj_size) > 0:
                 obj_size.append(0)
             for h in range(10):
                 feature['obj_10_' + str(h)] = obj_size[h]
+
+        stream = statsVersion['Streams'][1]
+        stream_size = []
+        for s in stream:
+            stream_one = pdf.getObject(s).getValue()
+            stream_size.append(len(stream_one))
+        stream_size.sort()  # 从小到大排序
+        if len(stream_size) >= 2:
+            for h in range(2):
+                feature['stream_min_' + str(h)] = stream_size[h]
+        else:
+            while 2 - len(stream_size) > 0:
+                stream_size.append(0)
+                stream_size.sort()
+            for h in range(2):
+                feature['stream_min_' + str(h)] = stream_size[h]
+
 
         feature['Catalog'] = None_vlue(statsVersion['Catalog'])
         feature['Xref Streams'] = None_int(statsVersion['Xref Streams'])
@@ -205,6 +226,9 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
     feature['comments'] = len(pdf.comments)
     feature['error'] = len(pdf.errors)
     feature['len_URLs'] = len(pdf.getURLs())
+    feature['numEncodedStreams'] = pdf.numEncodedStreams
+    #feature['Catalog_id'] = pdf.getCatalogObjectId()
+    feature['header_offset'] = pdf.getHeaderOffset()
 
     for i in feature:
         f_id.append(i)

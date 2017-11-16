@@ -10,8 +10,8 @@ from peepdf.PDFCore import *
 #reload(sys)
 #sys.setdefaultencoding("utf-8")
 
-file = r"/Users/fengjiaowang/Downloads/data2000/pdf/06b48d974df96e460b585b25d933e7858dec4dd2.pdf"
-#file = r"/Users/fengjiaowang/Downloads/data2000/VirusS/VirusShare_01efa4fbfa69cf8ccb7bc425c7702a92"
+#file = r"/Users/fengjiaowang/Downloads/data2000/pdf/0058a8ee044b833b4d0cee9993cb4175f145075c.pdf"
+file = r"/Users/fengjiaowang/Downloads/data2000/VirusS/VirusShare_00a0e3c78ac85866d0349d2d8e1f57e0"
 #file = r"/home/yonah/PDFdata/malPDF/VirusShare_ffc1941e3eb5c85cabf6eea94d742b0e"
 #file = r"/home/yonah/PDFdata/pdfnormal/SQL_tutorial_pt1.pdf"
 
@@ -64,11 +64,17 @@ def feature_extract(froot): #对输入文件进行特征提取
     pdfParser = PDFParser()
     _, pdf = pdfParser.parse(froot)
     statsDict = pdf.getStats()
-    
 
 
 
 
+
+
+    trailer = pdf.getTrailer()
+    if trailer[0] == 0:
+        feature['trailer_num'] = 0
+    elif trailer[0] != 0:
+        feature['trailer_num'] = trailer[0]
 
     XrefSection = pdf.getXrefSection()
     feature['XrefSection'] = len(XrefSection)
@@ -125,7 +131,7 @@ def feature_extract(froot): #对输入文件进行特征提取
             feature['subsections_entries'] = 0
             feature['subsections_errors'] = 0
 
-    ti = pdf.getTrailer()
+
     Header = pdf.getHeaderOffset()
     #getVarContent()
    # PDFBody.containsXrefStreams(pdf)
@@ -174,6 +180,7 @@ def feature_extract(froot): #对输入文件进行特征提取
     Javascript_count = 0
     JS_count = 0
     acd = gtree[len(gtree)-1][1]
+    feature['tree_len'] = len(acd)
     for k in acd:
         if '/Font'== acd[k][0]:
             font_count += 1
@@ -199,18 +206,15 @@ def feature_extract(froot): #对输入文件进行特征提取
 
 
     for version in range(len(statsDict['Versions'])):
-        meta = pdf.getMetadata(0)
+
 
         statsVersion = statsDict['Versions'][version]
-        obj = []
+        obj = statsVersion['Objects'][1]
         obj_size = []
-
-        for ob in statsVersion['Objects'][1]:
+        for ob in obj:
             obj_one = pdf.getObject(ob).getValue()
-            obj.append(obj_one)
             obj_size.append(len(obj_one))
-
-        obj_size.sort(cmp=None, key=None, reverse=True);  # 对这个存有10个最大值数组（TopK数组）进行降序排序
+        obj_size.sort(cmp=None, key=None, reverse=True)  # 进行降序排序从大到小排序
         if len(obj_size) >= 10:
             for h in range(10):
                 feature['obj_10_' + str(h)] = obj_size[h]
@@ -219,6 +223,22 @@ def feature_extract(froot): #对输入文件进行特征提取
                 obj_size.append(0)
             for h in range(10):
                 feature['obj_10_' + str(h)] = obj_size[h]
+
+        stream = statsVersion['Streams'][1]
+        stream_size = []
+        for s in stream:
+            stream_one = pdf.getObject(s).getValue()
+            stream_size.append(len(stream_one))
+        stream_size.sort() #从小到大排序
+        if len(stream_size) >= 2:
+            for h in range(2):
+                feature['stream_min_' + str(h)] = stream_size[h]
+        else:
+            while 2-len(stream_size) >0:
+                stream_size.append(0)
+            stream_size.sort()
+            for h in range(2):
+                feature['stream_min_' + str(h)] = stream_size[h]
 
         feature['Catalog'] = None_vlue(statsVersion['Catalog'])
         feature['Xref Streams'] = None_int(statsVersion['Xref Streams'])
@@ -231,7 +251,7 @@ def feature_extract(froot): #对输入文件进行特征提取
         feature['Compressd_obj'] = None_int(statsVersion['Compressed Objects'])
         feature['Info'] = None_int(statsVersion['Info'])
         feature['Object Streams'] = None_int(statsVersion['Object Streams'])
-        #feature['Decoding Errors'] = None_int(statsVersion['Decoding Errors'])
+        #feature['Decoding Errors'] = None_int(statsVersion['Decoding Errors'])  #error
 
 
     feature['Binary'] = bool_change(statsDict['Binary'])
@@ -246,7 +266,8 @@ def feature_extract(froot): #对输入文件进行特征提取
     feature['error'] = len(pdf.errors)
     feature['len_URLs'] = len(pdf.getURLs())
     feature['numEncodedStreams'] = pdf.numEncodedStreams
-    #feature['Catalog'] = pdf.getCatalogObjectId()
+    #feature['Catalog_id'] = pdf.getCatalogObjectId() #[int,None]
+    feature['header_offset'] = pdf.getHeaderOffset()
 
     '''sha1 = pdf.getSHA1()
     for h in range(len(sha1)):
