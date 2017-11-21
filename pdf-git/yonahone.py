@@ -11,7 +11,7 @@ from peepdf.PDFCore import *
 #sys.setdefaultencoding("utf-8")
 
 #file = r"/Users/fengjiaowang/Downloads/data2000/pdf/0058a8ee044b833b4d0cee9993cb4175f145075c.pdf"
-file = r"/Users/fengjiaowang/Downloads/data2000/VirusS/VirusShare_00a0e3c78ac85866d0349d2d8e1f57e0"
+file = r"/Users/fengjiaowang/Downloads/data2000/VirusS/VirusShare_00ab49a6766f59687bffc04461cb72b3"
 #file = r"/home/yonah/PDFdata/malPDF/VirusShare_ffc1941e3eb5c85cabf6eea94d742b0e"
 #file = r"/home/yonah/PDFdata/pdfnormal/SQL_tutorial_pt1.pdf"
 
@@ -66,6 +66,11 @@ def feature_extract(froot): #对输入文件进行特征提取
     statsDict = pdf.getStats()
 
 
+    Offsets = pdf.getOffsets()
+    offsets_len = len(Offsets)
+
+
+
 
 
 
@@ -77,7 +82,7 @@ def feature_extract(froot): #对输入文件进行特征提取
         feature['trailer_num'] = trailer[0]
 
     XrefSection = pdf.getXrefSection()
-    feature['XrefSection'] = len(XrefSection)
+    feature['XrefSection'] = XrefSection[0]
     Xref = XrefSection[1][0]
     if Xref != None:
         feature['Xref_size'] = Xref.size
@@ -137,7 +142,6 @@ def feature_extract(froot): #对输入文件进行特征提取
    # PDFBody.containsXrefStreams(pdf)
 
     JavascriptCode = pdf.getJavascriptCode()
-    Offsets = pdf.getOffsets()
     Catalog = pdf.getCatalogObjectId()
 
     print pdf.getEndLine()
@@ -182,11 +186,11 @@ def feature_extract(froot): #对输入文件进行特征提取
     acd = gtree[len(gtree)-1][1]
     feature['tree_len'] = len(acd)
     for k in acd:
-        if '/Font'== acd[k][0]:
+        if '/Font_num'== acd[k][0]:
             font_count += 1
-        if '/JavaScript'== acd[k][0]:
+        if '/JavaScript_num'== acd[k][0]:
             Javascript_count += 1
-        if '/JS' == acd[k][0]:
+        if '/JS_num' == acd[k][0]:
             JS_count += 1
     feature['font_count'] = font_count
     feature['Javascript_count'] = Javascript_count
@@ -240,6 +244,19 @@ def feature_extract(froot): #对输入文件进行特征提取
             for h in range(2):
                 feature['stream_min_' + str(h)] = stream_size[h]
 
+        Actions_JS = 0
+        Actions_javascript = 0
+        if statsVersion['Actions'] != None:
+            for i in statsVersion['Actions']:
+                if i == '/JS':
+                    Actions_JS = 1
+                if i == '/JavaScript':
+                    Actions_javascript = 1
+        feature['Actions_javascript'] = Actions_javascript
+        feature['Actions_JS'] = Actions_JS
+
+
+
         feature['Catalog'] = None_vlue(statsVersion['Catalog'])
         feature['Xref Streams'] = None_int(statsVersion['Xref Streams'])
         feature['elements'] = None_len(statsVersion['Elements'])
@@ -251,6 +268,7 @@ def feature_extract(froot): #对输入文件进行特征提取
         feature['Compressd_obj'] = None_int(statsVersion['Compressed Objects'])
         feature['Info'] = None_int(statsVersion['Info'])
         feature['Object Streams'] = None_int(statsVersion['Object Streams'])
+        feature['Streams'] = None_int(statsVersion['Streams'])
         #feature['Decoding Errors'] = None_int(statsVersion['Decoding Errors'])  #error
 
 

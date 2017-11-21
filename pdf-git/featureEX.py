@@ -192,6 +192,17 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
             for h in range(2):
                 feature['stream_min_' + str(h)] = stream_size[h]
 
+        Actions_JS = 0
+        Actions_javascript = 0
+        if statsVersion['Actions'] != None:
+            for i in statsVersion['Actions']:
+                if i == '/JS':
+                    Actions_JS = 1
+                if i == '/JavaScript':
+                    Actions_javascript = 1
+        feature['Actions_javascript'] = Actions_javascript
+        feature['Actions_JS'] = Actions_JS
+
 
         feature['Catalog'] = None_vlue(statsVersion['Catalog'])
         feature['Xref Streams'] = None_int(statsVersion['Xref Streams'])
@@ -205,6 +216,7 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
         feature['Xref Streams'] = None_int(statsVersion['Xref Streams'])
         feature['Info'] = None_int(statsVersion['Info'])
         feature['Object Streams'] = None_int(statsVersion['Object Streams'])
+        feature['Streams'] = None_int(statsVersion['Streams'])
         #feature['Decoding Errors'] = None_int(statsVersion['Decoding Errors'])
 
     '''sha1 = pdf.getSHA1()
