@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/python
 from peepdf.PDFCore import *
+import datetime
+
+
+
+
 
 def fakeFile_check(filePath):
     try:
@@ -45,6 +50,9 @@ def YESorNO(vlue):
 
 
 def feature_extract(pdf):  # 对输入文件进行特征提取
+
+
+
 
     feature = dict()
     f_id = []
@@ -157,9 +165,10 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
 
     feature['JS_MODULE'] = bool_change(JS_MODULE)
 
-
+    feature['Versions_num'] = len(statsDict['Versions'])
+    Ver_list = []
     for version in range(len(statsDict['Versions'])):
-
+        Ver_dict = {}
         statsVersion = statsDict['Versions'][version]
         obj = statsVersion['Objects'][1]
         obj_size = []
@@ -167,14 +176,24 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
             obj_one = pdf.getObject(ob).getValue()
             obj_size.append(len(obj_one))
         obj_size.sort(cmp=None, key=None, reverse=True)  # 进行降序排序从大到小排序
+
         if len(obj_size) >= 10:
+            Ver_dict['version' + str(version) + 'obj_min'] = min(obj_size)
+            Ver_dict['version' + str(version) + '_obj_average'] = sum(obj_size) / len(obj_size)
             for h in range(10):
-                feature['obj_10_' + str(h)] = obj_size[h]
-        else:
+                Ver_dict['version' + str(version) + '_obj_10_' + str(h)] = obj_size[h]
+        elif len(obj_size) > 0:
+            Ver_dict['version' + str(version) + '_obj_min'] = min(obj_size)
+            Ver_dict['version' + str(version) + '_obj_average'] = sum(obj_size) / len(obj_size)
             while 10 - len(obj_size) > 0:
                 obj_size.append(0)
             for h in range(10):
-                feature['obj_10_' + str(h)] = obj_size[h]
+                Ver_dict['version' + str(version) + '_obj_10_' + str(h)] = obj_size[h]
+        else:
+            Ver_dict['version' + str(version) + '_obj_min'] = 0
+            Ver_dict['version' + str(version) + '_obj_average'] = 0
+            for h in range(10):
+                Ver_dict['version' + str(version) + '_obj_10_' + str(h)] = 0
 
         stream = statsVersion['Streams'][1]
         stream_size = []
@@ -184,13 +203,13 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
         stream_size.sort()  # 从小到大排序
         if len(stream_size) >= 2:
             for h in range(2):
-                feature['stream_min_' + str(h)] = stream_size[h]
+                Ver_dict['version' + str(version) + '_stream_min_' + str(h)] = stream_size[h]
         else:
             while 2 - len(stream_size) > 0:
                 stream_size.append(0)
-                stream_size.sort()
+            stream_size.sort()
             for h in range(2):
-                feature['stream_min_' + str(h)] = stream_size[h]
+                Ver_dict['version' + str(version) + '_stream_min_' + str(h)] = stream_size[h]
 
         Actions_JS = 0
         Actions_javascript = 0
@@ -200,31 +219,61 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
                     Actions_JS = 1
                 if i == '/JavaScript':
                     Actions_javascript = 1
-        feature['Actions_javascript'] = Actions_javascript
-        feature['Actions_JS'] = Actions_JS
+        Ver_dict['version' + str(version) + '_Actions_javascript'] = Actions_javascript
+        Ver_dict['version' + str(version) + '_Actions_JS'] = Actions_JS
+
+        Events_AA = 0
+        Events_Names = 0
+        if statsVersion['Events'] != None:
+            for i in statsVersion['Events']:
+                if i == '/AA':
+                    Events_AA = 1
+                if i == '/Names':
+                    Events_Names = 1
+        Ver_dict['version' + str(version) + '_Events_AA'] = Events_AA
+        Ver_dict['version' + str(version) + '_Events_Names'] = Events_Names
+
+        EmbeddedFiles = 0
+        if statsVersion['Elements'] != None:
+            for i in statsVersion['Elements']:
+                if i == '/EmbeddedFiles':
+                    EmbeddedFiles = 1
+        Ver_dict['version' + str(version) + '_Elements_EmbeddedFiles'] = EmbeddedFiles
+
+        Ver_dict['version' + str(version) + '_Catalog'] = None_vlue(statsVersion['Catalog'])
+        Ver_dict['version' + str(version) + '_Xref Streams'] = None_int(statsVersion['Xref Streams'])
+        Ver_dict['version' + str(version) + '_elements'] = None_len(statsVersion['Elements'])
+        Ver_dict['version' + str(version) + '_Events_num'] = None_len(statsVersion['Events'])
+        Ver_dict['version' + str(version) + '_Actions_num'] = None_len(statsVersion['Actions'])
+        Ver_dict['version' + str(version) + '_Vulns'] = None_len(statsVersion['Vulns'])
+        Ver_dict['version' + str(version) + '_Encoded_num'] = None_int(statsVersion['Encoded'])
+        Ver_dict['version' + str(version) + '_Objects_JS_num'] = None_int(statsVersion['Objects with JS code'])
+        Ver_dict['version' + str(version) + '_Compressd_obj'] = None_int(statsVersion['Compressed Objects'])
+        Ver_dict['version' + str(version) + '_Info'] = None_int(statsVersion['Info'])
+        Ver_dict['version' + str(version) + '_Object Streams'] = None_int(statsVersion['Object Streams'])
+        Ver_dict['version' + str(version) + '_Streams'] = None_int(statsVersion['Streams'])
+        try:
+            Decoding_Errors = None_int(statsVersion['Decoding Errors'])
+        except:
+            Decoding_Errors = 0
+        Ver_dict['version' + str(version) + '_Decoding Errors'] = Decoding_Errors  # error
+        Ver_list.append(Ver_dict)
+
+    if len(Ver_list) >= 3:
+        for v in range(3):
+            for i in Ver_list[v]:
+                feature[i] = Ver_list[v][i]
+    if len(Ver_list) < 3:
+        Ver_dict2 = {}
+        for vj in range(len(Ver_list), 3):
+            for d in Ver_list[0]:
+                Ver_dict2[str(vj) + d] = 0
+            Ver_list.append(Ver_dict2)
+        for v in range(len(Ver_list)):
+            for i in Ver_list[v]:
+                feature[i] = Ver_list[v][i]
 
 
-        feature['Catalog'] = None_vlue(statsVersion['Catalog'])
-        feature['Xref Streams'] = None_int(statsVersion['Xref Streams'])
-        feature['elements'] = None_len(statsVersion['Elements'])
-        feature['Events_num'] = None_len(statsVersion['Events'])
-        feature['Actions_num'] = None_len(statsVersion['Actions'])
-        feature['Vulns'] = None_len(statsVersion['Vulns'])
-        feature['Encoded_num'] = None_int(statsVersion['Encoded'])
-        feature['Objects_JS_num'] = None_int(statsVersion['Objects with JS code'])
-        feature['Compressd_obj'] = None_int(statsVersion['Compressed Objects'])
-        feature['Xref Streams'] = None_int(statsVersion['Xref Streams'])
-        feature['Info'] = None_int(statsVersion['Info'])
-        feature['Object Streams'] = None_int(statsVersion['Object Streams'])
-        feature['Streams'] = None_int(statsVersion['Streams'])
-        #feature['Decoding Errors'] = None_int(statsVersion['Decoding Errors'])
-
-    '''sha1 = pdf.getSHA1()
-    for h in range(len(sha1)):
-        feature['sha1_' + str(h)] = int(sha1[h], 16)
-    md5 = pdf.getMD5()
-    for g in range(len(md5)):
-        feature['md5_' + str(g)] = int(md5[g], 16)'''
 
     feature['Binary'] = bool_change(statsDict['Binary'])
     feature['Linearized'] = bool_change(statsDict['Linearized'])
@@ -249,3 +298,4 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
 
 
     return [feature[k] for k in feature],f_id
+

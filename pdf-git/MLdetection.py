@@ -8,9 +8,10 @@ import random
 from sklearn import metrics
 import matplotlib.pyplot as plt
 import numpy as np
+import datetime
 #import simple_plot as sp
-
-from featureEX import *
+import pickle
+from feature import *
 import multiprocessing
 
 # 全局参数配置，根据需要自己修改以下六个参数
@@ -21,9 +22,9 @@ Melicious_File_Root = r"/Users/fengjiaowang/Downloads/data2000/VirusS" # 恶意�
 
 
 Benign_File_For_Trainning =20  # 用于训练的正常样本的个数
-Melicious_File_For_Trainning =20  # 用于训练的恶意样本的个数
-Benign_File_For_Test =20  # 用于测试的正常样本的个数
-Melicious_File_For_Test =20  # 用于测试的恶意样本的个数
+Melicious_File_For_Trainning =30  # 用于训练的恶意样本的个数
+Benign_File_For_Test =10  # 用于测试的正常样本的个数
+Melicious_File_For_Test =10  # 用于测试的恶意样本的个数
 
 
 # Random Forest Classifier
@@ -73,9 +74,34 @@ def datebase_divide(*arg):
     return trainlist, testlist
 
 
+def featureCheckRead(froot,label = 0):
+    global nordict,maldict
+    if label == 0:
+        tempdict = nordict
+    else:
+        tempdict = maldict
+    key = froot.split('/')[-1]
+    if key in tempdict:
+        return tempdict[key]
+    else:
+        return None
+
+def featureCheckUpdate(froot ,label,feature):
+    global nordict,maldict
+    if label == 0:
+        tempdict = nordict
+    else:
+        tempdict = maldict
+    key = froot.split('/')[-1]
+    tempdict[key] = feature
+
 
 # 数据处理与特征提取，，此处需重点修改
-def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, btotal):
+def data_get(trainSampleMark, testSampleMark):
+    global mfiles,bfiles,DatabaseTotalNums_Normal,benignrandom,malrandom
+    btotal = DatabaseTotalNums_Normal
+    gcroot_normal = bfiles
+    gcroot_melicious = mfiles
     train_feature = []
     train_class = []
     test_feature = []
@@ -93,45 +119,61 @@ def data_get(gcroot_normal, gcroot_melicious, trainSampleMark, testSampleMark, b
         try:
             cla = 0
             if i<btotal:
-                froot = gcroot_normal[i]
+                froot = gcroot_normal[benignrandom[i]]
             else:
-                froot=gcroot_melicious[i - btotal]
+                froot=gcroot_melicious[malrandom[i - btotal]]
                 cla = 1
             #*******************************************************************
-            pdf = fakeFile_check(froot)
-            if pdf:
+            fe_list = featureCheckRead(froot,cla)
+            if not fe_list:
+                pdf = fakeFile_check(froot)
+                if pdf:
+                    train_class.append(cla)
+                    fe_list,fe_key = feature_extract(pdf)
+                    train_feature.append(fe_list) #对输入文件进行特征提取
+                    featureCheckUpdate(froot,cla,fe_list)  #更新特征集
+            else:
                 train_class.append(cla)
+                train_feature.append(fe_list)  # 对输入文件进行特征提取
 
-                fe_list,fe_key = feature_extract(pdf)
-
-                train_feature.append(fe_list) #对输入文件进行特征提取
-
-
-        except Exception:
+        except Exception as e:
             print('file %s feature extracting meet ERROR'%froot)
+            print(e)
             continue
 
     for i in testSampleMark:
         try:
             cla = 0
             if i<btotal:
-                froot = gcroot_normal[i]
+                froot = gcroot_normal[benignrandom[i]]
             else:
-                froot=gcroot_melicious[i - btotal]
+                froot=gcroot_melicious[malrandom[i - btotal]]
                 cla = 1
 
-                 # *******************************************************************
-            pdf = fakeFile_check(froot)
-            if pdf:
+
+            # *******************************************************************
+            fe_list = featureCheckRead(froot,cla)
+            fileReadEnabel = True
+            if not fe_list:
+                pdf = fakeFile_check(froot)
+                if pdf:
+                    test_class.append(cla)
+                    fe_list,fe_key= feature_extract(pdf)
+                    test_feature.append(fe_list) #对输入文件进行特征提取
+                    featureCheckUpdate(froot,cla,fe_list)  #更新特征集
+                else:
+                    fileReadEnabel = False
+            else:
+                print('have readed')
                 test_class.append(cla)
-
-                fe_list,_ = feature_extract(pdf)
-                test_feature.append(fe_list) #对输入文件进行特征提取
-
+                test_feature.append(fe_list)  # 对输入文件进行特征提取
+            if fileReadEnabel:
                 tname = froot.split('/')[-1]
                 tename.append(tname)
-        except Exception:
+
+        except Exception as e:
             print('file %s feature extracting meet ERROR' % froot)
+            print(e)
             continue
 
     return train_feature, train_class, test_feature, test_class,tename,fe_key
@@ -175,8 +217,8 @@ def tabledemo(name1,test1,predict1):
             test.append(test1[i])
             predict.append(predict1[i])
     table = {'name': name, 'test':test , 'predint': predict}
-    import pandas as pand
-    frame = pand.DataFrame(table)
+    import pandas
+    frame = pandas.DataFrame(table)
     return frame
 
 def plot_importance(f_v,fe_id):
@@ -200,28 +242,43 @@ def plot_importance(f_v,fe_id):
 
 
 
+DatabaseTotalNums_Normal = Benign_File_For_Trainning + Benign_File_For_Test  # 所有正常样本的个数
+DatabaseTotalNums_mal = Melicious_File_For_Trainning + Melicious_File_For_Test #all Mal test document
 
-
-
+bfiles = load_file(Benign_File_Root)  # 载入正常样本文件路径
+benignrandom = random.sample([i for i in range(len(bfiles))],DatabaseTotalNums_Normal)
+mfiles = load_file(Melicious_File_Root)  # 载入恶意文件路径
+malrandom = random.sample([i for i in range(len(mfiles))],DatabaseTotalNums_mal)
+nordict = {}
+maldict = {}
 
 def main():
     print('start processing')
+    global  nordict,maldict
+
+    if True:
+        if os.path.exists('normdictfile.pl'):
+            nordict = pickle.load(open('normdictfile.pl','rb'))
+        if os.path.exists('maldictfile.pl'):
+            maldict = pickle.load(open('maldictfile.pl','rb'))
+
+
+
     trainSampleMark, testSampleMark = datebase_divide(Benign_File_For_Trainning,
                                                       Benign_File_For_Test,
                                                       Melicious_File_For_Trainning,
                                                       Melicious_File_For_Test)
 
-    bfiles = load_file(Benign_File_Root)  # 载入正常样本文件路径
-    mfiles = load_file(Melicious_File_Root)  # 载入恶意文件路径
-    DatabaseTotalNums_Normal = Benign_File_For_Trainning + Benign_File_For_Test  # 所有正常样本的个数
+    train_x, train_y, test_x, test_y,tena,f_id= data_get(trainSampleMark, testSampleMark)
+    print('normdict len is %d,maldict len is %d'%(len(maldict),len(nordict)))
+    pickle.dump(nordict, open('normdictfile.pl', 'wb'))
+    pickle.dump(maldict, open('maldictfile.pl', 'wb'))
 
-
-    train_x, train_y, test_x, test_y,tena,f_id= data_get(bfiles, mfiles, trainSampleMark, testSampleMark, DatabaseTotalNums_Normal)
     #print tena
     print('******************** Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)
-    plot_importance(clf.feature_importances_,f_id)
+    #plot_importance(clf.feature_importances_,f_id)
     #RF_Information_print(clf)
     predict, predictp = ml_predict(clf, test_x)
     #print'predint : ',list(predict)
@@ -229,8 +286,12 @@ def main():
     #print'test_y : ',test_y
     print('******************** flie analysis *********************')
     print tabledemo(tena,test_y,predict)
+
     print('DONE')
 
 if __name__ == '__main__':
+    start = datetime.datetime.now()
     main()
 
+    end = datetime.datetime.now()
+    print "spend time = %d s" % (end - start).seconds
