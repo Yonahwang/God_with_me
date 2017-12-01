@@ -29,6 +29,16 @@
 - 1) 模型识别能力达 >= 90%    **DONE**  
 
 #### Roadmap
+（Updated on 2017/11/13）
+- 1. 充分利用现有数据，对提取到的特征做特征优化，目前按照参考论文，提取的又有特征有54个
+- 2.增加对PDF文件解析的数量，主要主对FN/FT 文件进行优化和解析
+- 3.参考国内外对PDF文件的解析，做实验原型的验证，目标提取有用特征200个,模型识别能力达 >= 98.00%
+
+（Updated on 2017/10/30）
+- 1. 充分利用现有数据，对提取到的特征做特征优化，优化后分析样本1000个，模型识别能力达 >= 97.00%
+- 2.增加对PDF文件解析的数量，由之前的各位提升到十位，争取破百位
+- 3.参考国内外对PDF文件的解析，做实验原型的验证，目标提取有用特征200个,更新之前的特征提取，现可用特征提取有37个
+
 （Updated on 2017/10/11）
 - 1.针对爬取到的数据，进行清理，分类出可用的做数据测试
 - 2.增加可用测试样本到1000 ，提取样本特征143 个，模型识别能力达 >= 92.98%
@@ -44,23 +54,50 @@
 - 2.基于ML技术框架，添加PDF特征提取和解析，完成一个完整的检测过程，输出检测结果
 - 3.输出实验报告和结果分析，并不断优化迭代
 
-Note: 目前对PDF的特征提取,主要是利用python内置包（如pdfminer）和导入开源包peepdf等，对以下特征提取
-- filename
-- md5
-- sha256
-- size
-- Version
-- linearized
-- encrypted
-- Encryption Algorithms
-- updates
-- num_objects
-- num_streams
-- comments
-- error_message
-- Encryption Algorithms
-- updates
-- ...
+Note: 目前对PDF的特征提取,主要是利用python内置包（如pdfminer）和导入开源包peepdf等，参考一些前沿技术文章对一下特征进行提取：
+
+| Feature | Detail | Remarks |
+| ------| ------ | ------ |
+|the author metadata item 作者元数据项目|== producer_len ==| 
+|the author metadata item 作者元数据项目| producer_oth | 
+|the author metadata item 作者元数据项目| producer_uc | 
+|objects/streams| ==len(objects)== | 
+|objects/streams| ==数量(count)==  |
+|objects/streams| location | 
+|objects/streams| count_stream_diff | 
+|objects/streams| len_stream_min | 
+|images | len() | 
+|images| location | 
+|images| image_totalpx | 
+|images| ratio_imagepx_size | 
+|数据编码方法|==data encoding methods==|
+|object types| ==计数加密对象（count of encryption objects）==|
+|计数JavaScript|==len(objects)==|
+| 计数JavaScript |==数量(count)==
+|计数JavaScript|location
+|计数js|==len(objects)==
+|计数js|==数量(count)==
+|计数js|location
+|Font|==count_font==
+|time|createdate_tz|
+|time|moddate_tz
+|object|==count_obj==
+|object|count_endobj
+||pdfid0_mismatch|
+||pos_eof_avg|
+||pos_eof_max|
+|Boxes|pos_box_max|
+||creator_len
+||ref_min_id
+||title_len
+||title_lc
+||count_filter_obs
+||pos_ref_avg
+|version|==version==
+||==len_URLs==
+||==openAction==
+
+
 
 下一步:
 增加测试数量集，优化特征提取，增加优化算法
