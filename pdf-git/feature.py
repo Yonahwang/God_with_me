@@ -121,31 +121,33 @@ def feature_extract(pdf):  # 对输入文件进行特征提取
             feature['subsections_entries'] = 0
             feature['subsections_errors'] = 0
 
+    try:
+        Metadata = pdf.getBasicMetadata(0)
+        feature['Metadata_len'] = None_len(Metadata)
+        meta_creation = ''
+        meta_producer = ''
+        meta_creator = ''
+        meta_author = ''
+        for k in Metadata:
+            if k == 'creation':
+                meta_creation = Metadata[k]
+            elif k == 'producer':
+                meta_producer = Metadata[k]
+            elif k == 'creator':
+                meta_creator = Metadata[k]
+            elif k == 'author':
+                meta_author = Metadata[k]
+        feature['meta_cration_len'] = YESorNO(meta_creation)
+        feature['meta_producer_len'] = YESorNO(meta_producer)
+        feature['meta_creator_len'] = YESorNO(meta_creator)
+        feature['meta_author_len'] = YESorNO(meta_author)
+    except Exception :
+        feature['Metadata_len'] = 0
+        feature['meta_cration_len'] = 0
+        feature['meta_producer_len'] = 0
+        feature['meta_creator_len'] = 0
+        feature['meta_author_len'] = 0
 
-    Metadata = pdf.getBasicMetadata(0)
-    feature['Metadata_len'] = None_len(Metadata)
-    meta_creation = ''
-    meta_producer = ''
-    meta_creator = ''
-    meta_author = ''
-    for k in Metadata:
-        if k == 'creation':
-            meta_creation = Metadata[k]
-        elif k == 'producer':
-            meta_producer = Metadata[k]
-        elif k == 'creator':
-            meta_creator = Metadata[k]
-        elif k == 'author':
-            meta_author = Metadata[k]
-    feature['meta_cration_len'] = YESorNO(meta_creation)
-    feature['meta_producer_len'] = YESorNO(meta_producer)
-    feature['meta_creator_len'] = YESorNO(meta_creator)
-    feature['meta_author_len'] = YESorNO(meta_author)
-    '''if len(meta_creation) != 0:
-        timeC = meta_creation[2:16]
-        feature['meta_creation'] = meta_creation[2:16]
-    else:
-        feature['meta_creation'] = 0'''
 
     gtree = pdf.getTree()
     font_count = 0

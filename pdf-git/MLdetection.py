@@ -21,10 +21,10 @@ Melicious_File_Root = r"/Users/fengjiaowang/Downloads/data2000/VirusS" # 恶意�
 #Melicious_File_Root = r"/home/yonah/PDFdata/malPDF" # 恶意样本数据集的文
 
 
-Benign_File_For_Trainning =20  # 用于训练的正常样本的个数
-Melicious_File_For_Trainning =30  # 用于训练的恶意样本的个数
-Benign_File_For_Test =10  # 用于测试的正常样本的个数
-Melicious_File_For_Test =10  # 用于测试的恶意样本的个数
+Benign_File_For_Trainning =500  # 用于训练的正常样本的个数
+Melicious_File_For_Trainning =900  # 用于训练的恶意样本的个数
+Benign_File_For_Test =200  # 用于测试的正常样本的个数
+Melicious_File_For_Test =400  # 用于测试的恶意样本的个数
 
 
 # Random Forest Classifier
@@ -278,7 +278,7 @@ def main():
     print('******************** Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)
-    #plot_importance(clf.feature_importances_,f_id)
+    plot_importance(clf.feature_importances_,f_id)
     #RF_Information_print(clf)
     predict, predictp = ml_predict(clf, test_x)
     #print'predint : ',list(predict)

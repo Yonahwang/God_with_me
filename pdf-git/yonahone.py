@@ -8,8 +8,8 @@ import re
 from peepdf.PDFCore import *
 import datetime
 
-file = r"/Users/fengjiaowang/Downloads/data2000/pdf/5c2013a937d014a060d37b4963dea17dba5bd2fb.pdf"
-#file = r"/Users/fengjiaowang/Downloads/data2000/VirusS/VirusShare_00ab49a6766f59687bffc04461cb72b3"
+#file = r"/Users/fengjiaowang/Downloads/data2000/pdf/5c2013a937d014a060d37b4963dea17dba5bd2fb.pdf"
+file = r"/Users/fengjiaowang/Downloads/data2000/VirusS/VirusShare_0d08a15627b4bf63540e5b10bf2f5792"
 #file = r"/home/yonah/PDFdata/malPDF/VirusShare_ffc1941e3eb5c85cabf6eea94d742b0e"
 #file = r"/home/yonah/PDFdata/pdfnormal/SQL_tutorial_pt1.pdf"
 
@@ -141,31 +141,38 @@ def feature_extract(froot): #对输入文件进行特征提取
 
     #print pdf.getEndLine()
     # print pdf.maxObjectId
+    meta = pdf.getMetadata()
 
 
 
+    try:
+        Metadata = pdf.getBasicMetadata(0)
+        feature['Metadata_len'] = None_len(Metadata)
+        meta_creation = ''
+        meta_producer = ''
+        meta_creator = ''
+        meta_author = ''
+        for k in Metadata:
+            if k == 'creation':
+                meta_creation = Metadata[k]
+            elif k == 'producer':
+                meta_producer = Metadata[k]
+            elif k == 'creator':
+                meta_creator = Metadata[k]
+            elif k == 'author':
+                meta_author = Metadata[k]
+        feature['meta_cration_len'] = YESorNO(meta_creation)
+        feature['meta_producer_len'] = YESorNO(meta_producer)
+        feature['meta_creator_len'] = YESorNO(meta_creator)
+        feature['meta_author_len'] = YESorNO(meta_author)
+    except Exception :
+        feature['Metadata_len'] = 0
+        feature['meta_cration_len'] = 0
+        feature['meta_producer_len'] = 0
+        feature['meta_creator_len'] = 0
+        feature['meta_author_len'] = 0
 
 
-
-    Metadata = pdf.getBasicMetadata(0)
-    feature['Metadata_len'] = None_len(Metadata)
-    meta_creation = ''
-    meta_producer = ''
-    meta_creator = ''
-    meta_author = ''
-    for k in Metadata:
-        if k == 'creation':
-            meta_creation = Metadata[k]
-        elif k == 'producer':
-            meta_producer = Metadata[k]
-        elif k == 'creator':
-            meta_creator = Metadata[k]
-        elif k == 'author':
-            meta_author = Metadata[k]
-    feature['meta_cration_len'] = YESorNO(meta_creation)
-    feature['meta_producer_len'] = YESorNO(meta_producer)
-    feature['meta_creator_len'] = YESorNO(meta_creator)
-    feature['meta_author_len'] = YESorNO(meta_author)
 
     '''if len(meta_creation) !=0:
         timeC = meta_creation[2:16]
@@ -313,13 +320,6 @@ def feature_extract(froot): #对输入文件进行特征提取
 
 
 
-
-
-
-
-
-
-        
 
 
 
