@@ -40,6 +40,22 @@
 
 
 #### Roadmap
+（Updated on 2017/12/5）
+- 1）	数据集：
+Normal sample number  :  897
+Malware sample number  :  83442 
+在做训练和推测的时候，随机抽取其中的部分做训练和测试做dataset 
+- 2） 特征提取：
+对提取到的特征做特征优化，目前按照参考论文，目前提取的特征有133个 ，以下是一些重要特征的分布图
+![image](https://github.com/Yonahwang/God_with_me/blob/master/pdf-git/featureim.png)
+![image](https://github.com/Yonahwang/God_with_me/blob/master/pdf-git/feature2.png)
+
+- 3）模型识别率：
+- 以下是在样本中随机抽取2300个样本做出的一个预测结果截图：
+![image](https://github.com/Yonahwang/God_with_me/blob/master/pdf-git/solution2300.png)
+- 如图是是在样本中随机抽取2355个样本做出的一个预测结果截图：
+![image](https://github.com/Yonahwang/God_with_me/blob/master/pdf-git/solution2355.png)
+
 （Updated on 2017/11/13）
 - 1. 充分利用现有数据，对提取到的特征做特征优化，目前按照参考论文，提取的又有特征有54个
 - 2.增加对PDF文件解析的数量，主要主对FN/FT 文件进行优化和解析
