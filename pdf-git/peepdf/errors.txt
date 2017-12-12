@@ -136,3 +136,7 @@ Traceback (most recent call last):
   File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/cmd.py", line 130, in cmdloop
     line = raw_input(self.prompt)
 KeyboardInterrupt
+Traceback (most recent call last):
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/peepdf.py", line 582, in <module>
+    print errorColor + errorMessage + resetColor + newLine
+IOError: [Errno 32] Broken pipe

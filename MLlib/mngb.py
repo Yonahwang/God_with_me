@@ -21,7 +21,7 @@ if sys.getdefaultencoding() != 'utf-8':
     sys.setdefaultencoding('utf-8')
 
 #集群环境配置
-conf = SparkConf().setMaster("spark://172.16.7.46:7077").setAppName('PE_test')\
+conf = SparkConf().setMaster("spark://172.16.7.46:7077").setAppName('PDF_test')\
     .set("spark.executor.memory", "3500m")\
     .set("spark.driver.maxResultSize", "2g")\
     .set('spark.worker.ui.retainedExecutors',"200")\

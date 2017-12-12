@@ -84,3 +84,17 @@ Traceback (most recent call last):
   File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 338, in get_next_token
     if parser_pos >= len(self.input):
 KeyboardInterrupt
+Traceback (most recent call last):
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/JSAnalysis.py", line 81, in analyseJS
+    code = jsbeautifier.beautify(code)
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 91, in beautify
+    return b.beautify(string, opts)
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 224, in beautify
+    handlers[token_type](token_text)
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 602, in handle_start_expr
+    self.set_mode('(EXPRESSION)')
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 317, in set_mode
+    self.flags = BeautifierFlags(mode)
+  File "/Users/fengjiaowang/Projects/God_with_me/pdf-git/peepdf/jsbeautifier/__init__.py", line 77, in __init__
+    self.if_line = False
+KeyboardInterrupt

@@ -21,10 +21,10 @@ Melicious_File_Root = r"/Users/fengjiaowang/Downloads/data2000/VirusS" # 恶意�
 #Melicious_File_Root = r"/home/yonah/PDFdata/malPDF" # 恶意样本数据集的文
 
 
-Benign_File_For_Trainning =500  # 用于训练的正常样本的个数
-Melicious_File_For_Trainning =900  # 用于训练的恶意样本的个数
-Benign_File_For_Test =200  # 用于测试的正常样本的个数
-Melicious_File_For_Test =400  # 用于测试的恶意样本的个数
+Benign_File_For_Trainning =10  # 用于训练的正常样本的个数
+Melicious_File_For_Trainning =10  # 用于训练的恶意样本的个数
+Benign_File_For_Test =10  # 用于测试的正常样本的个数
+Melicious_File_For_Test =10  # 用于测试的恶意样本的个数
 
 
 # Random Forest Classifier
@@ -107,7 +107,7 @@ def data_get(trainSampleMark, testSampleMark):
     test_feature = []
     test_class = []
     tename = []
-    fe_key = []
+    fe_key = []     #feature_key
 
 
     print("normal sample number is %d" % len(gcroot_normal))
@@ -268,13 +268,19 @@ def main():
                                                       Benign_File_For_Test,
                                                       Melicious_File_For_Trainning,
                                                       Melicious_File_For_Test)
-
+    #train_x = train_feature ,train_y = train_class, test_x = test_feature
     train_x, train_y, test_x, test_y,tena,f_id= data_get(trainSampleMark, testSampleMark)
+
     print('normdict len is %d,maldict len is %d'%(len(maldict),len(nordict)))
     pickle.dump(nordict, open('normdictfile.pl', 'wb'))
     pickle.dump(maldict, open('maldictfile.pl', 'wb'))
 
-    #print tena
+    # make libsvm
+    feature_x = train_x + test_x
+    class_y = train_y + test_y
+    from sklearn.datasets import dump_svmlight_file
+    dump_svmlight_file(feature_x, class_y, 'libsvmby1.dat', zero_based=False, multilabel=False)
+
     print('******************** Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)

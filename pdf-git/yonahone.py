@@ -39,7 +39,7 @@ def None_vlue(vlue):
     if vlue == None:
         return 0
     else:
-        return vlue
+        return int(vlue)
 
 def YESorNO(vlue):
     if len(vlue) != 0:
@@ -326,7 +326,11 @@ def feature_extract(froot): #对输入文件进行特征提取
     feature['Binary'] = bool_change(statsDict['Binary'])
     feature['Linearized'] = bool_change(statsDict['Linearized'])
     feature['Encrypted'] = bool_change(statsDict['Encrypted'])
-    feature['version'] = pdf.version
+    #feature['version'] = float(pdf.version)
+    version = pdf.version
+    version = version.split('.', 1)
+    feature['version1'] = int(version[0])
+    feature['version2'] = int(version[1])
     feature['stream_num'] = pdf.numStreams
     feature['file_size'] = pdf.getSize()
     feature['object_num'] = pdf.numObjects
