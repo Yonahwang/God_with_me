@@ -1,109 +1,116 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/python
 
-
-
-
-from sklearn import metrics
-import matplotlib.pyplot as plt
+# 导入需要用到的库
+import os
 import numpy as np
 import datetime
-import random
-from classfeature import *
-from fileSelection import *
+import pickle
+from feature import *
 
 
-
-# Random Forest Classifier
-def random_forest_classifier(train_x, train_y):
-    from sklearn.ensemble import RandomForestClassifier
-    model = RandomForestClassifier(n_estimators=200)  # 根据自己的需要，指定随机森林的树的个数
-    model.fit(train_x, train_y)
-    return model
-
-def plot_importance(f_v,fe_id):
-    f_id = fe_id
-    #f_id = [str(i) for i in range(len(f_v))]
-    f_v = 100.0 * (f_v / f_v.max())
-
-    f_id = np.array(f_id)
-
-    sorted_idx = np.argsort(-f_v)
-
-    pos = np.arange(len(sorted_idx)) + 0.5
-    plt.subplot(1, 2, 2)
-    plt.title('Feature Importance')
-
-    plt.barh(pos[0:30], f_v[sorted_idx][0:30], color='r', align='center')
-    plt.yticks(pos[0:30], f_id[sorted_idx][0:30])
-    plt.xlabel('Relative Importance')
-    plt.draw()
-    plt.show()
+# 全局参数配置，根据需要自己修改以下六个参数
+Benign_File_Root = r"/Users/fengjiaowang/Downloads/data2000/pdf" # 正常样本数据集的文件路径
+Melicious_File_Root = r"/Users/fengjiaowang/Downloads/data2000/VirusS" # 恶意样本数据集的文件路径
+#Benign_File_Root = r"/home/yonah/PDFdata/pdfnormal" # 正常样本数据集的文件路径
+#Melicious_File_Root = r"/home/yonah/PDFdata/malPDF" # 恶意样本数据集的文件路径
 
 
-# 对测试数据分类
-def ml_predict(clf, test_x):
-    print('******************** Test Data Info *********************')
-    print('#testing data: %d, dimension: %d' % (len(test_x), len(test_x[0])))
-    if clf:
-        predictp = clf.predict_proba(test_x)
-        predict = clf.predict(test_x)
-        return predict, predictp
-
-# 分析识别率
-def predect_calcu(predict, test_y, binary_class=True):
-    if binary_class:
-        precision = metrics.precision_score(test_y, predict)
-        recall = metrics.recall_score(test_y, predict)
-
-        confusion = metrics.confusion_matrix(test_y, predict)
-        TP = confusion[1, 1]
-        TN = confusion[0, 0]
-        FP = confusion[0, 1]
-        FN = confusion[1, 0]
-
-        print("TP:%d *** TN:%d *** FP:%d *** FN:%d " % (TP, TN, FP, FN))
-        print('precision: %.2f%%, recall: %.2f%%' % (100 * precision, 100 * recall))
-    accuracy = metrics.accuracy_score(test_y, predict)
-    print('accuracy: %.2f%%' % (100 * accuracy))
-    return accuracy, confusion
+# 载入数据集
+def load_file(file_Path):
+    test_files = list()
+    for dirpath, dirname, filenames in os.walk(file_Path):
+        for filename in filenames:
+            rfpath = os.path.join(dirpath, filename)
+            test_files.append(rfpath)
+    return test_files
 
 
-def tabledemo(name1,test1,predict1):
-    name = []
-    test = []
-    predict= []
-    for i in range(len(predict1)):
-        if test1[i] != predict1[i]:
-            name.append(name1[i])
-            test.append(test1[i])
-            predict.append(predict1[i])
-    table = {'name': name, 'test':test , 'predint': predict}
-    import pandas
-    frame = pandas.DataFrame(table)
-    return frame
+def featureCheckRead(froot,label = 0):
+    global nordict,maldict
+    if label == 0:
+        tempdict = nordict
+    else:
+        tempdict = maldict
+    key = froot.split('/')[-1]
+    if key in tempdict:
+        return tempdict[key]
+    else:
+        return None
 
+def featureCheckUpdate(froot ,label,feature):
+    global nordict,maldict
+    if label == 0:
+        tempdict = nordict
+    else:
+        tempdict = maldict
+    key = froot.split('/')[-1]
+    tempdict[key] = feature
+
+def data_get(norfile_path_list,malfile_path_list):
+    file_feature = []
+    file_class = []
+    alldata_path = norfile_path_list + malfile_path_list
+    for froot in alldata_path:
+        try:
+            if froot in norfile_path_list:
+                cla = 0
+            else:
+                cla = 1
+            #****************************************************************
+            fe_list = featureCheckRead(froot, cla)
+            if not fe_list:
+                pdf = fakeFile_check(froot)
+                if pdf:
+                    file_class.append(cla)
+                    fe_list, fe_key = feature_extract(pdf)
+                    file_feature.append(fe_list)  # 对输入文件进行特征提取
+                    featureCheckUpdate(froot, cla, fe_list)  # 更新特征集
+            else:
+                file_class.append(cla)
+                file_feature.append(fe_list)  # 对输入文件进行特征提取
+
+        except Exception as e:
+            print('file %s feature extracting meet ERROR' % froot)
+            print(e)
+            continue
+
+    return file_feature,file_class
+bfiles = load_file(Benign_File_Root)  # 载入正常样本文件路径
+mfiles = load_file(Melicious_File_Root)  # 载入恶意文件路径
+nordict = {}
+maldict = {}
 
 def main():
+    print('start processing')
+    global  nordict,maldict
+
+    if True:
+        if os.path.exists('normdictfile.pl'):
+            nordict = pickle.load(open('normdictfile.pl','rb'))
+        if os.path.exists('maldictfile.pl'):
+            maldict = pickle.load(open('maldictfile.pl','rb'))
 
 
-    print('******************** Train Data Info *********************')
-    print('#train data: %d, dimension: %d' % (len(train_feature), len(train_feature[0])))
-    clf = random_forest_classifier(train_feature, train_y)
-    plot_importance(clf.feature_importances_, f_id)
-    # RF_Information_print(clf)
-    predict, predictp = ml_predict(clf, test_feature)
-    # print'predint : ',list(predict)
-    predect_calcu(predict, test_y)
-    # print'test_y : ',test_y
-    print('******************** flie analysis *********************')
-    print tabledemo(tena, test_y, predict)
+
+    # get file
+
+    #train_x = train_feature ,train_y = train_class, test_x = test_feature
+    feature_x,class_y= data_get(bfiles,mfiles)
+
+    print('normdict len is %d,maldict len is %d'%(len(maldict),len(nordict)))
+    pickle.dump(nordict, open('normdictfile.pl', 'wb'))
+    pickle.dump(maldict, open('maldictfile.pl', 'wb'))
+
+    # make libsvm
+    from sklearn.datasets import dump_svmlight_file
+    dump_svmlight_file(feature_x, class_y, 'pdf_feature.libsvm', zero_based=False, multilabel=False)
+
     print('DONE')
-
-
 
 if __name__ == '__main__':
     start = datetime.datetime.now()
     main()
+
     end = datetime.datetime.now()
     print "spend time = %d s" % (end - start).seconds

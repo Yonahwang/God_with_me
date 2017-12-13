@@ -21,10 +21,10 @@ Melicious_File_Root = r"/Users/fengjiaowang/Downloads/data2000/VirusS" # 恶意�
 #Melicious_File_Root = r"/home/yonah/PDFdata/malPDF" # 恶意样本数据集的文
 
 
-Benign_File_For_Trainning =10  # 用于训练的正常样本的个数
-Melicious_File_For_Trainning =10  # 用于训练的恶意样本的个数
-Benign_File_For_Test =10  # 用于测试的正常样本的个数
-Melicious_File_For_Test =10  # 用于测试的恶意样本的个数
+Benign_File_For_Trainning =50  # 用于训练的正常样本的个数
+Melicious_File_For_Trainning =50  # 用于训练的恶意样本的个数
+Benign_File_For_Test =50  # 用于测试的正常样本的个数
+Melicious_File_For_Test =50  # 用于测试的恶意样本的个数
 
 
 # Random Forest Classifier
@@ -280,7 +280,7 @@ def main():
     class_y = train_y + test_y
     from sklearn.datasets import dump_svmlight_file
     dump_svmlight_file(feature_x, class_y, 'libsvmby1.dat', zero_based=False, multilabel=False)
-
+    start = datetime.datetime.now()
     print('******************** Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)
@@ -292,7 +292,8 @@ def main():
     #print'test_y : ',test_y
     print('******************** flie analysis *********************')
     print tabledemo(tena,test_y,predict)
-
+    end = datetime.datetime.now()
+    print "spend time detction = %d s" % (end - start).seconds
     print('DONE')
 
 if __name__ == '__main__':
