@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# !/usr/bin/python
+
 # 第一步,提取特征
 def extract_feature(file_path):
     # 提取一个文件的特征,返回值为 特征名字列表 和 数值列表
