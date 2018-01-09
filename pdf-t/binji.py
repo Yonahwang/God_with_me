@@ -1,87 +1,92 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/python
 
+<<<<<<< Updated upstream
 # µÚÒ»²½,ÌáÈ¡ÌØÕ÷
+=======
+# ç¬¬ä¸€æ­¥,æå–ç‰¹å¾
+>>>>>>> Stashed changes
 def extract_feature(file_path):
-    # ÌáÈ¡Ò»¸öÎÄ¼şµÄÌØÕ÷,·µ»ØÖµÎª ÌØÕ÷Ãû×ÖÁĞ±í ºÍ ÊıÖµÁĞ±í
-    return ['size','objects'],[10,8]
+    # æå–ä¸€ä¸ªæ–‡ä»¶çš„ç‰¹å¾,è¿”å›å€¼ä¸º ç‰¹å¾åå­—åˆ—è¡¨ å’Œ æ•°å€¼åˆ—è¡¨
+    return ['size', 'objects'], [10, 8]
 
-all_file_paths = [] # ĞèÒªÌáÈ¡ÌØÕ÷µÄËùÓĞÎÄ¼şµÄÂ·¾¶
+
+all_file_paths = []  # éœ€è¦æå–ç‰¹å¾çš„æ‰€æœ‰æ–‡ä»¶çš„è·¯å¾„
 for file_path in all_file_paths:
-    feature_names,feature_nums = extract_feature(file_path)
+    feature_names, feature_nums = extract_feature(file_path)
 
-    # ½«ËùÓĞµÄÌØÕ÷×ª»»Îª "size_10" Õâ¸öĞÎÊ½
+    # å°†æ‰€æœ‰çš„ç‰¹å¾è½¬æ¢ä¸º "size_10" è¿™ä¸ªå½¢å¼
     features = []
     for i in len(feature_names):
         feature = feature_names + '_' + str(feature_nums)
         features.append(feature)
 
-    # ±ê¼ÇÊÇ¶ñÒâ»¹ÊÇÁ¼ĞÔ
-    features.append('mal_or_ben_'+str(1))
+    # æ ‡è®°æ˜¯æ¶æ„è¿˜æ˜¯è‰¯æ€§
+    features.append('mal_or_ben_' + str(1))
 
-    # ½«ÌØÕ÷±£´æµ½ÎÄ¼ş
+    # å°†ç‰¹å¾ä¿å­˜åˆ°æ–‡ä»¶
     # save(feature_path,features)
 
-# µÚ¶ş²½,¶ÁÈ¡µÚÒ»²½±£´æµÄÌØÕ÷
-features_set = set() # ËùÓĞÌØÕ÷
+# ç¬¬äºŒæ­¥,è¯»å–ç¬¬ä¸€æ­¥ä¿å­˜çš„ç‰¹å¾
+features_set = set()  # æ‰€æœ‰ç‰¹å¾
 all_fea_paths = []
 all_file_features = []
 for fea_path in all_fea_paths:
     features = []
-    
-    # ´ò¿ªÌØÕ÷ÎÄ¼ş,¶ÁÈ¡Ã¿Ò»ĞĞ
+
+    # æ‰“å¼€ç‰¹å¾æ–‡ä»¶,è¯»å–æ¯ä¸€è¡Œ
     f = open(fea_path)
     for line in f.readlines():
         str = line.split('_')
         feature_name = str[0]
         feature_num = int(str[1])
-        
-        # ¸üĞÂÌØÕ÷¼¯ºÏ
+
+        # æ›´æ–°ç‰¹å¾é›†åˆ
         features_set.update(feature_names)
-        
-        # ±£´æÌØÕ÷
-        features.append({'name':feature_name,'num':feature_num})
+
+        # ä¿å­˜ç‰¹å¾
+        features.append({'name': feature_name, 'num': feature_num})
     all_file_features.append(features)
 
-# µÚÈı²½,×ª»»ÎªÌØÕ÷¼¯
+# ç¬¬ä¸‰æ­¥,è½¬æ¢ä¸ºç‰¹å¾é›†
 
-# Éú³ÉÌØÕ÷ËùÊôµÄÏÂ±ê
+# ç”Ÿæˆç‰¹å¾æ‰€å±çš„ä¸‹æ ‡
 fea_index_dict = {}
 for feature in features_set:
     fea_index_dict[feature] = len(fea_index_dict)
 
 full_fea_list = []
 for features in all_file_features:
-    # ³õÊ¼»¯ËùÒÔÌØÕ÷Îª0
+    # åˆå§‹åŒ–æ‰€ä»¥ç‰¹å¾ä¸º0
     fea_list = [0 for i in range(0, len(fea_index_dict))]
     for feature in features:
         fea_list[fea_index_dict[feature['name']]] = feature['num']
-    
-    # ±£´æ
+
+    # ä¿å­˜
     full_fea_list.append(fea_list)
 
-# full_fea_list ¾ÍÊÇ¶şÎ¬±íÁË,È«ÊÇÊı×Ö,×ª»»Ò»ÏÂ¾Í¿ÉÒÔÊ¹ÓÃµ½ »úÆ÷Ñ§Ï°ÖĞ
-# ÏÂÃæÊ¹ÓÃpandas½øĞĞ±£´æ
+# full_fea_list å°±æ˜¯äºŒç»´è¡¨äº†,å…¨æ˜¯æ•°å­—,è½¬æ¢ä¸€ä¸‹å°±å¯ä»¥ä½¿ç”¨åˆ° æœºå™¨å­¦ä¹ ä¸­
+# ä¸‹é¢ä½¿ç”¨pandasè¿›è¡Œä¿å­˜
 import pandas as pd
+
 column_list = features_set
 df = pd.DataFrame(full_fea_list, columns=column_list)
 
-# ½«Êı¾İ±£´æ
+# å°†æ•°æ®ä¿å­˜
 df.to_csv('transfered.csv', index=False)
 
 '''
-# ÏÂ´Î¶ÁÈ¡
+# ä¸‹æ¬¡è¯»å–
 def get_features(self):
     self.__df = pd.read_csv('transfered.csv')
 
     y_data = self.__df['mal_or_ben']
     del self.__df['mal_or_ben']
-    
+
     X_data = np.array(self.__df)
 
     print('get_features() finished')
     return X_data, y_data
 '''
 
- 
- 
+

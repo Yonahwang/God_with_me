@@ -21,10 +21,10 @@ Melicious_File_Root = r"/Users/fengjiaowang/Downloads/data2000/VirusS" # 恶意�
 #Melicious_File_Root = r"/home/yonah/PDFdata/malPDF" # 恶意样本数据集的文
 
 
-Benign_File_For_Trainning =50  # 用于训练的正常样本的个数
-Melicious_File_For_Trainning =50  # 用于训练的恶意样本的个数
-Benign_File_For_Test =50  # 用于测试的正常样本的个数
-Melicious_File_For_Test =50  # 用于测试的恶意样本的个数
+Benign_File_For_Trainning =10  # 用于训练的正常样本的个数
+Melicious_File_For_Trainning =10  # 用于训练的恶意样本的个数
+Benign_File_For_Test =10  # 用于测试的正常样本的个数
+Melicious_File_For_Test =10  # 用于测试的恶意样本的个数
 
 
 # Random Forest Classifier
@@ -270,7 +270,7 @@ def main():
                                                       Melicious_File_For_Test)
     #train_x = train_feature ,train_y = train_class, test_x = test_feature
     train_x, train_y, test_x, test_y,tena,f_id= data_get(trainSampleMark, testSampleMark)
-
+    print f_id
     print('normdict len is %d,maldict len is %d'%(len(maldict),len(nordict)))
     pickle.dump(nordict, open('normdictfile.pl', 'wb'))
     pickle.dump(maldict, open('maldictfile.pl', 'wb'))
