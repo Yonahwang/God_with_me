@@ -13,9 +13,9 @@ import os.path
 import hashlib
 
 # 为文件增加后缀.apk
-def rename_add_text(filepath):
+'''def rename_add_text(filepath):
     filedir,filename = os.path.split(filepath)
-    return filename+'.apk'
+    return filename+'.apk'''
 
 # 用文件的sha1值命名
 def rename_sha1(filepath):
@@ -45,4 +45,4 @@ def change_file_name(filedir,refunc):
             os.rename(old_filepath,new_filepath)
             print("Rename success：" + old_filepath + " --> " + new_filename)
             
-change_file_name('..\\cpDrebin\\sample\\apk',rename_sha1)
+change_file_name('F:/PDFdata/small_202/pdf',rename_sha1)
