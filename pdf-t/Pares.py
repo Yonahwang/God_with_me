@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #获取文档路径，
-file_path = r"F:/PDFdata/small_202/normalpdf"
+file_path = r"F:\PDFdata\data2000\VirusShare5966"
 
 def get_time(file):
     # 创建一个与文档相关联的解释器
@@ -55,8 +55,8 @@ def data_Statistics(list):
     for i in list:
         t_num[i] = list.count(i)
 
-    t_year = list()
-    num = list()
+    t_year = []
+    num = []
     for i in t_num:
         t_year.append(i)
         num.append(t_num[i])
@@ -68,12 +68,11 @@ def data_Statistics(list):
     return t_num
 
 
-
-
 if __name__ == '__main__':
     print "test......."
     start = datetime.datetime.now()
     year = get_years(file_path)
+    f = open('test.txt','w')
     num = data_Statistics(year)
     print num
     end = datetime.datetime.now()
