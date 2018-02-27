@@ -146,3 +146,27 @@ Traceback (most recent call last):
   File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/cmd.py", line 130, in cmdloop
     line = raw_input(self.prompt)
 KeyboardInterrupt
+Traceback (most recent call last):
+  File "F:/PDFpy/God_with_me/pdf-git/peepdf/peepdf.py", line 376, in <module>
+    ret, pdf = pdfParser.parse(fileName, options.isForceMode, options.isLooseMode, options.isManualAnalysis)
+  File "F:\PDFpy\God_with_me\pdf-git\peepdf\PDFCore.py", line 6677, in parse
+    file = open(fileName, 'rb')
+IOError: [Errno 13] Permission denied: 'F:\\PDFdata\\small_202\\malpdf'
+Traceback (most recent call last):
+  File "F:/PDFpy/God_with_me/pdf-git/peepdf/peepdf.py", line 376, in <module>
+    ret, pdf = pdfParser.parse(fileName, options.isForceMode, options.isLooseMode, options.isManualAnalysis)
+  File "F:\PDFpy\God_with_me\pdf-git\peepdf\PDFCore.py", line 6677, in parse
+    file = open(fileName, 'rb')
+IOError: [Errno 13] Permission denied: 'F:\\PDFdata\\small_202\\malpdf'
+Traceback (most recent call last):
+  File "F:/PDFpy/God_with_me/pdf-git/peepdf/peepdf.py", line 376, in <module>
+    ret, pdf = pdfParser.parse(fileName, options.isForceMode, options.isLooseMode, options.isManualAnalysis)
+  File "F:\PDFpy\God_with_me\pdf-git\peepdf\PDFCore.py", line 6677, in parse
+    file = open(fileName, 'rb')
+IOError: [Errno 13] Permission denied: 'F:\\PDFdata\\small_202\\malpdf'
+Traceback (most recent call last):
+  File "F:/PDFpy/God_with_me/pdf-git/peepdf/peepdf.py", line 376, in <module>
+    ret, pdf = pdfParser.parse(fileName, options.isForceMode, options.isLooseMode, options.isManualAnalysis)
+  File "F:\PDFpy\God_with_me\pdf-git\peepdf\PDFCore.py", line 6677, in parse
+    file = open(fileName, 'rb')
+IOError: [Errno 13] Permission denied: 'F:\\PDFdata\\small_202\\malpdf'
