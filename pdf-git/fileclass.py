@@ -29,7 +29,7 @@ def get_data(f_list):
             #print i
             continue
 
-    return newfile
+    #return newfile
 
 def  get_count(path):
     count = 0

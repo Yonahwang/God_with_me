@@ -10,8 +10,8 @@ import datetime
 #file = r'/Users/fengjiaowang/Downloads/data2000/pdf/d50ce212dfeba8c2c3c389b24c62be3d82c2117f.pdf'
 #file = r"/Users/fengjiaowang/Downloads/data2000/pdf/5c2013a937d014a060d37b4963dea17dba5bd2fb.pdf"
 #file = r"/Users/fengjiaowang/Downloads/data2000/VirusS/VirusShare_0d08a15627b4bf63540e5b10bf2f5792"
-file = r"F\PDFdata\small_202\normalpdf\2016工业控制系统安全报告.pdf"
-#file = r"/home/yonah/PDFdata/pdfnormal/SQL_tutorial_pt1.pdf"
+#file = r"F\PDFdata\small_202\normalpdf\2016工业控制系统安全报告.pdf"
+file = r"/home/yonah/PDFdata/filevirus-noParse/VirusShare_0a2f0322b758ded36459b7a0508549fe"
 
 
 
