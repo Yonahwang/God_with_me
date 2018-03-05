@@ -2,6 +2,7 @@
 # !/usr/bin/python
 
 # 导入需要用到的库
+# classsify parse file
 
 import os
 from peepdf.PDFCore import PDFParser
@@ -11,7 +12,7 @@ import shutil
 
 # 全局参数配置，根据需要自己修改以下六个参数
 #file_root = r"/Users/fengjiaowang/Downloads/data2000/pdf/" # 正常样本数据集的文件路径
-file_root = r"/Users/fengjiaowang/Downloads/data2000/VirusS/"
+file_root = r"/home/yonah/PDFdata/Virus15K/"
 
 
 def get_data(f_list):
@@ -24,7 +25,7 @@ def get_data(f_list):
 
         except Exception:
             os.remove(file_root+i)
-            # shutil.move(file_root+i, file_classify+i)   #复制文件到新文件夹  ，移动用move/copyfile
+            #shutil.move(file_root+i, file_classify+i)   #复制文件到新文件夹  ，移动用move/copyfile
             print i
             continue
 
