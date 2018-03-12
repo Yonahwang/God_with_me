@@ -1,0 +1,1753 @@
+Automatically Evading Classiﬁers 
+
+	自动逃避分类
+
+	A Case Study on PDF Malware Classiﬁers 
+
+	PDF恶意软件分类器的案例研究
+
+	Weilin Xu, Yanjun Qi, and David Evans 
+
+	Wei林X U, ya N君q i, and David Evans
+
+	University of Virginia http://www.EvadeML.org 
+
+	弗吉尼亚大学http://www.EvadeML.org
+
+	Abstract—Machine learning is widely used to develop classiﬁers for security tasks. However, the robustness of these methods against motivated adversaries is uncertain. In this work, we propose a generic method to evaluate the robustness of classiﬁers under attack. The key idea is to stochastically manipulate a malicious sample to ﬁnd a variant that preserves the malicious behavior but is classiﬁed as benign by the classiﬁer. We present a general approach to search for evasive variants and report on results from experiments using our techniques against two PDF malware classiﬁers, PDFrate and Hidost. Our method is able to automatically ﬁnd evasive variants for both classiﬁers for all of the 500 malicious seeds in our study. Our results suggest a general method for evaluating classiﬁers used in security applications, and raise serious doubts about the effectiveness of classiﬁers based on superﬁcial features in the presence of adversaries. 
+
+	摘要 - 机器学习被广泛用于开发安全任务的分类器。但是，这些方法对于有动机的对手的稳健性是不确定的。在这项工作中，我们提出了一种通用的方法来评估受到攻击的分类器的鲁棒性。关键的想法是随机操纵一个恶意样本来找到一个保留恶意行为的变体，但被分类器分类为良性。我们提出了一个通用的方法来搜索回避变体，并使用我们针对两个PDF恶意软件分类器PDFrate和Hidost的技术进行实验。我们的方法能够为我们研究中的所有500个恶意种子的两个分类器自动找到规避的变体。我们的研究结果提出了评估安全应用中使用的分类器的一般方法，并且在存在对手的情况下，基于超表面特征的分类器的有效性产生了严重的怀疑。
+
+	IN TRODUC T ION 
+
+	介绍
+
+	I . 
+
+	一世 。
+
+	Machine learning models are popular in security tasks such as malware detection, network intrusion detection and spam detection. From the data scientists’ perspective, these models are effective since they achieve extremely high accuracy on test datasets. For example, Dahl et al. reported achieving 99.58% accuracy in classifying Win32 malware using an ensemble deep neural network with dynamic features [9]. ˇSrndic et al. achieved over 99.9% accuracy in a PDF malware classiﬁcation task using an SVM-RBF model with structural path features [28]. 
+
+	机器学习模型在恶意软件检测，网络入侵检测和垃圾邮件检测等安全任务中非常流行。从数据科学家的角度来看，这些模型是有效的，因为它们在测试数据集上实现了极高的准确性。例如，达尔（Dahl）等人报告使用具有动态特征的集合深度神经网络在对Win3 2恶意软件进行分类时达到99.58％的准确度[9]。 Srndic等人在使用具有结构路径特征的SVM-RBF模型的PDF恶意软件分类任务中实现了超过99.9％的准确性[28]。
+
+	However, it is important to realize that these results are for particular test datasets. Unlike when machine learning is used in other ﬁelds, security tasks involve adversaries responding to the classiﬁer. For example, attackers may try to generate new malware deliberately designed to evade existing classiﬁers. This breaks the assumption of machine learning models that the training data and the operational data share the same data distribution. As a result, it is important to be skeptical of machine learning results in security contexts that do not consider attackers’ efforts to evade the generated models. 
+
+	但是，重要的是要认识到这些结果是针对特定的测试数据集的。与在其他领域使用机器学习不同，安全任务涉及对手响应分类器。例如，攻击者可能会尝试生成新的恶意软件，故意设计来逃避现有的分类器。这打破了机器学习模型的假设：训练数据和操作数据共享相同的数据分布。因此，对安全环境中的机器学习结果持怀疑态度，而不考虑攻击者为逃避生成的模型所做的努力。
+
+	The risk of evasion attacks against machine learning models under adversarial settings has been discussed in the machine learning community, mainly focused on simple models for spam detection (e.g., 
+
+	机器学习社区已经讨论了在对抗设置下对机器学习模型的逃避攻击的风险，主要集中在用于垃圾邮件检测的简单模型（例如，
+
+	[10, 18]). However, evasion attacks against malware classiﬁcation can be much more complex in terms of the classiﬁcation algorithm and the feature extraction as well as the mutability of highly-structured samples. Permission to freely reproduce all or part of this paper for noncommercial purposes is granted provided that copies bear this notice and the full citation on the ﬁrst page. Reproduction for commercial purposes is strictly prohibited without the prior written consent of the Internet Society, the ﬁrst-named author (for reproduction of an entire paper only), and the author’s employer if the paper was prepared within the scope of employment. NDSS ’16, 21-24 February 2016, San Diego, CA, USA Copyright 2016 Internet Society, ISBN 1-891562-41-X http://dx.doi.org/10.14722/ndss.2016.23115 Consequently, though evading malware classiﬁers has been partially explored by classiﬁer authors as well as security researchers, previous studies signiﬁcantly under-estimate the attackers’ ability to manipulate samples. For example, previous studies may mistakenly assume the attackers can only insert new contents because removing existing contents would easily corrupt maliciousness [4, 20, 28]. In addition, previous works are ad hoc and limited to particular target classiﬁers or speciﬁc types of samples [20, 29]. Other than suggesting point solutions, they do not provide methods to automatically evaluate the effectiveness of a classiﬁer against adaptive adversaries. 
+
+	[10,18]）。然而， 规避攻击在分类算法，特征提取以及高度结构化样本的可变性方面可能要复杂得多。允许自由复制本文的全部或部分内容用于非商业目的，前提是复印件在第一页上注明本声明和全部引用。未经互联网协会事先书面同意，第一作者（仅复制整篇论文）以及作者的雇主（如果该文件是在就业范围内编写的），严禁以商业目的复制。 NDSS'16，2016年2月21日至24日，圣迭戈，加利福尼亚州，美国Copyright 2016 Internet Society，ISBN 1-891562-41-X http://dx.doi.org/10.14722/ndss.2016.23115因此，虽然逃避恶意软件分类已经被分类作者和安全研究人员部分地探索过，以前的研究显着低估了攻击者操纵样本的能力。例如，以前的研究可能错误地认为攻击者只能插入新的内容，因为删除现有的内容很容易破坏恶意[4,20,28]。此外，以前的作品是特设的，仅限于特定的目标分类者或特定类型的样本[20,29]。除了建议的解决方案之外，他们不提供自动评估分类器对抗自适应对手的有效性的方法。
+
+	We present a generic method to assess the robustness of a classiﬁer by simulating attackers’ efforts to evade the classiﬁer. We do not assume the adversary has any detailed knowledge of the classiﬁer or the features it uses, or can use targeted expert knowledge to manually direct the search for an evasive sample. Instead, drawing ideas from genetic programming (GP) [11, 15], we perform stochastic manipulations and then evaluate the generated variants to select promising ones. By repeating this procedure iteratively, we aim to generate evasive variants. A sophisticated attacker, of course, can do manipulations that would not be found by a stochastic search, so we cannot claim that a classiﬁer that resists such an attack is necessarily robust. On the other hand, if the automated approach ﬁnds evasive samples for a given classiﬁer, it is a clear sign that the classiﬁer is not robust against a motivated adversary. 
+
+	我们提出了一个通用的方法来评估分类器的鲁棒性，通过模拟攻击者逃避分类器的努力。我们不假定对手对分类器或其使用的特征有任何详细的了解，或者可以使用有针对性的专家知识来手动指引搜索以避开样本。相反，从遗传编程（GP）[11,15]绘制想法，我们执行随机操作，然后评估生成的变种，以选择有前途的。通过迭代重复这个过程，我们的目标是产生回避变体。一个复杂的攻击者当然可以做一些随机搜索所不能找到的操作，所以我们不能说一个抵抗这样的攻击的分类器是强大的。另一方面，如果自动化方法为给定的分类器找出回避样本，那么这是一个明显的迹象，表明分类器对于一个有动机的对手是不稳健的。
+
+	We evaluated the proposed method on two PDF malware classiﬁers, and found that it could automatically ﬁnd evasive variants for all the 500 sample seeds selected from the Contagio PDF malware archive [5]. The evasive variants exhibit the same malicious behaviors as the original samples, but are sufﬁciently different in the classiﬁer’s feature space to be classiﬁed as benign by the machine learning-based models. 
+
+	我们在两个PDF恶意软件分类器上评估了所提出的方法，发现它可以自动找到从Contagio PDF恶意软件存档中选出的500个样本种子的回避变体[5]。回避变体展示与原始样本相同的恶意行为，但是在分类器的特征空间中足够不同，被基于机器学习的模型分类为良性。
+
+	Our analysis of the discovered evasive variants reveals that both classiﬁers are vulnerable because they employ non-robust features, which can be manipulated without disrupting the desired malicious behavior. Superﬁcial features may work well on test datasets, but if the features used to classify malware are shallow artifacts of the training data rather than intrinsic properties of malicious content, it is possible to ﬁnd ways to preserve the malicious behavior while disrupting the features. Contributions. Our primary contributions involve developing and evaluating a general method for automatically ﬁnding variants that evade classiﬁers. In particular: 
+
+	我们对发现的规避变体的分析表明，这两个分类器都是易受攻击的，因为它们使用了非鲁棒的特性，可以在不中断所需的恶意行为的情况下进行操作。超级特性可能在测试数据集上运行良好，但是如果用于对恶意软件进行分类的特征是训练数据的浅层构件而不是恶意内容的固有属性，则可以在中断特征的同时保护恶意行为。贡献。我们的主要贡献包括开发和评估自动发现逃避分类变体的一般方法。尤其是：
+
+	• We propose a general method to automatically ﬁnd evasive variants for target classiﬁers. The method does not rely on any speciﬁc classiﬁcation algorithms or assume detailed knowledge of feature extraction, but only needs the classiﬁcation score feedback on generated variants and rough knowledge of the likely features used by the classiﬁer (Section II). 
+
+	•我们提出了一种通用的方法来自动找出目标分类器的回避变体。该方法不依赖于任何特定的分类算法或假设详细的特征提取知识，但只需要生成的变种的分类评分反馈和分类器使用的可能特征的粗略知识（第二节）。
+
+	• We implement a prototype system that automatically ﬁnds variants that can evade structural feature-based PDF malware classiﬁers. This involves designing operators that perform stochastic manipulations on PDF ﬁles, an oracle that determines if a generated variant preserves maliciousness, a selection mechanism that promotes promising variants during the evolutionary process, and a ﬁtness function for each target classiﬁer (Section IV). 
+
+	•我们实现了一个原型系统，该系统能够自动发现可以逃避基于结构特征的PDF恶意软件分类的变体。这涉及设计在PDF文件上执行随机操作的操作符，确定生成的变体是否保留恶意的预言器，在进化过程中促进有希望的变体的选择机制以及每个目标分类器的适合度函数（第四节）。
+
+	• We evaluate the effectiveness of our system in evading two recent PDF malware classiﬁers: PDFrate [25] and Hidost [28], a classiﬁer designed with the explicit goal of resisting evasion attempts. Our system achieves 100% success rates in ﬁnding evasive variants against both classiﬁers in an experiment with 500 malware sample seeds. An analysis of the discovered evasive variants in the feature space of each classiﬁer shows that many non-robust features employed in the classiﬁcation facilitate evasion attacks (Sections V and VI). We provide background on machine learning classiﬁers in Section II and on PDF malware in Section III. Section VIII discusses related work on evasion attacks. 
+
+	•我们评估了我们的系统的有效性，以回避两个最近的PDF恶意软件分类器：PDFrate [25]和Hidost [28]，这是一个以明确拒绝回避企图为目标的分类器。我们的系统在500个恶意软件样本种子的实验中发现了两个分类器的回避变体a，实现了100％的成功率。对每个分类器的特征空间中发现的规避变体的分析表明，分类中使用的许多非鲁棒特征有助于逃避攻击（第V和第VI部分）。我们在第二部分提供机器学习分类器的背景知识，第三部分提供有关PDF恶意软件的背景知识。第八节讨论了有关逃逸攻击的工作。
+
+	I I . OV ERV I EW 
+
+	在在。 OV ERV EW
+
+	We propose an automated method to simulate an attacker attempting to ﬁnd an evasive variant for a desired malware sample which is detected by a target classiﬁer. The attacker’s goal is to ﬁnd a malware variant that preserves the malicious behavior of the original sample, but that is misclassiﬁed as benign by the target classiﬁer. In addition to improving our understanding of how classiﬁers work in the presence of adaptive adversaries, we hope our results will lead to strategies for constructing classiﬁers that are more robust to adversaries, but in this work we focus on assessing evadability. A. Machine Learning Classiﬁers 
+
+	我们提出了一种自动的方法来模拟攻击者试图找到一个目标分类器检测到的恶意软件样本的回避变种。攻击者的目标是找到一个恶意软件变种，保留原始样本的恶意行为，但被目标分类器错误地分类为良性。除了提高我们对适应性对手的分类工作的理解之外，我们希望我们的结果将导致构建对敌手更强大的分类者的策略，但是在这项工作中，我们将重点放在评估evadability上。 A.机器学习分类器
+
+	Machine learning learns from and makes predictions on data. A machine learning-based classiﬁer attempts to ﬁnd a hypothesis function f that maps data points into different classes. For example, a malware classiﬁcation system would ﬁnd a hypothesis function f that maps a data point (a piece of malware sample) into either benign or malicious. 
+
+	机器学习从数据中学习并做出预测。基于机器学习的分类器试图找到一个将数据点映射到不同类的假设函数f。例如，恶意软件分类系统会发现一个假设函数f，将数据点（一个恶意软件样本）映射为良性或恶意。
+
+	The effort to train a machine learning system starts with feature extraction. As most machine learning algorithms cannot operate on highly-structured data, the data samples are usually represented in a specially-designed feature space. For example, a malware classiﬁer may extract the ﬁle size and the function call traces as features. Each feature is a dimension in the feature space; consequently, every sample is represented as a  vector. An extra step of feature selection may be performed to reduce the number of features when the number of features is too large for the classiﬁcation algorithm. 
+
+	训练机器学习系统的努力始于特征提取。由于大多数机器学习算法不能在高度结构化的数据上操作，所以数据样本通常在特别设计的特征空间中表示。例如，恶意软件分类器可以将文件大小和函数调用跟踪提取为特征。每个特征都是特征空间中的一个维度;因此，每个样本都被表示为一个向量。当分类算法的特征数量太大时，可以执行特征选择的额外步骤以减少特征的数量。
+
+	The most widely used machine learning algorithms in security tasks use supervised learning, in which the training dataset comes with labels identifying the class of every training sample. The hypothesis function f is trained to minimize the prediction error on the training set. This function usually results in a low error rate on the operational data under the stationarity assumption that the distribution over data points encountered in the future will be the same as the distribution over the training set. 
+
+	在安全任务中使用最广泛的机器学习算法使用监督学习，其中训练数据集带有标识每个训练样本的类别的标签。训练假设函数f以最小化训练集上的预测误差。在平稳性假设下，这个函数通常导致运行数据的低错误率，即将来遇到的数据点的分布将与训练集上的分布相同。
+
+	Machine learning has produced impressive results and is widely deployed for speciﬁc security tasks including malware classiﬁcation. Without examining the behavior of suspicious malware in a real system, malware classiﬁers often employ static properties to predict maliciousness such as the ﬁle structure, ﬁle size, metadata, grams of tokens or system calls. Although this approach often achieves high accuracy in validation tests, the classiﬁer may learn properties that are superﬁcial artifacts of the training data, rather than properties that are inherently associated with malware. This is because malware samples in the training data are likely to differ from the benign samples in many ways that are not essential to their malicious behavior. B. Threat Model 
+
+	机器学习产生了令人印象深刻的结果，并被广泛部署用于特定的安全任务，包括恶意软件分类。在不检查真实系统中可疑恶意软件的行为的情况下，恶意软件分类器通常使用静态属性来预测恶意，如文件结构，文件大小，元数据，令牌克数或系统调用。尽管这种方法在验证测试中经常达到很高的准确性，但是分类器可能学习的是属性是训练数据的超痕迹，而不是与恶意软件本身相关的属性。这是因为训练数据中的恶意软件样本可能与良性样本在许多方面有所不同，而这些样本对其恶意行为并不重要。 B.威胁模型
+
+	We assume an attacker starts with a desired malicious sample that is (correctly) classiﬁed by a target classiﬁer as malicious, and wants to create a sample with the same malicious behavior, but that is misclassiﬁed as benign. The attacker is capable of manipulating the malicious sample in many ways, and is likely to have knowledge of samples that are (correctly) classiﬁed as benign. 
+
+	我们假设攻击者从目标分类器（正确地）分类为恶意的期望的恶意样本开始，并且想要创建一个具有相同恶意行为的样本，但这种样本被错误地分类为良性样本。攻击者能够以许多方式操作恶意样本，并且可能具有（正确地）分类为良性样本的知识。
+
+	We assume the attacker has black-box access to the target classiﬁer, and can submit many variants to that classiﬁer. For each submitted variant, the attacker learns its classiﬁcation score. The classiﬁcation score is a number (typically a real number between 0 and 1) that indicates the classiﬁer’s prediction of maliciousness, where values above some threshold (say 0.5) are considered malicious and samples with lower classiﬁcation scores are considered benign. We do not assume the attacker has any internal information about the classiﬁer, only that it can use it as a black-box that outputs the classiﬁcation score for an input sample. We assume the classiﬁer operator does not adapt the classiﬁer to submitted variants (which must be the case if the attacker has ofﬂine access to the classiﬁer). C. Finding Evasive Samples 
+
+	我们假设攻击者可以对目标分类器进行黑箱访问，并且可以向该分类器提交许多变体。对于每个提交的变体，攻击者学习其分类分数。分类评分是一个数字（通常是介于0和1之间的实数），表示分类器对恶意的预测，其中高于某个阈值（比如0.5）的值被认为是恶意的，而分类评分低的样本被认为是良性的。我们不假设攻击者有任何有关分类器的内部信息，只是它可以用它作为黑盒来输出输入样本的分类得分。我们假设分类运算符不会将分类器适配到提交的变体（如果攻击者能够访问分类器，则必须是这种情况）。 C.找到回避样本
+
+	Our method uses genetic programming techniques to perform a directed search of the space of possible samples to ﬁnd ones that evade the classiﬁer while retaining the desired malicious behavior. 
+
+	我们的方法使用遗传编程技术来执行对可能样本空间的定向搜索，以找到逃避分类器的样本，同时保留所需的恶意行为。
+
+	Genetic programming (GP) is a type of evolutionary algorithm, originally developed for automatically generating computer programs tailored to a particular task [11, 15]. It is essentially a stochastic search method using computational analogs of biological mutation and crossover to generate variants, and modeling Darwinian selection using a user-deﬁned ﬁtness function. Variants with higher ﬁtness are selected for continued evolution, and the process continues over multiple generations until a variant with desired properties is found (or the search is terminated after exceeding a resource bound). Genetic programming has been shown to be effective in many 
+
+	遗传编程（GP）是一种演化算法，最初被开发用于自动生成针对特定任务的计算机程序[11,15]。它本质上是一种随机搜索方法，使用生物变异和交叉的计算模拟生成变体，并使用用户定义的适合度函数对达尔文选择进行建模。选择具有更高适应度的变体进行持续进化，并且该过程持续多代，直到找到具有期望属性的变体（或者超过资源限制后终止搜索）。遗传编程在许多方面已被证明是有效的
+
+	2 Fig. 1. Generic classiﬁer evasion method. tasks including ﬁxing legacy software bugs [17], software reverse engineering [13], and software re-engineering [23]. Method. Our procedure is illustrated in Figure 1. It starts with a seed sample that exhibits malicious behavior, and is classiﬁed as malicious by the target classiﬁer. Our method aims to ﬁnd an evasive sample that preserves the malicious behavior but is misclassiﬁed as benign by the target classiﬁer. 
+
+	2图1.通用分类器逃避方法。包括修复遗留软件错误[17]，软件逆向工程[13]和软件重新设计[23]。方法。我们的过程如图1所示。它从一个展现恶意行为的种子样本开始，被目标分类器分类为恶意行为。我们的方法旨在发现一个避开恶意行为 但被目标分类器错误分类为良性的回避样本。
+
+	First, we initialize a population of variants by performing random manipulations on the malicious seed. Then, each variant is evaluated by a target classiﬁer as well as an oracle. The target classiﬁer is a black box that outputs a number that is a measure of predicted maliciousness of an input sample. There is a prescribed threshold used to decide if it is malicious or benign. The oracle is used to determine if a given sample exhibits particular malicious behavior. In most instantiations, the oracle will involve expensive dynamic tests. 
+
+	首先，我们通过对恶意种子执行随机操作来初始化变体种群。然后，每个变体都由一个目标分类器和一个预言器进行评估。目标分类器是一个黑盒，输出的数字是输入样本的预测恶意程度的量度。有一个规定的门槛，用来决定是否恶意或良性。甲骨文用于确定给定的样本是否表现出特定的恶意行为。在大多数实例中，oracle将涉及昂贵的动态测试。
+
+	A variant that is classiﬁed as benign by the target classiﬁer, but found to be malicious by the oracle, is a successful evasive sample. If no evasive samples are found in the population, a subset of the generated variants are selected for the next generation based on a ﬁtness measure designed to reﬂect progress towards ﬁnding an evasive sample. Since it is unlikely that the transformations will re-introduce malicious behaviors into a variant, corrupted variants that have lost the malicious behavior are replaced with other variants or the original seed. 
+
+	被目标分类器分类为良性，但被发现是恶意的变体是一个成功的回避样本。如果在群体中没有发现回避样本，则根据旨在反映寻找回避样本进展情况的适合性度量，为下一代选择生成的变体的一个子集。由于转换不可能将恶意行为重新引入到变体中，因此已经丢失了恶意行为的损坏变体被替换为其他变体或原始种子。
+
+	Next, the selected variants are randomly manipulated by mutation operators to produce next generation of the population. The process continues until an evasive sample is found or a threshold number of generations is reached. 
+
+	接下来，所选择的变体被变异算子随机操纵以产生下一代种群。这个过程一直持续到找到一个回避的样本或达到了一个世代的阈值。
+
+	To improve the efﬁciency of the search, we collect traces of the mutation operations used and reuse effective traces. If a search ends up ﬁnding any evasive variants, the mutation traces on the evasive variants will be stored as successful traces. Otherwise, the mutation trace of a variant with the highest ﬁtness score is stored. These traces are then applied to other malware seeds to generate variants for their population initialization. Because of the structure of PDFs and the nature of the mutation operators, the same sequence of mutations can often be applied effectively to many initial seeds. 
+
+	为了提高搜索的效率，我们收集使用的变异操作的痕迹，并重用有效的痕迹。如果搜索结果发现任何回避变体，则回避变体上的变异轨迹将被存储为成功的痕迹。否则，存储具有最高适应性分数的变体的突变轨迹。这些跟踪然后被应用到其他恶意软件种子生成他们的人口初始化的变种。由于PDF的结构和突变算子的性质，相同的突变序列通常可以有效地应用于许多初始种子。
+
+	I I I . PDF MA LWAR E AND C LA S S I FIER S 
+
+	我我。 PDF MA LWAR E和C LA S S I FIER S
+
+	This section provides background on PDF malware and the two target PDF malware classiﬁers. A. PDF Malware 
+
+	本节提供有关PDF恶意软件和两个目标PDF恶意软件分类的背景信息。 A. PDF恶意软件
+
+	The Portable Document Format (PDF) is a popular document format designed to enable consistent content and layout in rendering and printing on different platforms. Although it was not openly standardized until 2008 [1], and there are various non-standard extensions supported by different PDF reader products, all PDF ﬁles roughly share the same basic structure depicted in Figure 2. 
+
+	可移植文档格式（PDF）是一种流行的文档格式，旨在使不同平台上的呈现和打印具有一致的内容和布局。尽管直到2008年才公开标准化[1]，并且有不同的PDF阅读器产品支持各种非标准扩展，所有的PDF文件大致上具有图2所示的相同的基本结构。
+
+	A PDF ﬁle consists of four parts: header, body, crossreference table (CRT) and trailer. The header contains the PDF magic number and a format version indicator. The body is a set of PDF objects that comprise the content of the ﬁle, while the CRT indexes the objects in body. The trailer speciﬁes how to ﬁnd the CRT and other special objects such as the root object. Thus, PDF readers typically start reading a PDF from the end of the ﬁle for efﬁciency. 
+
+	一个PDF文件由四部分组成：标题，正文，交叉引用表（CRT）和预告片。标题包含PDF幻数和格式版本指示符。正文是一组包含文件内容的PDF对象，而CRT则是索引正文中的对象。预告片指定如何找到CRT和其他特殊对象，如根对象。因此，PDF阅读器通常从文件末尾开始阅读PDF以提高效率。
+
+	The body is the most important to a PDF since it holds almost all the visible document data. It contains eight basic types of objects, namely Booleans, numbers, strings, names, arrays, dictionaries, streams and the null objects. The objects can be labeled with a pair of integer identiﬁers as indirect objects so that they can be referenced by other objects. The inter-referencing objects form a tree-like logical structure, as is shown in the right of Figure 2. This tree-like structure is ideally suited to genetic programming techniques since it is easy to alter and move sub-trees to generate new variants. 
+
+	由于它包含几乎所有可见的文档数据，所以对PDF来说，主体是最重要的。它包含八种基本类型的对象，即布尔值，数字，字符串，名称，数组，字典，流和空对象。这些对象可以用一对整数标识符作为间接对象进行标记，以便它们可以被其他对象引用。相互引用的对象形成了一个树状的逻辑结构，如图2右侧所示。这个树状结构非常适合基因编程技术，因为它很容易改变和移动子树来生成新的变体。
+
+	PDF malware is becoming increasing prevalent because PDF is a widely accepted document format and victims are more willing to open PDFs than other ﬁles. According to a recent Internet security threat report [30], PDF is in top 7 attachment types in spear-phishing emails in 2014. We expect there will be continuing opportunities for PDF malware attacks because 128 new vulnerabilities in Acrobat readers have been reported in CVE so far in 2015 (through 8 December), which is almost three times the total number in 2014 [8]. 
+
+	PDF恶意软件正变得越来越流行，因为PDF是一种被广泛接受的文档格式，受害者比其他文件更愿意打开PDF。根据最近的互联网安全威胁报告[30]，2014年，PDF在鱼叉钓鱼电子邮件中排名前7位。我们预计PDF恶意软件攻击将继续存在，因为Acrobat Reader中的128个新漏洞已经在CVE到2015年（到12月8日）为止，几乎是2014年的三倍[8]。
+
+	PDF malware typically contains exploits in JavaScript objects or other objects that take advantage of vulnerabilities of particular PDF readers (most commonly, Adobe Acrobat). 
+
+	PDF恶意软件通常包含利用特定PDF阅读器（通常为Adobe Acrobat）的漏洞的JavaScript对象或其他对象的漏洞。
+
+	3 features. The PDF metadata includes the author, title, and creation date. The object properties includes positions, counts, and lengths. 
+
+	3个功能。 PDF元数据包括作者，标题和创建日期。对象属性包括位置，计数和长度。
+
+	PDFrate was trained with a random subset of the Contagio dataset [5] with 5,000 benign and 5,000 malicious PDFs. The two parameters are respectively the number of trees (ntree = 1, 000) and the number of features in each tree (mtry = 43). The feature set is a total of 202 integer, ﬂoating point, and Boolean features, but only 135 of the features are described in the PDFrate documentation. 
+
+	使用Contagio数据集的一个随机子集对PDFrate进行训练，使用5,000个良性和5,000个恶意PDF。这两个参数分别是树的数量（ntree = 1,000）和每个树中的特征数量（mtry = 43）。该功能集共有202个整数，浮点和布尔功能，但PDFrate文档中仅描述了其中的135个功能。
+
+	What we use in this work is an open-source reimplementation of PDFrate named Mimicus [27], implemented by Nedim ˇSrndic and Pavel Laskov to mimic PDFrate for malware evasion experiments [29]. Mimicus was trained with the 135 documented PDFrate features and the same training set as PDFrate.1 Mimicus has been shown to have classiﬁcation performance nearly equivalent to PDFrate [29]. Hidost. Hidost is a support vector machine (SVM) classiﬁcation model. SVM is an optimal margin classiﬁer that tries to ﬁnd a small number of support vectors (data points) that separate all data points of two classes with a hyperplane of a high-dimensional space. With kernel tricks, it can be extended as a nonlinear classiﬁer to ﬁt more complex classiﬁcation problems. Hidost uses a radial basis function (RBF) kernel to map data points into an inﬁnite dimensional space. At testing time, the (positive or negative) distance of a data point to the hyper-plane is output as the prediction result. A positive distance is interpreted as malicious, and negative as benign. 
+
+	我们在这项工作中使用的是由Nedim Srndic和Pavel Laskov实施的模仿PDFrate进行恶意软件逃避实验的PDFrate命名为Mimicus [27]的开源重新实现[29]。 Mimicus接受了135个文件记录的PDFrate特征和与PDFrate.1相同的培训.1 Mimicus已被证明具有与PDFrate [29]几乎相同的分类性能。 Hidost。 Hidost是一个支持向量机（SVM）分类模型。支持向量机（SVM）是一种最佳的边缘分类器，它试图找到一些支持向量（数据点），用高维空间的超平面来分隔两类的所有数据点。使用内核技巧，可以将其扩展为非线性分类器来处理更复杂的分类问题。 Hidost使用径向基函数（RBF）核将数据点映射到无限维空间。在测试时间，数据点到超平面的（正或负）距离被输出作为预测结果。积极的距离被认为是恶意的，消极的是良性的。
+
+	Hidost uses the structural paths of objects as classiﬁcation features. For example, the structural path of a typical Pages object is /Root/Pages. If that object appears in the PDF ﬁle, its feature value is 1; if not, its feature value is 0. Since the number of possible structural paths of PDF objects is inﬁnite, Hidost uses 6,087 selected paths as features. The selected paths are those which appeared in at least 1,000 of the ﬁles in a pool of 658,763 benign and malicious PDFs collected from VirusTotal [31] and a Google search. The resulting model provided by the authors of Hidost was trained using the randomly-sampled 5,000 malicious and 5,000 benign ﬁles. It is reported to be robust against adversaries, where the number of false negatives on another 5,000 random malicious ﬁles only increased from 28 to 30 under what the authors claim is the “strongest conceivable mimicry attack” [28]. 
+
+	Hidost使用对象的结构路径作为分类特征。例如，一个典型的Pages对象的结构路径是/ Root / Pages。如果该对象出现在PDF文件中，则其特征值为1;如果不是，则其特征值为0.由于PDF对象的可能结构路径的数量是有限的，Hidost使用6,087个选择的路径作为特征。所选择的路径是那些从VirusTotal [31]收集的658,763份良性和恶意PDF文件以及Google搜索中至少有1000个文件中出现的路径。由Hidost的作者提供的结果模型是使用随机采样的5,000个恶意文件和5,000个良性文件进行训练的。据报道，对于对手而言，对另外5,000个随机恶意文件的假阴性数量仅从28个增加到30个，而在作者声称是“最可想象的模仿攻击”的情况下。
+
+	IV. EVAD ING PDF MA LWAR E C LA S S I FIER S 
+
+	IV。 EVAD ING PDF MA LWAR E C LA S S I FIER S
+
+	The proposed method could be applied to any security classiﬁer, although its effectiveness depends on being able to ﬁnd good genetic programming operators to search the feature space efﬁciently and an appropriate ﬁtness function to direct the search. In this section, we show how to instantiate our design to ﬁnd evasive PDF malware. A. PDF Parser and Repacker 
+
+	所提出的方法可以应用于任何安全分类器，尽管它的有效性取决于能够找到好的遗传编程算子来有效地搜索特征空间，并且有一个合适的适合度函数来指导搜索。在本节中，我们将展示如何实例化我们的设计，以找到避开PDF的恶意软件。 A. PDF解析器和重新包装
+
+	The ﬁrst step is to parse the PDF ﬁle as a tree-like representation. We will also need to regenerate a PDF ﬁle from 
+
+	第一步是将PDF文件解析为树状表示。我们还需要重新生成一个PDF文件
+
+	1 The Mimicus authors were unable to locate one malicious ﬁle with the 
+
+	1 Mimicus作者无法找到一个恶意文件
+
+	MD5 hash 35b621f1065b7c6ebebacb9a785b6d69 in Contagio. Fig. 2. The physical and logical structure of a PDF ﬁle. PDF malware may also carry other encoded payloads in stream objects which will be triggered after exploits [25]. B. Target Classiﬁers 
+
+	MD5哈希35b621f1065b7c6ebebacb9a785b6d69在Contagio。图2. PDF文件的物理和逻辑结构PDF恶意软件也可能在流对象中携带其他编码的有效载荷，这些对象将在利用后触发[25]。 B.目标分类
+
+	Several projects have built PDF malware classiﬁers using machine learning techniques. Earlier works, such as Wepawet [7] and PJScan [16], focused on the embedded malicious JavaScript in PDF malware. These tools consist of a JavaScript code extractor and a dynamic or static malicious JavaScript classiﬁer. 
+
+	有几个项目使用机器学习技术构建了PDF恶意软件分类器。早期的作品，如Wepawet [7]和PJScan [16]，关注嵌入式恶意JavaScript中的PDF恶意软件。这些工具由JavaScript代码提取器和动态或静态恶意JavaScript分类器组成。
+
+	Since not all PDF malware involves embedded JavaScript, and PDF malware authors have found many tricks for hiding JavaScript code [24], recent PDF malware classiﬁers have focused on structural features of PDF ﬁles. In this work, we target state-of-the-art structural feature-based classiﬁers. 
+
+	由于不是所有的PDF恶意软件都涉及嵌入式JavaScript，PDF恶意软件作者已经发现隐藏JavaScript代码的许多技巧[24]，最近的PDF恶意软件分类器已经集中在PDF文件的结构特征上。在这项工作中，我们针对最先进的基于结构特征的分类器。
+
+	Structural feature-based classiﬁers assume that the malicious PDFs have different patterns in their internal object structures than those found in benign PDFs. For example, the PDF Malware Slayer tool uses the object keywords as features, where each feature corresponds to the occurrences of a given keyword [19]. For our experiments, we selected PDFrate [25, 26] and Hidost [28] as the target classiﬁers. They are representatives of recent PDF malware classiﬁers, and Hidost was developed with a particular goal of being resilient to evasion attacks. Both classiﬁers achieve extremely high accuracy in malware detection on their testing datasets. The other reason for choosing these classiﬁers as our targets is the availability of the open source implementations. Although our method only requires black-box access to the classiﬁer, having access to the internal feature space is beneﬁcial for understanding our results (Section VI). PDFrate. PDFrate is a random forest classiﬁer that uses an ensemble learning model consisting of a large number of decision trees designed to reduce variance in predictions. With a random subset of training data and a random subset of features, each decision tree is trained to minimize the prediction error on its training subset. After training, the output score of PDFrate is the fraction of trees that output “malicious”, ranging from 0 to 1. The threshold value is typically 0.5, although the PDFrate authors claim that adjusting the threshold from 0.2 to 0.8 has little impact on accuracy because most samples have scores very close to either 0 or 1. 
+
+	基于结构特征的分类器假定恶意PDF在其内部对象结构中具有不同于良性PDF中的模式。例如，PDF恶意软件杀手工具使用对象关键字作为特征，其中每个特征对应于给定关键字的出现[19]。对于我们的实验，我们选择了PDFrate [25,26]和Hidost [28]作为目标分类器。他们是最近的PDF恶意软件分类器的代表，而Hidost的开发具有抵御回避攻击的特定目标。两个分类器在其测试数据集上都能够实现极高的恶意软件检测准确率。选择这些分类器作为我们的目标的另一个原因是开源实现的可用性。虽然我们的方法只需要黑箱访问分类器，但是访问内部特征空间对于理解我们的结果是有益的（第六章）。 PDFrate。 PDFrate是一个随机森林分类器，它使用由大量决策树组成的集合学习模型，这些决策树旨在减少预测方差。利用训练数据的随机子集和特征的随机子集，对每个决策树进行训练以使其训练子集上的预测误差最小化。在训练之后，PDFrate的输出分数是输出“恶意”的树的分数，范围从0到1.阈值典型地为0.5，尽管PDFrate作者声称将阈值从0.2调整到0.8对准确度的影响不大因为大多数样本的得分非常接近0或1。
+
+	Besides object keywords, PDFrate also employs the PDF metadata and several properties of objects as the classiﬁcation 
+
+	除了对象关键字之外，PDFrate还使用PDF元数据和对象的几个属性作为分类
+
+	4 the tree representation, after it has been manipulated to produce a new variant. For this, we use pdfrw [21], a python-based open source library for parsing PDF ﬁles into the tree-like structure and serializing that structure into an output PDF ﬁle. 
+
+	4树代表性，在它被操纵后产生一个新的变体。为此，我们使用pdfrw [21]，这是一个基于python的开源库，用于将PDF文件解析为树状结构，并将该结构序列化为输出PDF文件。
+
+	It is important to note that pdfrw is not a perfect PDF parser and repacker, and a number of PDF malware samples have been malformed intentionally to bypass or confuse PDF parsers used in malware detectors (while still being processed by target PDF readers due to parser quirks). This means we cannot test our method on PDF seed samples that cannot be parsed by pdfrw, or that no longer exhibit malicious behavior when they are unpacked and packed using pdfrw. 
+
+	需要注意的是，pdfrw并不是一个完美的PDF解析器和重装器，而且大量的PDF恶意软件样本已经故意错误地绕过或者混淆了恶意软件检测器中使用的PDF解析器（同时由于解析器怪癖仍然被目标PDF阅读器处理）。这意味着我们无法在PDF种子样本上测试我们的方法，这些样本不能被pdfrw解析，或者在使用pdfrw进行解包和打包时不再显示恶意行为。
+
+	To avoid losing too many samples because of PDF parsing issues, we modiﬁed pdfrw to loosen its grammar checking. This signiﬁcantly increased the success rate of repacking PDF malware samples. The modiﬁed version of pdfrw is available at https://github.com/mzweilin/pdfrw. 
+
+	为了避免由于PDF解析问题而丢失太多样本，我们修改了pdfrw以放宽其语法检查。这显着增加了重新包装PDF恶意软件样本的成功率。 pdfrw的修改版本可在https://github.com/mzweilin/pdfrw上找到。
+
+	In our modiﬁed pdfrw, we ignore several potentially corrupted, malformed, or misleading auxiliary elements. The EOF marks in PDF raw bytes are ignored; instead, the parser reads in all bytes of a ﬁle. The cross-reference tables are ignored; instead, it parses objects in the body directly without any index. Stream length indicators are ignored; instead, the parser detects the stream length with the endstream token. The unpaired keys or values are also ignored in parsing a dictionary. Ignoring these auxiliary elements signiﬁcantly decreases parsing efﬁciency, thus, is only suitable for repacking seed malware samples. All seeds are repacked with correct auxiliary elements for efﬁcient parsing later. In addition, we added support for parsing empty objects, which do exist in the malware samples. The dictionary data structure was modiﬁed to enable deep-copy in duplicating variants from seeds. B. Genetic Operators 
+
+	在我们修改的pdfrw中，我们忽略了几个可能被破坏的，畸形的或误导性的辅助元素。 PDF原始字节中的EOF标记被忽略;相反，解析器读入一个文件的所有字节。交叉引用表被忽略;相反，它直接解析身体中的对象而没有任何索引。流长度指标被忽略;相反，解析器使用endstream token来检测流的长度。解析字典时，未配对的键或值也会被忽略。忽略这些辅助元素会显着降低解析效率，因此仅适用于重新包装种子恶意软件样本。所有种子都用正确的辅助元素重新包装，以便以后进行有效的分析。另外，我们增加了对解析恶意软件样本中存在的空对象的支持。字典数据结构进行了修改，以便能够从种子复制变体。 B.遗传算子
+
+	Since both of the classiﬁers we target employ the object structure of the PDF ﬁle as features, we need to generate variants by manipulating the PDF ﬁles at that level. (If we were targeting JavaScript-based classiﬁers instead, we would instead need to generate variants by manipulating the embedded JavaScript code.) Due to the limited number of possible static features, we believe it is reasonable to assume the attackers have the knowledge of the manipulation level. 
+
+	由于我们所定义的两个分类器都使用PDF文件的对象结构作为特征，因此我们需要通过操纵该级别的PDF文件来生成变体。 （如果我们的目标是基于JavaScript的分类器，我们将需要通过操纵嵌入的JavaScript代码来生成变体）。由于可能的静态特征的数量有限，我们认为假设攻击者知道操纵水平。
+
+	We use computational analogs of mutation in biological evolution to generate evasive PDF malware variants. The mutation operator changes any object in a PDF ﬁle’s treelike structure with low probability. An object is mutated with probability given by the mutation rate, typically a number smaller than 0.5. The mutation is either a deletion (the object is removed), an insertion (another object is inserted after it), or a replacement (this object is replaced with some other object). 
+
+	我们使用生物进化中的突变计算类似物来生成回避性的PDF恶意软件变体。变异算子以低概率改变PDF文件的树状结构中的任何对象。一个对象被变异概率给定的突变率，通常是一个小于0.5的数字。突变可以是删除（删除对象），插入（插入另一个对象后）或替换（此对象替换为其他对象）。
+
+	We choose among these options with uniform random probability. In the case of an insertion or replacement, a second object is also chosen uniformly at random from a large pool of objects segmented from benign PDFs. The external genome helps to generate a more diverse population. 
+
+	我们在这些选项中选择均匀的随机概率。在插入或替换的情况下，还从由良性PDF分割的大量对象中随机地均匀地选择第二对象。外部基因组有助于产生更多样化的人群。
+
+	The other well-known operator, crossover, commonly used in genetic algorithms, is not used in this work. We found it Fig. 3. A PDF malware detection result given by the Cuckoo sandbox. The left side shows the key API execution trace, the right is a screenshot captured from the virtual machine. was possible to achieve an 100% evasion rate only using the simple mutation operations. C. Oracle 
+
+	另一个着名的算子，交叉，常用于遗传算法，没有在这项工作中使用。我们发现图3：杜鹃沙箱给出的PDF恶意软件检测结果。左侧显示关键的API执行轨迹，右侧是从虚拟机捕获的截图。只有使用简单的变异操作才有可能达到100％的逃避率。 C.甲骨文
+
+	We need an oracle to determine if a variant preserves the seed’s malicious behavior. There is no perfectly accurate malware detection technique that works universally (indeed, if such a technique existed our work would not be necessary). In this case we have one advantage that enables a highly-accurate oracle for testing variants: we do not need an oracle that can test for arbitrary malicious behavior, but instead only need to verify that a particular known malicious action is performed by the variant. 
+
+	我们需要一个oracle来确定一个变种是否保留了种子的恶意行为。没有完全准确的恶意软件检测技术可以普遍使用（事实上，如果存在这样的技术，我们的工作就不需要了）。在这种情况下，我们有一个优势，可以使用高度准确的oracle来测试变体：我们不需要一个可以测试任意恶意行为的oracle，而只需要验证一个特定的已知恶意行为是由变体执行的。
+
+	To do this, we use the Cuckoo sandbox [12]. Cuckoo runs a submitted sample in a virtual machine installed with a PDF reader and reports the behavior of the sample including network APIs called and their parameters. Figure 3 shows an example of malware detection results from Cuckoo. The malware sample opened in a virtual machine exploited a disclosed buffer overﬂow vulnerability in Acrobat Readers (CVE2007-5659). The injected shellcode downloads four additional pieces of malware from Internet and executes them. Since the execution of Cuckoo was isolated from the Internet to avoid spreading malware, the shellcode just received malformed executable ﬁles provided by INetSim, a network service simulator [14]. However, the downloading and execution behaviors detected by Cuckoo are enough to show that the shellcode has been executed. By comparing the behavioral signature of the original PDF malware and the manipulated variant, we determine if the original malicious behavior is preserved. The details on how we select and compare behavioral signatures are deferred to Section V-A. 
+
+	要做到这一点，我们使用杜鹃沙箱[12]。 Cuckoo在安装有PDF阅读器的虚拟机中运行提交的示例，并报告示例的行为，包括调用的网络API及其参数。图3显示了一个来自Cuckoo的恶意软件检测结果的例子。在虚拟机中打开的恶意软件样本利用了Acrobat Readers（CVE2007-5659）中披露的缓冲区溢出漏洞。注入的shellcode从互联网下载另外四个恶意软件并执行它们。由于Cuckoo的执行是从互联网上隔离的以避免恶意软件的传播，shellcode只是收到了由网络服务模拟器INetSim提供的畸形的可执行文件[14]。但是，Cuckoo检测到的下载和执行行为足以表明shellcode已经被执行。通过比较原始PDF恶意软件的行为签名和操纵变体，我们确定原始恶意行为是否被保留。我们如何选择和比较行为签名的细节推迟到V-A节。
+
+	We only focus on the network behaviors of malware samples in this work. Although this setting prevents our method from working on malware samples without network activity, we believe it is not a real constraint in practice since malware authors could always develop a way to verify the desired malicious behaviors. 
+
+	我们只关注恶意软件样本的网络行为。虽然此设置可防止我们的方法在没有网络活动的情况下处理恶意软件样本，但我们认为这并不是实际的限制，因为恶意软件作者总是可以开发一种方法来验证所需的恶意行为。
+
+	Cuckoo sandbox works well as an oracle, but is computationally expensive. We experimented with other possible oracles, including using Wepawet. Wepawet and similar detection techniques only detect the malicious payloads, but do not verify that the payload is actually executed in a real PDF reader. Because many of the genetic mutations will disrupt that execution, oracles that do not actually dynamically observe the 
+
+	杜鹃沙箱可以很好的工作，但是计算量很大。我们尝试了其他可能的神谕，包括使用Wepawet。 Wepawet和类似的检测技术只检测恶意有效载荷，但不能验证有效载荷是否在真正的PDF阅读器中被执行。因为许多基因突变会破坏执行，实际上没有动态观察的神谕
+
+	5 variant exhibiting the malicious behavior result in many false positives (apparently evasive variants that would not actually work as malware). Hence, it is important to use an oracle that conﬁrms the malicious behavior is preserved through actual execution. This limits the samples we can use in our experiments to ones for which we can produce the malicious behavior in our oracle’s test environment (Section V-A). D. Fitness Function 
+
+	5变种显示恶意行为导致许多误报（显然是不会实际上作为恶意软件的回避变体）。因此，使用能够确认恶意行为的oracle通过实际执行是非常重要的。这限制了我们可以在我们的实验中使用的样本，我们可以在我们的oracle的测试环境中产生恶意行为（第V-A节）。 D.健身功能
+
+	A ﬁtness function gives the ﬁtness score of each generated variant. Higher scores are better. Given 0 as a threshold value, a variant with a positive ﬁtness score is evasive: it is classiﬁed as benign and retains the malicious behavior. 
+
+	一个适合性函数给出了每个生成变体的适应度评分。分数越高越好。给定0作为一个阈值，一个具有积极的适应性分数的变种是回避的：它被分类为良性并保留了恶意行为。
+
+	In our case, the ﬁtness function captures both the output of the oracle and the predicted result of the target classiﬁer. The oracle is modeled as a binary function: oracle(x) = 1 if x exhibits the malicious signature; otherwise, oracle(x) = 0. In order to eliminate corrupted variants, we always assign the lowest possible ﬁtness score to variants with oracle(x) = 0. 
+
+	在我们的例子中，适合性函数捕获了oracle的输出和目标分类器的预测结果。 oracle被建模为一个二进制函数：如果x表示恶意签名，则oracle（x）= 1;否则，oracle（x）= 0。为了消除损坏的变体，我们总是给oracle（x）= 0的变体赋予尽可能低的适应性分数。
+
+	Based on the different scoring methods used by the target classiﬁers, the ﬁtness functions are deﬁned separately. PDFrate, as a random forest classiﬁer, outputs a conﬁdence value of maliciousness from 0 to 1, typically with a threshold of 0.5. Thus, we deﬁne its ﬁtness function as ﬁtnesspdfrate (x) = ⇢0.5  pdfrate(x) oracle(x) = 1 
+
+error 
+	LOW SCORE oracle(x) = 0 with evasive range of (0, 0.5]. 
+
+	LOW SCORE oracle（x）= 0，回避范围为（0，0.5）。
+
+	The SVM model of Hidost outputs negative (positive) distance of a benign (malicious) sample to hyperplane. Therefore, for Hidost the ﬁtness function is deﬁned as ﬁtnesshidost (x) = ⇢hidost(x) ⇥ (1) oracle(x) = 1 
+
+error 
+	LOW SCORE oracle(x) = 0 with evasive range of (0, +•). E. Selection 
+
+	LOW SCORE oracle（x）= 0，回避范围为（0，+•）。 E.选择
+
+	A selection process in GP can be as simple as always selecting variants with higher ﬁtness scores in a generation. However, it might happen that very few or even none of the variants in a generation preserve the malicious behavior during the evolutionary process. If the malicious behavior is lost from the population, it is very unlikely the GP will ever ﬁnd an evasive sample that exhibits the original malicious behavior. 
+
+	GP中的选择过程可以像选择一代中具有更高适应性分数的变体一样简单。然而，在进化过程中可能会发生一代甚至几乎没有变种保留恶意行为。如果恶意行为是从人群中流失的，那么GP就不太可能找到一个表现出原始恶意行为的回避样本。
+
+	In order to avoid degeneration in the population, we designed a replacement mechanism in addition to the na¨ıve selection process. The corrupted variants, which are judged by the oracle as non-malicious, are assigned the lowest ﬁtness score (LOW SCORE) and are replaced by either the original malicious PDF, the best variant found so far, or the best variant found in the previous generation. We choose among these options with uniform random probability when corrupted variants occur, which ensures that a ﬁxed number of variants are retained in each generation. 
+
+	为了避免人口退化，我们设计了一个替代机制，除了naïve的选择过程。由oracle判定为非恶意的变体被分配到最低的适应性评分（LOW SCORE），并被原始的恶意PDF，迄今为止发现的最好的变体或者以前发现的最好的变体代。我们在这些选项中选择了一致的随机概率，当损坏的变体发生时，这确保了固定数量的变体保留在每一代。
+
+	F. Trace Collection and Replay 
+
+	F.跟踪收集和重放
+
+	The most common way to initialize a population is duplicating the original seed and performing a random mutation operation on each copy. Considering the potentially common properties across evasive variants, we accelerate the search by reusing mutation traces that successfully led to evasive or promising variants. 
+
+	初始化群体的最常见方法是复制原始种子，并在每个副本上执行随机变异操作。考虑到各种回避变体的潜在共同特性，我们通过重复使用成功导致回避或有希望的变体的突变痕迹来加速搜索。
+
+	A mutation trace consists of a series of mutations deﬁned by 3-tuple (mutation operator, target object path, ﬁle id: source object path). For example, 
+
+	一个突变轨迹由3元组（变异操作符，目标对象路径，文件id：源对象路径）定义的一系列突变组成。例如，
+
+	(inser t, /Root/Pages/Kids/1, 1: /Root/Pages/Kids/4) inserts an external Page object from a benign ﬁle 1 to the targeted PDF ﬁle. The three possible mutation operators are deﬁned in Section IV-B. Though the target object path has the same format as the source object path, they are paths in different PDF ﬁles. The target object path refers to an object in the variant, while the source object path points to an object in an external benign ﬁle with the speciﬁed ﬁle id. 
+
+	（inser t / Root / Pages / Kids / 1,1：/ Root / Pages / Kids / 4）将一个外部的页面对象从良性文件1插入到目标PDF文件中。第IV-B部分定义了三种可能的变异算子。尽管目标对象路径与源对象路径具有相同的格式，但它们是不同PDF文件中的路径。目标对象路径是指变体中的对象，而源对象路径指向具有指定文件标识的外部良性文件中的对象。
+
+	Mutation traces are added to two pools at the end of each GP search. If a GP search successfully generates evasive variants, all of the corresponding mutation traces are added to the success trace pool. Otherwise, a mutation trace that generates the variant with the highest ﬁtness score is added to the promising trace pool. 
+
+	在每个GP搜索结束时，突变轨迹被添加到两个池中。如果GP搜索成功生成回避变体，则所有相应的变异跟踪都会添加到成功跟踪池中。否则，生成具有最高适应度分数的变体的变异轨迹被添加到有希望的轨迹池中。
+
+	The traces in the two pools are replayed in the population initialization to produce some variants for the ﬁrst generation. If the number of usable traces is smaller than the population size, additional variants are generated in the conventional way. If the number is larger than the population size, the selection process described in Section IV-E shrinks the population to the speciﬁed size. 
+
+	两个池中的踪迹在群体初始化中重播，以产生第一代的一些变体。如果可用的痕迹数量小于种群大小，则以常规方式生成其他变体。如果数量大于种群规模，则第IV-E节中所述的选择过程会将种群缩小到规定的规模。
+
+	V. EX PER IM EN T 
+
+	V. EX for IM IN T
+
+	We evaluate the effectiveness of the proposed method by conducting experiments on the two target PDF malware classiﬁers. A. Dataset and Experiment Setup 
+
+	我们通过对两个目标PDF恶意软件分类器进行实验来评估所提出方法的有效性。 A.数据集和实验设置
+
+	We started with the 10,980 PDF malware samples in the Contagio archive [5], from which we selected 500 suitable samples for evaluation. These samples are veriﬁed by the oracle as exhibiting malicious behavior, are classiﬁed by both target classiﬁers as malicious, and can be correctly repacked by pdfrw. Malicious PDF Dataset. Table I summarizes the sample selection procedure. 
+
+	我们从Contagio档案中的10,980个PDF恶意软件样本开始[5]，从中选择了500个合适的样本进行评估。这些样本被甲骨文证实为恶意行为，被目标分类者分类为恶意代码，并且可以被pdfrw正确地重新包装。恶意PDF数据集。表一总结了样本选择程序。
+
+	TABLE I. 
+
+	表一
+
+	S EED S EL EC T ION . 
+
+	电子邮件。
+
+	Description PDF Malware samples in Contagio Samples with network API calls detected by Wepawet Samples with network activities observed by Cuckoo Unique samples correctly repacked by pdfrw True positives of PDFrate True positives of Hidost Intersection of TPs in PDFrate and Hidost 
+
+	描述PDF Contago示例中的恶意软件示例Wepawet检测到网络API调用Cuckoo观察到网络活动的示例独特样本正确重新打包pdfrw PDFrate的真正正面Hidost的真正正面PDFrate和Hidost
+
+	Number 
+
+	数
+
+	10,980 9,688 1,414 1,384 1,378 502 500 
+
+	10,980 9,688 1,414 1,384 1,378 502 500
+
+	6 
+
+	6
+
+	First, we ﬁltered out the samples that don’t have any network API calls by the shell code analysis of Wepawet, leaving 9,688 out of 10,980 samples. This is not necessary for our method, but useful since we use Wepawet to obtain additional information about the samples. 
+
+	首先，我们通过Wepawet的shell代码分析过滤了没有任何网络API调用的样本，在10,980个样本中剩下9,688个样本。这对于我们的方法来说不是必要的，但是很有用，因为我们使用Wepawet来获得关于样本的附加信息。
+
+	Second, the remaining samples were tested in the Cuckoo sandbox. According to the vulnerability information of each sample provided by Wepawet, Adobe Acrobat Reader 8.1.1 is the most common target PDF reader, except for CVE-20099837 which targets Foxit readers. Thus, these samples were loaded with Acrobat Reader 8.1.1. However, not all network behaviors indicated by the static analysis on shell code can be observed in Cuckoo even though we have selected a targeted PDF reader due to the imperfect network simulation in virtual machines as well as the potential sandbox detection features in malware. As a result, only 1,414 out of the 9,688 samples were observed to have malicious network activities running on Acrobat Reader 8.1.1 inside the Cuckoo sandbox. 
+
+	其次，剩下的样品在杜鹃沙箱中进行测试。根据Wepawet提供的每个样本的漏洞信息，除了针对福昕阅读器的CVE-20099837之外，Adobe Acrobat Reader 8.1.1是最常见的目标PDF阅读器。因此，这些样本装载了Acrobat Reader 8.1.1。然而，由于虚拟机中的网络仿真不完善，以及恶意软件潜在的沙箱检测特性，我们选择了一个有针对性的PDF阅读器，并不是所有的网络行为都可以在Cuckoo中被观察到。结果，在9,688个样本中只有1414个被发现在Cuckoo沙箱内的Acrobat Reader 8.1.1上运行恶意网络活动。
+
+	Next, the 1,414 samples were repacked by the modiﬁed pdfrw with less strict grammar checking, then re-tested by Wepawet and Cuckoo. This resulted in 1,384 unique samples. Eleven of the samples were corrupted during repacking and no longer behaved maliciously in Wepawet or Cuckoo. The other 19 samples were found to be duplicates after being repacked. This is a clear sign that malware authors have attempted to evade detection through parsing obfuscation. 
+
+	接下来，1414个样本用修改后的pdfrw重新打包，语法检查不太严格，然后由Wepawet和Cuckoo重新测试。这导致了1384个独特的样本。十一个样品在重新包装过程中被破坏，不再在Wepawet或Cuckoo中恶意行为。其他十九个样本被重新包装后发现是重复的。这是一个明显的迹象，表明恶意软件作者试图通过解析混淆来逃避检测。
+
+	Since our goal is to evaluate the effectiveness of an evasion attack, we need to ﬁlter out the false negative samples of the target classiﬁers. PDFrate correctly classiﬁed 1,378 out of the 1,384 samples as malicious, while Hidost only correctly classiﬁed 502 of them. The intersection of the true positives from both classiﬁers left a suitable evaluation set of 500 unique PDF malware samples. 
+
+	由于我们的目标是评估回避攻击的有效性，因此我们需要筛选目标分类器的假阴性样本。 PDFrate正确地对1384个样本中的1378个进行了分类，而Hidost只对其中的502个进行了正确的分类。来自两个分类器的真正好处的交集留下了500个独特的PDF恶意软件样本的合适评估集。
+
+	According to results from Wepawet, these 500 malware samples exploit two different vulnerabilities in Acrobat Readers: 333 of them exploit multiple buffer overﬂows reported in CVE-2007-5659, the other 167 exploit a stack-based buffer overﬂow reported by CVE-2009-0927. Both vulnerabilities can be exploited to execute arbitrary code. In summary, the payloads in the 500 samples access 255 different hosts to download additional malware from the Internet. 
+
+	根据Wepawet的结果，这500个恶意软件样本利用Acrobat Readers中的两个不同漏洞：其中333个使用CVE-2007-5659中报告的多个缓冲区溢出漏洞，另外167个使用CVE-2009-0927报告的基于堆栈的缓冲区溢出漏洞。这两个漏洞都可以被利用来执行任意代码。总之，500个样本中的有效载荷访问255个不同的主机，从互联网上下载额外的恶意软件。
+
+	The selection process leaves us with 500 samples from the original 10,980 malware samples in the Contagio archive. Although this selects less than 5% of the original samples, it does not have implications for the success rate of a malware author attempting to ﬁnd an evasive sample so long as the selection criteria have no biases which would impact our results. Many of the down-selects are due to artifacts of the experiment, not reﬂective of what an actual malware producer would observe. For example, the most signiﬁcant reduction is because of the particular dynamic environment we selected to verify the malicious behaviors. Malware authors can easily design an oracle that veriﬁes the presence of the particular malicious behaviors they intend to inﬂict. Reliable Malware Signatures. Since the dynamic behavior of malware samples may vary across executions, we need to select a reliable malware signature from a group of candidates. Even though the malware is executing in the same virtual environment, its behavior may be effected by the timing of events, service failures, and other sources of non-determinism. 
+
+	在选择过程中，我们从Contagio档案库中最初的10,980个恶意软件样本中抽取了500个样本。尽管这个选择的样本不到原始样本的5％，但是只要选择标准没有影响我们的结果的偏见，它就不会影响到试图找出回避样本的恶意软件作者的成功率。许多倒下的选择是由于实验的人为因素，而不是反映真正的恶意软件生产者会观察到什么。例如，最显着的减少是因为我们选择了特定的动态环境来验证恶意行为。恶意软件作者可以很容易地设计一个预测他们打算发生的特定恶意行为的预言者。可靠的恶意软件签名。由于恶意软件样本的动态行为可能因执行不同而不同，因此我们需要从一组候选人中选择可靠的恶意软件签名。即使恶意软件在同一虚拟环境中执行，其行为也可能受到事件时间，服务故障以及其他非确定性来源的影响。
+
+	Focusing on the network behaviors of malware samples, we may extract various network behaviors reported by Cuckoo as signatures, such as DNS queries, HTTP URL requests, and network destinations. Cuckoo generates these reports from the network-related API execution traces and the captured network trafﬁc. Table II compares the effectiveness of six different types of signatures extracted from Cuckoo reports. 
+
+	着眼于恶意软件样本的网络行为，我们可以提取由Cuckoo报告的各种网络行为作为签名，如DNS查询，HTTP URL请求和网络目的地。杜鹃从网络相关的API执行轨迹和捕获的网络流量生成这些报告。表二比较了从杜鹃报告中提取的六种不同类型签名的有效性。
+
+	We tested the 500 malware seeds in Cuckoo virtual machines, running each seed ten times. Our goal is to determine which type of signature will have the best precision in capturing observed malicious behavior, while being consistent across multiple executions of the same sample. 
+
+	我们在杜鹃虚拟机上测试了500个恶意软件种子，每个种子运行十次。我们的目标是确定哪种类型的签名在捕获观察到的恶意行为方面具有最佳的精确度，同时在同一个样本的多次执行中保持一致。
+
+	If a signature extracts any relevant behavior for a seed in any of the ten tests, we count the signature effective on the seed. Obviously, an ideal signature would be effective on all 500 seeds. We also measure the consistency of a signature over the 10 repeated tests. We designate the extracted behavior observed most frequently over the ten tests as the reference signature for a seed. The consistency on a seed is calculated 
+
+	如果一个签名在十个测试的任何一个中提取了一个种子的任何相关行为，我们就把这个签名计算在这个种子上。显然，一个理想的签名将是有效的所有500个种子。我们还测量了10次重复测试中签名的一致性。我们将在十个测试中观察到的提取行为指定为种子的参考签名。计算种子的一致性
+
+	(that is, the fraction of times the reference signature occurred across the 10 trials). 
+
+	（也就是参考签名在10次试验中出现的次数）。
+
+	The average and the minimum consistency of each type of signature over the ten executions for each of the 500 seeds are listed in Table II. In general, the signatures extracted from API traces are more consistent than those extracted from network trafﬁc. We choose the union of the HTTP URL requests and host queries extracted from API traces as the signature for our experiments. By combining those two behavioral signatures, we obtain a signature that is effective on all 500 malware seeds and has the highest average and minimum consistency. as mode 
+
+	表II列出了每种种子在10次处理中每种签名的平均和最小一致性。一般来说，从API跟踪中提取的签名比从网络流量中提取的签名更加一致。我们选择从URL跟踪中提取的HTTP URL请求和主机查询的联合作为我们实验的签名。通过结合这两个行为签名，我们获得了对所有500个恶意软件种子有效的签名，并且具有最高的平均值和最小值一致性。作为模式
+
+	10 Benign PDF Dataset. We collected a set of 179 benign PDF documents using a Google search with ﬁletype:pdf and no keywords. All ﬁles were conﬁrmed to be benign by both VirusTotal [31] and Wepawet [7]. We only included ﬁles smaller than 1 MB to avoid introducing unnecessary computation costs manipulating extremely large PDF ﬁles. We picked the 3 benign samples with the lowest scores (that is, most benign) to the target classiﬁers as the source of external objects in the experiment. Our results show that just a few benign samples is sufﬁcient for generating successful evasion attacks. GP Parameters. Several GP parameters are arbitrarily chosen without any parameter ﬁne-tuning other than one obvious constraint: we want the experiment to ﬁnish in a reasonable time. The population size is 48 and the maximum generation is 20. The mutation rate is 0.1. The ﬁtness stop threshold is 0.0, which indicates that an evasive variant has been found. Target Classiﬁers. Since we don’t want to abuse the online deployed malware classiﬁcation systems by submitting too many automatically generated malware variants, we always prefer locally executable code. We used the Mimicus reimplementation of PDFrate and the Hidost classiﬁer, conﬁgured and trained as described in Section III-B. Machine. We used one typical desktop PC in the experiment (Intel Core i7-2600 CPU @ 3.40GHz and 32GB of physical 
+
+	10良性PDF数据集。我们使用Google搜索功能收集了一组179个良性的PDF文档，其中包含文件类型：pdf和关键字。 VirusTotal [31]和Wepawet [7]都证明所有的文件都是良性的。我们只包含小于1MB的文件，以避免引入不必要的计算成本来操纵极大的PDF文件。我们从目标分类器中选出3个最低分数（即最良性）的良性样本作为实验外部对象的来源。我们的研究结果表明，只有少数良性样本足以产生成功的逃避攻击。 GP参数。几个GP参数是任意选择的，除了一个明显的约束条件外，没有任何参数调整：我们希望实验在合理的时间内完成。人口规模为48人，最大代数为20人，突变率为0.1。适合性停止阈值为0.0，这表明已经找到一个回避变体。目标分类器。由于我们不想通过提交过多的自动生成的恶意软件变体来滥用在线部署的恶意软件分类系统，我们总是偏好本地可执行代码。我们使用了PDFrate和Hidost分类器的Mimicus重新实现，按照第III-B节的描述进行配置和训练。机。我们在实验中使用了一台典型的台式机（Intel Core i7-2600 CPU @ 3.40GHz和32GB物理机
+
+	7 
+
+	7
+
+	TABLE II. 
+
+	表二。
+
+	COM PAR I SON O F N ETWORK -BA SED MA LWAR E S IGNATUR E S . 
+
+	COM PAR I SON或F EN ETWORK -BA SED MA LWAR AND S IGNATUR AND S.
+
+	Source API traces API traces Network trafﬁc API traces Network trafﬁc Network trafﬁc 
+
+	源API跟踪API跟踪网络流量API跟踪网络流量网络流量
+
+	Description Combination of HTTP URL requests and host queries Hosts queried through getaddrinfo() Transport layer destination IP addresses URLs requested through raw socket, URLDownloadToFileW(), InternetOpenUrlA() DNS queries HTTP URL requests 
+
+	说明HTTP URL请求和主机查询的组合通过getaddrinfo（）查询的主机传输层目标IP地址通过原始套接字，URLDownloadToFileW（），InternetOpenUrlA（）请求的URL DNS请求HTTP URL请求
+
+	Example [http://stor tfordaircadets.org.uk/ﬂash/exe.php?x=pdf, stor tfordaircadets.org.uk] [stor tfordaircadets.org.uk] (udp: [192.168.57.2:53], tcp: [192.168.57.2:80]) [http://stor tfordaircadets.org.uk/ﬂash/exe.php?x=pdf] [stor tfordaircadets.org.uk] [http://stor tfordaircadets.org.uk/ﬂash/exe.php?x=pdf] 
+
+	示例[http：// big tfordaircadets.org.uk/flashh/exe.php？X = pdf，big tfordaircadets.org.uk] [great tfordaircadets.org.uk]（utp：[192.168.57.2:53]，tcp ：[192.168.57.2:80]）[http：// great tfordaircadets.org.uk/flash/exe.php？X = pdf] [great tfordaircadets.org.uk] [great tfordaircadets.org.uk / FL灰/ exe.php X = PDF]
+
+	Effective 500 497 476 473 462 460 
+
+	有效500 497 476 473 462 460
+
+	Consistency 
+
+	一致性
+
+	Average Minimum 
+
+	平均最低
+
+	0.95 
+
+	0.95
+
+	0.50 0.95 0.85 0.95 0.93 0.93 0.50 0.10 0.50 0.10 0.10 memory running 64-bit Ubuntu 14.04 Server). The Cuckoo sandbox consists of 16 virtual machine instances running Windows XP SP3 32 bit and Adobe Acrobat Reader 8.1.1. The resources required to ﬁnd evasive samples using our approach are readily available. 
+
+	0.50 0.95 0.85 0.95 0.93 0.93 0.50 0.10 0.50 0.10 0.10内存运行64位Ubuntu 14.04服务器）。 Cuckoo沙箱由16个运行Windows XP SP3 32位和Adobe Acrobat Reader 8.1.1的虚拟机实例组成。使用我们的方法寻找回避样本所需的资源是现成的。
+
+	V I . R E SU LT S 
+
+	V I. R AND SU LT S
+
+	The GP-based method achieves surprisingly good results in evading the two target classiﬁers. For both of the classiﬁers, it is able to generate a variant that preserves the malicious behavior but is classiﬁed as benign for all 500 seeds in our test set. Our code and data are available under an open source license from http://www.evadeML.org A. PDFrate 
+
+	基于GP的方法在回避两个目标分类器方面取得了惊人的好结果。对于这两个分类器，它能够生成一个保留恶意行为的变体，但是在我们的测试集中被分类为对所有500个种子都是良性的。我们的代码和数据可以从http://www.evadeML.org获得开源许可。答：PDFrate
+
+	After approximately one week of execution, the algorithm found 72 effective mutation traces that generated 16,985 total evasive variants for the 500 malware seeds (34.0 evasive variants per seed in average), achieving 100% evasion rate in attacking PDFrate. Trace Analysis. All the mutation traces that generated evasive variants were re-executed on all of the 500 seeds afterwards to investigate the efﬁcacy of each trace. Efﬁcacy here measures for how many of the malware seeds applying the given trace produces an evasive variant. 
+
+	在执行大约一周后，该算法发现了72个有效的突变痕迹，为500个恶意软件种子产生了总共16,985个回避变体（平均每个种子34.0个回避变体），在攻击PDFrate时实现了100％的回避率。痕量分析。所有产生回避变异的突变痕迹在之后的500个种子中重新执行，以调查每个痕迹的有效性。这里的效率衡量了应用这个踪迹的恶意软件种子数量是多少。
+
+	The length of each mutation trace and its efﬁcacy are illustrated in Figure 4. The traces are sorted by trace ID, which reﬂects the order in which traces are found. From the ﬁgure we observe that the method generally ﬁnds longer mutation traces as the evolution proceeds. Part of the reason for this is the initial population for later seeds is generated using the collected traces. If those initial variants are not evasive, subsequent mutations will be added to the original traces. 
+
+	每个突变轨迹的长度及其效率如图4所示。轨迹按轨迹ID排序，这反映了轨迹的发现顺序。从图中我们可以看到，随着进化的进行，该方法一般会找到更长的变异轨迹。部分原因是后来种子的初始种群是使用收集的痕迹生成的。如果这些最初的变种不是回避，随后的突变将被添加到原始痕迹。
+
+	The efﬁcacy of each seed is not strongly correlated with its length. One mutation trace consisting of a single operation that inserts a page object generated evasive variants for 155 malware seeds. There was also mutation trace with 189 operations that was effective for only two seeds. 
+
+	每个种子的有效性与其长度没有强相关性。一个由插入页面对象的单个操作组成的变化轨迹为155个恶意软件种子生成了回避变体。还有189个操作的突变痕迹，只有两个种子有效。
+
+	The accumulated evasions sorted by the length of mutation traces are given by Figure 5 (for comparison, the ﬁgure show results for Hidost as well, which we discuss later). The difﬁculty of generating variants to evade PDFrate varies substantially over the seeds. It only took 15 short mutation traces (none longer than 45 operations) to generate evasive variants for 400 of the 500 seeds. Finding evasive variants for the other 100 seeds took 57 long mutation traces with lengths ranging from 48 to 354. Fig. 4. The length and efﬁcacy of mutation traces for evading PDFrate. Fig. 5. Accumulated evasions against PDFrate and Hidost, sorted by trace length. 
+
+	图5给出了按突变长度排序的累积逃逸（为了比较，图中还显示了Hidost的结果，我们将在后面讨论）。生成变种以逃避PDFrate的困难在种子上大不相同。它只需要15个短的突变痕迹（不超过45个操作）为500个种子中的400个产生回避变体。为其他100个种子寻找回避变种需要57个长度范围从48到354的突变痕迹。图4.逃避PDFrate的突变痕迹的长度和效率。图5.对PDFrate和Hidost的累计回避，按照走线长度排序。
+
+	In order to understand why it takes much longer traces to generate evasive variants for those 100 seeds, we examined the original classiﬁcation scores of each seed. Figure 6 groups the seeds by the minimum trace length required for generating evasive variants. The left side shows the original classiﬁcation score distribution in PDFrate. We found that the original seeds with lower classiﬁcation scores (<0.95) are mostly evadable by short traces. Thus, we believe some seeds require more mutations to evade because they are originally more clearly malicious to the classiﬁer. (This is more obvious in Hidost as 
+
+	为了解为什么需要更长的时间来为这100个种子产生回避变种，我们检查了每个种子的原始分类分数。图6通过生成规避变体所需的最小迹线长度对种子进行分组。左侧显示了PDFrate中的原始分类分数分布。我们发现，较低的分类评分（<0.95）的原始种子大部分是通过短的痕迹来评估的。因此，我们相信一些种子需要更多的突变来逃避，因为它们本来对分类器更加明显地是恶意的。 （这在Hidost中更为明显
+
+	8 we discuss later.) Feature Analysis. To understand the evasion attacks, we examine the impact of the changes on the feature space used by PDFrate. 
+
+	我们稍后再讨论）。特征分析。为了理解躲避攻击，我们研究了这些变化对PDFrate使用的特征空间的影响。
+
+	We ﬁrst look at the two simplest mutation traces in length of 1 that are effective for 162 seeds: 
+
+	我们首先看一下长度为1的两个最简单的突变痕迹，它们对于162个种子是有效的：
+
+	(inser t, /Root/Pages/Kids, 
+
+	（inser t，/ Root / Pages / Kids，
+
+	3:/Root/Pages/Kids/4/Kids/5/ ) 
+
+	3：/ Root / Pages / Kids / 4 / Kids / 5 /）
+
+	(replace, /Root/Type, 3:/Root/Pages/Kids/1/Kids/3) Even though they are different operations, the common effect of the two mutations is that they both introduce new Page objects from external benign PDFs, resulting in signiﬁcant changes in the feature space of PDFrate. 
+
+	（替换，/ Root / Type，3：/ Root / Pages / Kids / 1 / Kids / 3）即使它们是不同的操作，这两个突变的共同作用是它们都从外部良性PDF引入新的Page对象，导致PDFrate的特征空间发生显着的变化。
+
+	Table III lists one example of feature changes by simply inserting several Page objects. The classiﬁcation score of the original seed is 0.998, approaching the maximum malicious score of 1.0. After inserting the new Page objects, the classiﬁcation score decreases to 0.43, which is below the normal malware threshold of 0.5. The simple insert resulted in a large number of changes in the feature space. The counters of some objects like pages, fonts and streams as well as the ﬁle size directly increase due to the newly introduced objects. The object length statistics are decreased or increased due to the change of the object population. Some other features on object positions are also changed due to the relocation of objects at the raw byte level. All feature values are in the raw formats because feature normalization is not required with random forests. Even though the feature changes are so signiﬁcant that PDFrate classiﬁes the new variant as benign, the malicious behavior of the original seed does not change at all. The change just added some pages to the PDF ﬁle. 
+
+	表III列出了通过简单插入几个页面对象的功能更改的一个例子。原始种子的分类得分为0.998，接近最大恶意得分1.0。插入新的Page对象后，分类分数降低到0.43，低于正常恶意软件阈值0.5。简单的插入导致了特征空间的大量变化。由于新引入的对象，一些对象（如页面，字体和流）的计数器以及文件大小会直接增加。对象长度统计量由于对象种群的变化而减少或增加。对象位置上的其他一些特征也由于在原始字节级重新定位对象而改变。所有特征值都是原始格式，因为随机森林不需要特征标准化。即使特征的变化如此重要以至于PDFrate将新变种分类为良性，原始种子的恶意行为根本不会改变。更改只是将一些页面添加到PDF文件中。
+
+	One simple manipulation introduces many feature changes, but the impact of changing each feature is not equivalent due to the varying importance of features in the classiﬁcation. Though random forest is a complex non-linear model that is difﬁcult to interpret, we estimate the impact of altering each feature independently. Intuitively, changing a high impact feature should signiﬁcantly affect the classiﬁcation scores. 
+
+	一个简单的操作引入了许多特征变化，但由于特征在分类中的重要性不同，所以改变每个特征的影响并不相同。尽管随机森林是一个难以解释的复杂的非线性模型，我们估计独立地改变每个特征的影响。直观地说，改变高影响力特征应该对分类评分产生重大影响。
+
+	For an original malware sample, if the feature is changed to a different value in evasive variants, the classiﬁcation score should decrease (indicating it appears more like benign samples to the classiﬁer). On the other hand, for an evasive variant, if the feature value is reset to the original value, the classiﬁcation score should increase (appears more like malicious samples to the classiﬁer). Therefore, we model the impacts with two factors. The decrease of the classiﬁcation score of a malware seed when a feature is changed to the evasive value is reported as Dscore1. The increase of the classiﬁcation score of an evasive variant when the feature is reset to the original value is reported as Dscore2. The impact is the sum of the two scores. Table III lists the impact ranking of the affected features, which roughly matches with the feature importance ranking in PDFrate [26]. 
+
+	对于原始恶意软件样本，如果特征在回避变体中更改为不同的值，则分类分数应该降低（表明它更像是分类器的良性样本）。另一方面，对于一个规避的变体，如果特征值被重置为原始值，那么分类分数应该增加（对于分类器而言更像是恶意样本）。因此，我们用两个因素对影响进行建模。当特征被改变为回避值时，恶意软件种子的分类得分的降低被报告为Dscore1。当特征重置为原始值时，回避变体的分类得分的增加被报告为Dscore2。影响是两个分数的总和。表3列出了受影响的特征的影响等级，其与PDFrate [26]中的特征重要性等级大致相符。
+
+	The most critical feature change for this example is count font. The original malware sample does not have any font objects as fonts are not needed for the exploit. The classiﬁer learns that this feature is important because most 
+
+	这个例子中最重要的功能变化是count字体。原始恶意软件样本没有任何字体对象，因为漏洞不需要字体。分类人员知道这个功能是重要的，因为大多数
+
+	TABLE III. 
+
+	表三。
+
+	IM PAC T O F PDFRAT E F EATUR E S . 
+
+	IM PAC T O F PDFRAT E F EATUR E S
+
+	Feature 
+
+	特征
+
+	Original Evasive Dscore1 Dscore2 Impact count font 
+
+	原Evasive Dscore1 Dscore2影响计数字体
+
+	0.0 
+
+	0.0
+
+	70.0 count obj 
+
+	计数obj
+
+	11.0 
+
+	11.0
+
+	230.0 count endobj 
+
+	计数endobj
+
+	11.0 
+
+	11.0
+
+	230.0 count box other 
+
+	其他230.0个箱子
+
+	3.0 
+
+	3.0
+
+	140.0 count endstream 
+
+	终端计数140.0
+
+	4.0 
+
+	4.0
+
+	74.0 pos box max 
+
+	最多74.0个邮箱
+
+	0.0 
+
+	0.0
+
+	0.8 count stream 
+
+	0.8计数流
+
+	4.0 
+
+	4.0
+
+	74.0 pos box avg 
+
+	74.0邮箱平均
+
+	0.0 
+
+	0.0
+
+	0.5 pos eof avg 
+
+	平均值为0.5
+
+	1.0 
+
+	1.0
+
+	1.0 pos eof min 
+
+	1.0最后一分钟
+
+	1.0 
+
+	1.0
+
+	1.0 pos page max 
+
+	1.0 pos页面最大
+
+	0.0 
+
+	0.0
+
+	0.8 pos eof max 
+
+	0.8最大值
+
+	1.0 
+
+	1.0
+
+	1.0 pos page avg 
+
+	1.0 pos页面平均
+
+	0.0 
+
+	0.0
+
+	0.5 size 
+
+	0.5尺寸
+
+	36,028.0 503,739.0 ratio size page 36,028.0 
+
+	36,028.0 503,739.0比率大小页36,028.0
+
+	7,407.9 ratio size obj 
+
+	比例尺码为7,407.9
+
+	3,275.3 
+
+	3,275.3
+
+	2,190.2 ratio size stream 9,007.0 
+
+	2,190.2比例尺码流9,007.0
+
+	6,807.3 len obj avg 
+
+	6,807.3 len obj avg
+
+	3,234.9 
+
+	3,234.9
+
+	2,157.2 count page 
+
+	计数页数2,157.2
+
+	1.0 
+
+	1.0
+
+	68.0 len obj max 
+
+	68.0 len obj max
+
+	27,455.0 34,314.0 len obj min 
+
+	27,455.0 34,314.0 len obj分钟
+
+	44.0 
+
+	44.0
+
+	49.0 len stream avg 
+
+	平均只有49.0
+
+	8,700.3 
+
+	8,700.3
+
+	6,390.2 len stream max 27,392.0 34,246.0 pos page min 
+
+	6,390.2 len流最大27,392.0 34,246.0 pos页最小
+
+	0.0 
+
+	0.0
+
+	0.0 pos box min 
+
+	0.0邮箱分钟
+
+	0.0 
+
+	0.0
+
+	0.0 0.114 0.067 0.056 0.038 0.011 0.052 0.021 0.022 0.000 
+
+	0.0 0.114 0.067 0.056 0.038 0.011 0.052 0.021 0.022 0.000
+
+	-0.002 0.003 0.002 0.002 
+
+	-0.002 0.003 0.002 0.002
+
+	-0.001 0.001 0.000 0.002 0.001 
+
+	-0.001 0.001 0.000 0.002 0.001
+
+	-0.004 0.000 0.000 0.000 0.000 -0.002 -0.003 
+
+	-0.004 0.000 0.000 0.000 0.000 -0.002 -0.003
+
+	0.392 
+
+	0.392
+
+	0.506 
+
+	0.506
+
+	0.110 
+
+	0.110
+
+	0.177 
+
+	0.177
+
+	0.069 
+
+	0.069
+
+	0.125 
+
+	0.125
+
+	0.043 
+
+	0.043
+
+	0.081 
+
+	0.081
+
+	0.054 
+
+	0.054
+
+	0.065 
+
+	0.065
+
+	0.013 
+
+	0.013
+
+	0.065 
+
+	0.065
+
+	0.041 
+
+	0.041
+
+	0.062 
+
+	0.062
+
+	0.022 
+
+	0.022
+
+	0.044 
+
+	0.044
+
+	0.032 
+
+	0.032
+
+	0.032 
+
+	0.032
+
+	0.029 
+
+	0.029
+
+	0.027 
+
+	0.027
+
+	0.018 
+
+	0.018
+
+	0.021 
+
+	0.021
+
+	0.016 
+
+	0.016
+
+	0.018 
+
+	0.018
+
+	0.010 
+
+	0.010
+
+	0.012 
+
+	0.012
+
+	0.005 
+
+	0.005
+
+	0.004 
+
+	0.004
+
+	0.002 
+
+	0.002
+
+	0.003 
+
+	0.003
+
+	0.002 
+
+	0.002
+
+	0.002 
+
+	0.002
+
+	0.000 
+
+	0.000
+
+	0.002 
+
+	0.002
+
+	0.000 
+
+	0.000
+
+	0.001 
+
+	0.001
+
+	0.004 
+
+	0.004
+
+	0.000 
+
+	0.000
+
+	0.000 
+
+	0.000
+
+	0.000 
+
+	0.000
+
+	0.000 
+
+	0.000
+
+	0.000 
+
+	0.000
+
+	0.000 
+
+	0.000
+
+	0.000 
+
+	0.000
+
+	0.000 
+
+	0.000
+
+	0.000 0.000 -0.002 0.000 -0.003 The difference in the feature space of PDFrate for a selected seed sample (with score 0.998) and corresponding evasive variant (with score 0.43). Original is the feature value of the original seed malware sample; Evasive is the feature value of the evasive variant. Features with the same value for both samples are not included. Dscore1 is the original score subtracting the score after that feature is changed to Evasive value; Dscore2 is the evasive score subtracted by the score after that feature is reset to the Original value. Impact is Dscore1 + Dscore2. of the malware samples in the training set do not contain any font objects as the malware authors are too lazy to insert any text, but it is unlikely that any benign PDF ﬁle has no font objects. However, this is an artifact of the malware samples in the training set, not an inherent property for malicious PDFs. It is trivial to add font objects to an existing PDF malware sample to alter the value of this feature. 
+
+	0.000 0.000 -0.002 0.000 -0.003选择的种子样本（得分为0.998）和相应的回避变体（得分为0.43）的PDFrate特征空间的差异。原始是原始种子恶意软件样本的特征值;回避是回避变体的特征价值。不包括两个样品具有相同值的特征。 Dscore1是将特征改变为Evasive值后的原始分数减去分数; Dscore2是在特征重置为原始值之后减去分数的回避分数。影响是Dscore1 + Dscore2。的恶意软件样本不包含任何字体对象，因为恶意软件作者懒得插入任何文本，但是任何良性的PDF文件都不可能没有字体对象。但是，这是训练集中的恶意软件样本的人造物，而不是恶意PDF的固有属性。将字体对象添加到现有的PDF恶意软件样本以改变此功能的值是微不足道的。
+
+	There are longer traces which contain at most 354 mutations and inﬂuence more features in PDFrate. Table IV lists the features that were most frequently increased and decreased across all 16,985 evasive variants found. (The full list of all 68 mutable features of PDFrate found in evasion attacks is found in Appendix A.) The count is how many times the value of the feature is different for the evasive variant found compared to the original seed. High counts imply these features are not robust and should not be used in malware classiﬁcation because they are easy to change without corrupting the malicious properties for many malware seeds. 
+
+	有更长的痕迹最多包含354个突变，并影响PDFrate中的更多特征。表4列出了发现的所有16,985个回避变体中经常增加和减少的特征。 （在附录A中找到了在逃避攻击中找到的PDFrate的所有68个可变特征的完整列表）。计数是发现的特征值与原始种子相比的多少倍。高计数意味着这些功能不健壮，不应该用于恶意软件分类，因为它们很容易更改，而不会破坏许多恶意软件种子的恶意属性。
+
+	Most non-robust features are unsurprising, because a PDF malware author can always change the visible contents (such as pages, text, images and metadata) in PDF malware samples without corrupting the malicious payloads. The only surprising feature is count javascript. Since PDF malware heavily relies on JavaScript to carry exploits and shell code, it seems surprising that it is possible to decrease count javascript without disrupting the malicious behavior. However, the count javascript feature is not an accurate count of the number of embedded JavaScript code pieces in a PDF. It just extracts the number of JavaScript keywords, but these keywords are optional in script execution. The targeted PDF reader will execute the JavaScript even without the /Javascript keyword. 
+
+	由于PDF恶意软件作者可以随时更改PDF恶意软件样本中的可见内容（如页面，文本，图像和元数据），而不会破坏恶意负载，因此大多数非强健功能并不令人惊讶。唯一令人惊讶的功能是计数JavaScript。由于PDF恶意软件严重依赖于JavaScript来携带漏洞利用代码和shell代码，因此可以在不中断恶意行为的情况下减少javascript数量，这似乎令人惊讶。但是，计数javascript功能并不是PDF中嵌入的JavaScript代码段的数量的准确计数。它只是提取JavaScript关键字的数量，但这些关键字在脚本执行中是可选的。即使没有/ Javascript关键字，目标PDF阅读器也会执行JavaScript。
+
+	9 
+
+	9
+
+	Fig. 6. The distribution of the original classiﬁcation score of seeds. 
+
+	图6.种子原始分类评分的分布。
+
+	TABLE IV. 
+
+	表IV。
+
+	MO ST A LT ER ED F EATUR E S EVAD ING PDFRAT E 
+
+	MO ST A LT ER ED F EATUR E S EVAD ING PDFRAT E
+
+	Counts 16,985 16,985 16,985 16,985 16,975 16,975 16,941 16,941 16,862 16,812 
+
+	计数16,985 16,985 16,985 16,985 16,975 16,975 16,941 16,941 16,862 16,812
+
+	Increased features pos eof avg pos eof max pos eof min size count endstream count stream count endobj count obj len stream max pos box max 
+
+	增加的特征位置的最大位置最小位置计数流数量endobj count obj len流max pos pos box max
+
+	Counts 14,234 10,806 10,728 8,834 7,637 4,742 4,742 4,250 3,448 3,137 
+
+	计数14,234 10,806 10,728 8,834 7,637 4,742 4,742 4,250 3,448 3,137
+
+	Decreased features pos page min len obj min count javascript len stream min ratio size stream createdate tz delta tz ratio size page len stream avg pos page avg 
+
+	减少的功能位置页面最小镜头对象最小数量javascript len流最小比例大小流创建tz三角洲tz比率大小页面len流avg pos页avg
+
+	B. Hidost 
+
+	B. Hidost
+
+	The experiment of evading Hidost took around two days to execute. Although Hidost was designed speciﬁcally to resist evasion attempts,2 our method achieves a 100% evasion rate, generating 2,859 evasive samples in total for 500 seeds (5.7 evasive samples per seed in average). Trace Analysis. We analyze the efﬁcacy of each mutation trace which is examined in the same way as for PDFrate. The length and efﬁcacy of each mutation trace are shown in Figure 7. In general, it required shorter mutation traces to achieve 100% evasion rate in attacking Hidost than it did for PDFrate. 
+
+	逃避Hidost的实验花了两天左右的时间来执行。尽管Hidost被设计为专门用来抵制逃避尝试，但是我们的方法可以达到100％的逃避率，对于500颗种子总共产生2,859个逃避样本（平均每个种子5.7个回避样本）。痕量分析。我们分析每个突变轨迹的效率，这与用于PDFrate的相同方式一样。每个突变轨迹的长度和效率如图7所示。一般来说，攻击Hidost需要较短的变异轨迹才能达到100％的回避率。
+
+	We observed two major differences compared to PDFrate. First, there is no increasing trace length trend for newly found mutation traces, unlike for PDFrate where the trace length increases with the trace ID. Second, the trace length is more correlated with the efﬁcacy: longer traces tend to be more effective in generating evasive variants. Several short mutation traces with fewer than 5 mutations are only effective on 1 or 
+
+	我们观察到与PDFrate相比有两个主要区别。首先，新发现的变异曲线没有增加迹线长度的趋势，这与PDFrate中迹线长度随着迹线ID增加而不同。其次，迹线长度与效率更相关：更长的迹线往往更有效地产生回避变体。少于5个突变的几个短突变痕迹仅对1或1有效
+
+	2 Speciﬁcally, the Hidost authors claim, “The most aggressive evasion strategy we could conceive was successful for only 0.025% of malicious examples tested against an off-the-shelf nonlinear SVM classiﬁer with the RBF kernel using the binary embedding. Currently, we do not have a rigorous mathematical explanation for such a surprising robustness. Our intuition suggests that the main difﬁculty on attacker’s part lies in the fact that the input features under his control, i.e., the structural elements of a PDF document, are only loosely related to the true features used by a classiﬁer. The space of true features is hidden behind a complex nonlinear transformation which is mathematically hard to invert.” [28] Fig. 7. The length and efﬁcacy of mutation traces for evading Hidost. 2 malware seeds. In contrast, a long mutation trace containing 61 mutations is effective on 334 malware seeds. 
+
+	2具体而言，Hidost作者声称：“我们可以设想的最积极的逃避策略是成功的，只有0.025％的恶意实例通过使用二进制嵌入的RBF内核对现成的非线性SVM分类器进行测试。目前，我们没有一个严格的数学解释这样一个惊人的鲁棒性。我们的直觉表明攻击者的主要困难在于，在他控制下的输入特征，即PDF文档的结构元素，与分类器所使用的真实特征只有松散的关系。真实特征的空间隐藏在一个复杂的非线性变换之后，这个变换在数学上难以逆转。“[28]图7.逃避Hidost的变异轨迹的长度和效率。 2个恶意软件种子。相比之下，包含61个突变的长突变痕迹在334种恶意软件种子上有效。
+
+	The accumulated number of evasions found sorted by the length of mutation traces is given in Figure 5. The plot is closer to linear, suggesting that, in contrast to PDFrate, there is little variation in the difﬁculty of ﬁnding evasive variants for different seeds. We believe the differences from PDFrate stem from the different feature set in Hidost. The mutation operations have more direct inﬂuence on the structural path features in Hidost. For example, an object deletion operation just deletes the corresponding path of a feature (along with those of its descendants). In contrast, feature changes in PDFrate resulting from the same operation are less tangible. Besides decreasing the counts of speciﬁc objects that we can expect, the other positional features may also change due to the relocation of objects in repacking the modiﬁed variant. As a result, there are more inter-inﬂuences among the mutation operations in evading PDFrate, and a larger number of mutations may be 
+
+	图5给出了根据突变长度进行排序的累计逃逸数量。该图更接近线性，这表明，与PDFrate相比，不同种子的发现变异的难度差异不大。我们相信与PDFrate的不同之处在于Hidost中设置的不同功能。变异操作对Hidost中的结构路径特征有更直接的影响。例如，对象删除操作只是删除一个特征的相应路径（以及它的后代的路径）。相比之下，由相同的操作导致的PDFrate的特征变化较不明显。除了减少我们可以预期的特定对象的数量之外，其他的位置特征也可能由于重新包装修改后的对象而重新定位。因此，在避开PDFrate的突变操作中存在更多的内部影响，并且可能有更多的突变
+
+	10 required to reach the evasion threshold. The box plot of the original classiﬁcation score in Hidost of each seed shown in the right side of Figure 6 suggests that it usually requires more mutations to ﬁnd an evasive variant for seeds that appear to be more clearly malicious to the classiﬁer. Feature Analysis. The binary features used in Hidost are much easier to interpret than the variety of features used by PDFrate. 
+
+	要达到规避门槛要求10个。图6右侧所示的每个种子Hidost中的原始分类得分的盒图显示，通常需要更多的突变才能发现种子的回避变种，这种变种似乎对分类器更加明显是恶意的。特征分析。 Hidost中使用的二进制特征比PDFrate使用的各种特征更易于解释。
+
+	We ﬁrst look at the simplest mutation traces. There are 5 mutation traces in length 1, which are only effective on 1 or 2 malware seeds. They are: (delete, /Root/OpenAction/JS/Length) (delete, /Root/Names) (delete, /Root/AcroForm/DR) (replace, /Root/AcroForm/DR, 
+
+	我们首先看最简单的突变痕迹。有5个长度为1的变异痕迹，仅对1或2个恶意软件种子有效。它们是:(删除/ Root / OpenAction / JS / Length）（删除/ Root / Names）（删除/ Root / AcroForm / DR）（替换/ Root / AcroForm / DR，
+
+	3: /Root/OpenAction/D/0/.../FontBBox/3) 
+
+	3: /root/open action/D/0/.../font B box/3)
+
+	(replace, /Root/AcroForm/DR, 
+
+	（替换/ Root / AcroForm / DR，
+
+	3: /Root/Pages/Kids/3/.../DescendantFonts/0/DW ) The ﬁrst three mutations each delete a node from the original malware seeds, changing the value of the corresponding Hidost feature from 1 to 0. The ﬁrst deleted object similar to the count javascript feature in PDFrate. Both capture properties that frequently exist in malware samples but not in benign ﬁles. However, they are optional in malicious code execution. The other deleted objects are artifacts in the training dataset that are not closely tied to malicious behavior. Although the last two traces use replace operations, the important effects of the replacements are to remove the features extracted from the children objects of the original /Root/AcroForm/DR node. 
+
+	3：/Root/Pages/Kids/3/.../DescendantFonts/0/DW）前三个突变每个从原始恶意软件种子中删除一个节点，将相应的Hidost特征的值从1改变为0.首先删除的对象类似于PDFrate中的javascript javascript功能。两种捕获恶意软件样本中经常存在但不是良性文件的属性。但是，它们在恶意代码执行中是可选的。其他删除的对象是训练数据集中的与恶意行为没有紧密联系的工件。尽管最后两条曲线使用替换操作，但替换的重要作用是删除从原始/ Root / AcroForm / DR节点的子对象中提取的特征。
+
+	Simply deleting some objects is not sufﬁcient to evade 
+
+	简单地删除一些对象并不足以逃避
+
+	Hidost (it is only effective on 1 or 2 malware seeds in our experiment), but additional mutations are enough to ﬁnd evasive variants for all of the seeds. The longest mutation trace contains 85 operations, which is effective on 198 malware seeds for generating evasive variants to bypass Hidost. Table V lists the all of feature changes observed over the 198 malware seeds when executing that mutation trace. Unsurprisingly, several auxiliary objects are added or deleted to fool Hidost. For example, several metadata objects are inserted. Metadata widely exists in benign PDFs when users generate PDF documents with popular PDF writers. On the other hand, it is rare in PDF malware because malware authors did not add metadata in hand-crafting PDF exploits. However, this is just an artifact in the training dataset and not an essential difference between PDF documents and PDF malware. Inserting metadata into a PDF malware sample increases the likelihood of the sample being considered benign by Hidost. 
+
+	Hidost（在我们的实验中它只对1或2个恶意软件种子有效），但是额外的突变足以发现所有种子的回避变种。最长的变异轨迹包含85个操作，这对于198个恶意软件种子生成绕过Hidost的规避变体是有效的。表V列出了执行该变异跟踪时，在198个恶意软件种子上观察到的所有功能变化。不出所料，添加或删除了几个辅助对象来欺骗Hidost。例如，插入几个元数据对象。当用户使用流行的PDF编写器生成PDF文档时，元数据广泛存在于良性PDF中。另一方面，由于恶意软件作者没有添加手工制作PDF漏洞的元数据，所以在PDF恶意软件中很少见。但是，这只是训练数据集中的一个工件，并不是PDF文档和PDF恶意软件之间的根本区别。将元数据插入PDF恶意软件样本会增加Hidost对样本进行良性考虑的可能性。
+
+	As seen from this example, trace length itself is not a good measure of evasion complexity. Although the stochastic search process found an 85-operation trace to create these evasive variants, the trace only impacts the 23 features (each corresponding to a node in the PDF ﬁle) showing in Table V. That is to say, there is a 23-operation trace that would be just as effective (and probably shorter traces since one mutation can impact many features), and the trace found by the search includes many useless or redundant mutations. For the purposes of creating evasive malware, it is not important to ﬁnd the shortest effective trace, although it would be possible 
+
+	从这个例子可以看出，走线长度本身并不是一个很好的逃避复杂度。尽管随机搜索过程发现了一个85个操作轨迹来创建这些回避变体，但轨迹仅影响表5中显示的23个特征（每个对应于PDF文件中的一个节点）。也就是说，操作轨迹也是一样有效的（可能更短的轨迹，因为一个突变可能影响许多特征），搜索找到的轨迹包括许多无用的或多余的突变。为了创建回避型恶意软件，找到最短的有效跟踪并不重要，尽管这是可能的
+
+	TABLE V. 
+
+	表五
+
+	F EATUR E CHANG E S PRODUCED BY LONG E S T H IDO S T 
+
+	F EATUR E CHANG E S由LONG E S T H IDO S T生产
+
+	MU TAT ION TRAC E . 
+
+	MU TAT ION TRAC E.
+
+	Added Features 
+
+	新增功能
+
+	Threads 
+
+	主题
+
+	ViewerPreferences/Direction 
+
+	ViewerPreferences /方向
+
+	Metadata 
+
+	元数据
+
+	Metadata/Length 
+
+	元/长度
+
+	Metadata/Subtype 
+
+	元/亚型
+
+	Metadata/Type 
+
+	元/类型
+
+	OpenAction/Contents 
+
+	OpenAction /目录
+
+	OpenAction/Contents/Filter 
+
+	OpenAction /内容/过滤器
+
+	OpenAction/Contents/Length 
+
+	OpenAction /内容/长度
+
+	Pages/MediaBox 
+
+	页/媒体框
+
+	Deleted Features 
+
+	已删除的功能
+
+	AcroForm 
+
+	AcroForm
+
+	Names/JavaScript/Names/S 
+
+	名称/ JavaScript的/姓名/ S
+
+	AcroForm/DR/Encoding/PDFDocEncoding 
+
+	AcroForm / DR /编码/ PDFDocEncoding的
+
+	AcroForm/.../PDFDocEncoding/Differences 
+
+	AcroForm /.../ PDFDocEncoding的/差异
+
+	AcroForm/.../PDFDocEncoding/Type 
+
+	AcroForm /.../ PDFDocEncoding的/类型
+
+	Pages/Rotate 
+
+	页/旋转
+
+	AcroForm/Fields 
+
+	AcroForm /场
+
+	AcroForm/DA 
+
+	AcroForm / DA
+
+	Outlines/Type 
+
+	大纲/类型
+
+	Outlines 
+
+	纲要
+
+	Outlines/Count 
+
+	概括/计数
+
+	Pages/Resources/ProcSet 
+
+	页/资源/ ProcSet
+
+	Pages/Resources to develop techniques to automatically pare down a trace to its essential operations if desired. The yellow triangle plot in Figure 7 shows the number of affected features for each trace. 
+
+	页面/资源开发技术，自动削减其必要的操作，如果需要的痕迹。图7中的黄色三角形图显示了每条迹线的受影响特征的数量。
+
+	Although its authors claimed that Hidost was robust against evasion attacks involving just feature addition, we found many evasive variants that only added features. Among the 2,859 evasive variants, 761 are pure feature addition attacks, 21 of them are pure feature deletion attacks, and the other 2,077 involved both feature addition and deletion. It is already unrealistic to assume attackers can only insert features, and, as shown in the claims about non-evadability of Hidost, dangerous to assume a technique cannot be evaded because particular manual techniques fail. 
+
+	尽管其作者声称Hidost对于涉及功能添加的回避攻击是强大的，但是我们发现了许多仅仅增加了功能的回避变体。在2,859个回避变种中，761个是纯特征加入攻击，其中21个是纯特征删除攻击，其余2077个涉及特征添加和删除。假设攻击者只能插入特征已经是不现实的，并且如关于Hidost的不可避免性的权利要求所示，由于特定的手动技术失败，所以认为技术不可避免是危险的。
+
+	A complete list of mutated features in evading Hidost is given in Appendix B. These non-robust features should not be used in a malware classiﬁer, as they can be easily changed while preserving the original malicious properties. C. Cross-Evasion Effects 
+
+	附录B给出了避开Hidost中的变异特征的完整列表。这些非鲁棒特征不应该用在恶意软件分类器中，因为它们可以在保留原始恶意特性的同时进行轻松更改。 C.交叉逃避效果
+
+	Even though the classiﬁers are designed very differently and trained with different training datasets, we suspected they must share some properties in the same classiﬁcation task. Therefore, we conducted a cross-evasion experiment by feeding one classiﬁer with the evasive variants found in evading the other classiﬁer. 
+
+	即使分类器设计得非常不同，并且使用不同的训练数据集进行训练，我们也怀疑他们必须在相同的分类任务中共享一些属性。因此，我们进行了一个交叉规避实验，即将一个分类器与逃避另一个分类器的回避变体相提并论。
+
+	For 388 of the malware seeds, the evasive variants found by evading Hidost are also effective in evading PDFrate. That is to say, without any access to PDFrate, a malware author with access to Hidost could ﬁnd evasive variants for 77.6% of the seeds. In contrast, the evasive variants found by evading PDFrate are only effective against Hidost for two of the malware seeds. 
+
+	对于388种恶意软件种子，通过躲避Hidost发现的逃避变种也可以有效避免PDFrate。也就是说，在没有任何访问PDF的情况下，访问Hidost的恶意软件作者可以找到77.6％种子的回避变种。相比之下，通过回避PDFrate找到的回避变体只对两个恶意软件种子的Hidost有效。
+
+	The signiﬁcant difference in the cross evasion effects is due to the different feature sets in the two classiﬁers. Indeed, the primary design goal for Hidost was to be less easily evaded than other classiﬁers by using features based on structural properties. The evasive variants generated by the algorithm in evading PDFrate do change the measured features signiﬁcantly, however, they have little effect on the structural features used in Hidost. In the reverse direction, the evasive variants targeting Hidost by directly altering structural features (necessary to evade Hidost), incidentally impact the features used by PDFrate. 
+
+	交叉规避效应的显着差异是由于两个分类器中的特征集不同所致。事实上，Hidost的主要设计目标是通过使用基于结构性质的特征，而不像其他分类器那样容易被回避。算法产生的回避变量确实改变了测量的特征，但是对Hidost中使用的结构特征影响不大。在相反的方向上，通过直接改变结构特征（逃避Hidost所必需的）来针对Hidost的回避变体偶然影响到PDFrate所使用的特征。
+
+	11 
+
+	11
+
+	Oracle 
+
+	神谕
+
+	Mutation 
+
+	突变
+
+	Classiﬁer 
+
+	CLASSI网络呃
+
+	Others t e a r F D P t s o d i H 
+
+	其他人对我来说，
+
+	24 
+
+	24
+
+	48 
+
+	48
+
+	72 
+
+	72
+
+	Hours 
+
+	小时
+
+	96 
+
+	96
+
+	120 
+
+	120
+
+	144 Fig. 8. Time required to ﬁnd evasive variants for 500 malware samples. D. Execution Cost 
+
+	图8.发现500个恶意软件样本的规避变体所需的时间。 D.执行成本
+
+	One drawback of evolutionary algorithms is that they provide no guarantees about generating good results within a speciﬁc duration. For many problems, these methods can require a huge amount of computing resources before a desired result is found. Further, failing to ﬁnd the desired result may be a sign that it doesn’t exist, or just that more computing resources are required. Our experiments show that the resources required for this instantiation are very reasonable. 
+
+	演化算法的一个缺点是它们不能保证在特定的时间内产生好的结果。对于许多问题，这些方法可能需要大量的计算资源才能找到想要的结果。此外，找不到理想的结果可能是一个不存在的信号，或者只是需要更多的计算资源。我们的实验表明，这种实例化所需的资源是非常合理的。
+
+	For each classiﬁer target, the experiment was run in several rounds. The ﬁrst round started with empty trace pools, so the search for evasive variants relies solely on the stochastic search directed by the ﬁtness function. In later rounds, the successful and promising mutation traces found previously were used to accelerate the search. All the failed jobs in a round were rerun in the next round with the all mutation traces stored in previous rounds. 
+
+	对于每个分类目标，这个实验分几轮进行。第一轮从空轨迹池开始，所以对于规避性变体的搜索完全依赖于由适合度函数指引的随机搜索。在以后的几轮中，以前发现的成功和有希望的突变痕迹被用来加速搜索。所有在一轮中失败的工作都在下一轮重新运行，并存储在前一轮中的所有变化轨迹。
+
+	For PDFrate, it took four rounds to reach 100% evasion. The evasion rate on Hidost reached 100% in the second round. Figure 8 shows the total time needed to ﬁnd evasive variants for all 500 malware seeds in evading the two classiﬁers. The duration for each job is not meaningful because it mainly depends on the job sequence. Later jobs are usually much faster because they may beneﬁt from mutation traces found earlier, but the order of trying the seeds is arbitrary. 
+
+	对于PDFrate来说，花了四轮才达到100％的回避。 Hidost的回避率在第二轮达到100％。图8显示了为避开所有500种恶意软件种子而逃避两个分类器所需的总时间。每个工作的持续时间没有意义，因为它主要取决于工作顺序。后来的工作通常要快得多，因为他们可能从之前发现的突变痕迹中获益，但尝试种子的顺序是任意的。
+
+	It took less than 6 days to achieve a 100% evasion rate on PDFrate. In other words, our method found an evasive variant for each seed in 16 minutes on average running on a commodity desktop. Evasive variants were found against Hidost three times faster, taking 5 minutes per seed in average. 
+
+	花了不到6天时间才达到PDFrate的100％回避率。换句话说，我们的方法在16分钟内平均在商品桌面上运行，发现了每个种子的回避变体。对Hidost的回避变种发现速度提高了三倍，平均每个种子需要5分钟。
+
+	The main computation time is running the generated variants in the Cuckoo sandbox, which we use as the oracle in our process. The machine with 16 virtual machines running in parallel is able to test 1,000 samples per hour. This could easily be accelerated by using more machines, since there are no dependencies between the executions. 
+
+	主要的计算时间是在Cuckoo沙盒中运行生成的变体，我们在这个过程中使用它作为oracle。具有16个并行运行的虚拟机的机器能够每小时测试1000个样本。这可以通过使用更多的机器来加速，因为执行之间没有依赖关系。
+
+	We also observed that the time spent on other tasks (including mutation) in attacking PDFrate takes a larger proportion of the total duration than for Hidost (8.3% vs. 4.1%). This is because the benign ﬁles used as external object genome are larger than those in attacking Hidost. Hence, it produced larger 
+
+	我们还观察到，攻击PDFrate的其他任务（包括变种）所花费的时间占总持续时间的比例比Hidost（8.3％比4.1％）要大。这是因为用作外部物体基因组的良性文件比攻击Hidost的文件大。因此，它产生了更大的
+
+	12 variants, increasing the computational burden for parsing, manipulating, and repacking. 
+
+	12种变体，增加了解析，操纵和重新包装的计算负担。
+
+	V I I . D I SCU S S ION 
+
+	我I。我是SCU S S ION
+
+	In this section we discuss the potential defenses and future directions suggested by our results. A. Defense 
+
+	在本节中，我们将讨论我们的结果提出的潜在防御和未来方向。 A.防守
+
+	Beyond understanding the vulnerabilities of current classiﬁers, our ultimate goal is to improve the robustness of classiﬁers under attack. Based on the evasive samples we generated, and the non-robust features we found in Section V, we consider several possible approaches. Information Hiding and Randomization. One of the most direct solutions to protect classiﬁers is hiding the classiﬁcation scores from the users or adding random noise to the scores [2]. Another proposed method is the multiple classiﬁer system, in which the classiﬁcation scores are somewhat randomly picked from different models trained with disjoint features [3]. As our method heavily relies on the classiﬁcation scores of variants to calculate ﬁtness scores that direct the evolution, the lack of accurate score feedback makes the search for evasive variants much harder and may make our approach infeasible. 
+
+	除了理解当前分类器的漏洞，我们的最终目标是提高分类器受到攻击的鲁棒性。基于我们生成的规避样本和我们在第五节中发现的非鲁棒特征，我们考虑了几种可能的方法。信息隐藏和随机化。保护分类人员最直接的解决方案之一就是隐藏用户的分类分数或者将随机噪声添加到分数中[2]。另一种提出的方​​法是多分类器系统，其中分类分数是从不同模型中随机挑选出来的，这些模型是用不相交的特征训练的[3]。由于我们的方法严重依赖变体的分类分数来计算引导进化的适应性分数，所以缺乏准确的分数反馈使得对回避性变体的搜索变得更加困难，并且可能使得我们的方法不可行。
+
+	However, the intrinsic non-robustness of superﬁcial features should not be simply ignored. Considering the potential cross-evasion effects (Section VI-C), hiding or randomizing the information may not help much against an adversary who can infer something about the types of features used by the target classiﬁer. Moreover, previous work has shown that accurately re-implementing a similar classiﬁer with a surrogate training set is possible (indeed, this is what the authors of Mimicus did to experiment with evadability of PDFrate [26, 29]). Adapting to Evasive Variants. Our experiments assume that adversary can test samples without exposing them to the classiﬁer operator. In an on-line scenario, the classiﬁer may be able to adapt to attempted variants. Note, however, that retraining is expensive and opens up the classiﬁer to alternate evasion strategies such as poisoning attacks. 
+
+	但是，表面特征的内在非鲁棒性不应该被忽略。考虑到潜在的交叉逃避效应（VI-C部分），隐藏或随机化信息可能无助于对付能够推断目标分类人员使用的特征类型的对手。此外，以前的工作表明，准确地重新实施一个与替代训练集类似的分类器是可能的（实际上，这是Mimicus的作者做的实验PDFrate [26,29]的evadability）。适应回避变体。我们的实验假设对手可以测试样本，而不会将其暴露给分类操作员。在线方案中，分类器可能能够适应已尝试的变体。但是，请注意，再培训费用昂贵，打开了分类器以替代逃避策略，如中毒攻击。
+
+	Chinavle et al. proposed a method that would automatically retrain the classiﬁer with pseudo labels once evasive variants were detected by a mutual agreement measure on the ensemble model, which had been shown effective on a spam detection task [6]. However, adapting to users’ input without true labels introduces a new risk of poisoning attacks. Defeating Overﬁtting. The evadability of classiﬁers we demonstrate could be just an issue of overﬁtting, in which case, well known machine learning practices should work to defeat overﬁtting. For example, collecting a much larger dataset for training the model, or using model averaging to lower the variance. 
+
+	Chinavle等人提出了一种方法，可以自动地重新训练伪标签的分类器，一旦通过集合模型上的相互协议测量来检测到变种变种，这已经在垃圾邮件检测任务中显示出有效[6]。然而，适应用户的输入而没有真正的标签会引发中毒攻击的新风险。击败过度。我们演示的分类器的可避免性可能只是一个过度拟合的问题，在这种情况下，众所周知的机器学习实践应该能够克服过度配合。例如，收集更大的数据集来训练模型，或使用模型平均来降低方差。
+
+	We don’t expect these conventional methods will help, however. It is impossible to collect a complete dataset of future malware, and none of these techniques anticipate an adversary who is actively attempting to evade the classiﬁer. Selecting Robust Features. We found many non-robust features from the two classiﬁers in the evasion experiments. Obviously, they should be removed from the feature set as they can be easily manipulated by the attacker without corrupting the malicious properties. The problem with the features used by both Hidost and PDFrate, however, is that all of the features are likely non-robust. The superﬁcial features used by these classiﬁers do not have any intrinsic distinguishability between benign and malicious PDFs, and it would be very surprising if superﬁcial features were found that could be used for robust classiﬁcation. Instead, it seems necessary to use deeper features to build classiﬁers that can resist evasion attempts by sophisticated adversaries. Such features will depend on higher-level semantic analysis of the input ﬁle, in ways that are difﬁcult to change without disrupting the malicious behavior. B. Improving Automatic Evasion 
+
+	然而，我们并不期望这些传统方法会有所帮助。收集未来恶意软件的完整数据集是不可能的，而且这些技术都不能预测到积极企图逃避分类的对手。选择强大的功能。我们在逃避实验中发现了两个分类器的许多非鲁棒特征。显然，它们应该从功能集中删除，因为攻击者可以轻松操纵它们而不会破坏恶意属性。然而，Hidost和PDFrate所使用的特征的问题在于，所有的特征都可能是不健壮的。这些分类器使用的表面特征在良性和恶意PDF之间没有任何内在的区分性，如果发现可用于鲁棒分类的超表面特征，将是非常令人惊讶的。相反，似乎有必要使用更深入的特征来建立能抵抗复杂的对手逃避企图的分类。这些功能将取决于对输入文件进行更高级的语义分析，难以改变的方式不会破坏恶意行为。 B.提高自动逃避
+
+	Our automatic evasion method provides a general method to evaluate the robustness of classiﬁers for security tasks. Its ability to ﬁnd evasive variants against a target classiﬁer demonstrates clear weaknesses, but if our method fails to ﬁnd evasive variants against a particular classiﬁer this is certainly not enough to be conﬁdent that other techniques (including manual effort) would not be able to ﬁnd evasive variants. Hence, it is valuable to improve the method to enable more efﬁcient searching to target more challenging classiﬁers. Parameter Tuning. In this work, we just arbitrarily choose the search parameters. Tuning the parameters, or even trying dynamic mechanisms like parameter decay, could make the search algorithm more efﬁcient. Learnable GP. The current method we use to generate evasive variants is essentially a random search algorithm. Hence, it often generates corrupted variants that lose the malicious behavior. A probabilistic model would learn which mutations are more effective for generating evasive variants to direct the search more efﬁciently. Other Applications. Our case study focused on PDF malware, but we believe similar approaches could be effective against other machine-learning based malware classiﬁers. The main challenges in applying our approach to a new domain are to develop suitable genetic mutation operations and ﬁnd an appropriate oracle. 
+
+	我们的自动逃避方法提供了一个通用的方法来评估安全任务的分类器的鲁棒性。它能够发现针对目标分类器的回避变体，显示出明显的弱点，但是如果我们的方法无法找出针对特定分类器的回避变体，那么肯定不足以确定其他技术（包括手工努力）不能发现回避变种。因此，改进这种方法是非常有价值的，可以使更有效的搜索成为更具挑战性的分类对象。参数调整。在这项工作中，我们只是任意选择搜索参数。调整参数，甚至尝试像参数衰减这样的动态机制，可以使搜索算法更有效率。可学习的GP。我们用来生成回避变体的当前方法基本上是一个随机搜索算法。因此，它通常会生成损坏的变体，从而失去恶意行为。一个概率模型可以知道哪个突变更有效地产生回避变体来更有效地指导搜索。其他应用。我们的案例研究集中在PDF恶意软件上，但我们相信类似的方法可能对其他基于机器学习的恶意软件分类器有效。将我们的方法应用到一个新的领域的主要挑战是开发适当的遗传变异操作并寻找合适的预言者。
+
+	V I I I . R ELAT ED WORK 
+
+	我我我。相关工作
+
+	There have been several papers on evasion attacks against classiﬁers in the machine learning community, mostly focused on spam detection with simple models (e.g., 
+
+	关于机器学习社区中的分类器的回避攻击已经有几篇文章，主要集中在利用简单模型进行垃圾邮件检测（例如，
+
+	[6, 10, 18]. Chinavle et al. argued that the adversarial problem is essentially concept drift, which is a well studied ﬁeld in machine learning that considers data distributions which change over time [6]. However, the concept drift solutions assume the data distribution changes are not due to the classiﬁer itself, not resulting from an adversary intentionally adapting to it. 
+
+	[6，10，18]。 Chinavle等人认为对抗性问题本质上是概念漂移，这是一个研究得很好的机器学习领域，它考虑了随时间变化的数据分布[6]。然而，概念漂移解决方案假定数据分布的变化不是由于分类器本身，而是由对手故意适应的。
+
+	Evasion attacks against malware classiﬁers have been studied previously by Biggio et al. from the angle of classiﬁcation models [4] and by ˇSrndic et al. [28]. However, these studies assumed that attackers can only insert new features and they conducted evasion experiments in the feature space without 
+
+	Biggio等人以前已经研究过针对恶意软件分类的规避攻击。从分类模型[4]和Srndic et al。 [28]。但是，这些研究假设攻击者只能插入新的特征，而没有在特征空间中进行回避实验
+
+	13 generating actual evasive PDF malware. In fact, the experiments in our work show attackers can also delete features while preserving maliciousness, and our experiments veriﬁed that the resulting evasive variants preserved maliciousness through dynamic execution in a test environment. 
+
+	13生成真正的evasive PDF恶意软件。实际上，我们工作中的实验表明，攻击者也可以在保留恶意的同时删除特性，实验证明，由此产生的回避变体通过在测试环境中动态执行来保存恶意。
+
+	ˇSrndic et al. demonstrated how PDFrate could be evaded by exploiting an implementation ﬂaw in the feature extraction [29]. Our method does not rely on any particular implementation ﬂaw in a target classiﬁer. Instead, it exploits the weak spots in a classiﬁer model’s feature space and employs a stochastic method to manipulate samples in diverse ways. 
+
+	Srndic等人展示了如何通过在特征提取[29]中利用实现流程来避免PDFrate。我们的方法不依赖于目标分类器中的任何特定实现。相反，它利用分类器模型特征空间中的弱点，并采用随机方法以不同的方式处理样本。
+
+	Maiorca et al. proposed reverse-mimicry attacks against PDF malware classiﬁers [20]. In reverse-mimicry, a benign sample is manipulated into a malicious one by inserting malicious payloads into the structure. The attack is generic to a class of classiﬁers based on structural features. However, the hand-crafted attack only works on malware with simple payloads. In contrast, our GP-based method is automatic and does not have this limitation. 
+
+	Maiorca等人提出了针对PDF恶意软件分类器的反向模仿攻击[20]。在反向模仿中，通过将恶意有效载荷插入到结构中，良性样本被操纵为恶意样本。这种攻击是基于结构特征的一类分类器通用的。但是，手工攻击仅适用于具有简单有效载荷的恶意软件。相反，我们基于GP的方法是自动的，并没有这个限制。
+
+	Evolutionary algorithms have also recently been used to fool deep learning-based computer vision models [22]. In contrast, this work uses genetic programming, an important branch of evolutionary algorithms for generating highly-structured data like computer programs. 
+
+	演化算法最近也被用来欺骗基于深度学习的计算机视觉模型[22]。相反，这项工作使用遗传编程，这是进化算法的一个重要分支，用于生成计算机程序等高度结构化的数据。
+
+	IX . CONC LU S ION S 
+
+	IX。 CONC LU S S
+
+	Our experiments show how the traditional approach of building machine learning classiﬁers can fail against determined adversaries. We argue that it is essential for designers of classiﬁers used in security applications to consider how adversaries will adapt to those classiﬁers, and important for the research community to develop better ways of predicting the actual effectiveness of a classiﬁer in deployment. 
+
+	我们的实验表明，传统的机器学习分类器的构建方式如何能够对抗有决心的对手。我们认为，安全应用中使用的分类器的设计者必须考虑对手如何适应这些分类器，这对于研究团队开发更好的方法来预测分类器在实际部署中的有效性非常重要。
+
+	AVA I LAB I L I TY 
+
+	AVA LABEL I L I TY
+
+	The source code of our automatic evasion tool, along with the data from all of our experiments, is available at http://www.EvadeML.org. 
+
+	我们的自动逃避工具的源代码以及我们所有实验的数据可以在http://www.EvadeML.org上找到。
+
+	ACKNOW L EDGM ENT S 
+
+	确认L EDGM ENT S
+
+	This work was partially supported by grants from the Air Force Ofﬁce of Scientiﬁc Research and the National Science Foundation. The authors gratefully thank Giovanni Vigna for helpful assistance, Westley Weimer for fruitful discussions about this work and help with the genetic programming experiments, and Hongning Wang for insightful comments and assistance. We thank Nedim ˇSrndic and Pavel Laskov for making an open source version of PDFrate and providing Hidost, which were essential for our experiments. 
+
+	这项工作部分得到了空军科学研究局和国家科学基金会的资助。作者非常感谢Giovanni Vigna提供了有益的帮助，Westley Weimer就这项工作进行了富有成果的讨论，并帮助进行了遗传编程实验，王宏宁提供了深刻的见解和帮助。我们感谢Nedim Srndic和Pavel Laskov制作PDFrate的开源版本并提供Hidost，这对我们的实验是必不可少的。
+
+	IEEE Transactions on for Automatic Software Repair. Software Engineering, 2012. 
+
+	IEEE自动软件修复汇刊。软件工程，2012。
+
+	[18] Daniel Lowd and Christopher Meek. Adversarial learning. In 11th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2005. 
+
+	[18] Daniel Lowd和Christopher Meek。对抗学习。 2005年第11届ACM SIGKDD国际知识发现与数据挖掘会议（KDD）。
+
+	[19] Davide Maiorca, Giorgio Giacinto, and Igino Corona. A Pattern Recognition System for Malicious PDF Files Detection. In 8th International Conference on Machine Learning and Data Mining in Pattern Recognition. 2012. 
+
+	[19] Davide Maiorca，Giorgio Giacinto和Igino Corona。恶意PDF文件检测模式识别系统。在第八届国际机器学习与模式识别数据挖掘大会上。 2012。
+
+	[20] Davide Maiorca, Igino Corona, and Giorgio Giacinto. Looking at the Bag Is Not Enough to Find the Bomb: An Evasion of Structural Methods for Malicious PDF Files Detection. In 8th ACM Symposium on Information, Computer and Communications Security (ASIACCS), 2013. 
+
+	[20]大卫·马奥卡，Igino Corona和Giorgio Giacinto。看袋子还不够发现炸弹：恶意PDF文件检测结构方法的一种回避。第八届ACM信息，计算机和通信安全研讨会（ASIACCS），2013。
+
+	[21] Patrick Maupin. PDFRW: A Pure Python Library That 
+
+	[21] Patrick Maupin。 PDFRW：一个纯Python库
+
+	Reads and Writes PDFs. https://github.com/pmaupin/ pdfrw. 
+
+	读写PDF文件。 https://github.com/pmaupin/ pdfrw。
+
+	[22] Anh Nguyen, Jason Yosinski, and Jeff Clune. Deep Neural Networks are Easily Fooled: High Conﬁdence Predictions for Unrecognizable Images. 
+
+	Anh Nguyen，Jason Yosinski和Jeff Clune。深度神经网络容易被愚弄：对不可识别图像的高度置信度预测。
+
+	In 28th IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2015. 
+
+	在第28届IEEE计算机视觉与模式识别（CVPR）会议上，2015。
+
+	[23] Conor Ryan. Automatic Re-Engineering of Software Using Genetic Programming, volume 2. Springer Science & Business Media, 2012. 
+
+	[23] Conor Ryan。使用遗传编程软件的自动重新设计，第2卷。Springer Science＆Business Media，2012。
+
+	[24] Karthik Selvaraj and Nino Fred Gutierrez. The Rise of 
+
+	Karthik Selvaraj和Nino Fred Gutierrez。的上升
+
+	PDF Malware. https://www.symantec.com/content/en/ us/enterprise/media/security response/whitepapers/the rise of pdf malware.pdf, March 2010. mimicus. 
+
+	PDF恶意软件。 https://www.symantec.com/content/en/ us / enterprise / media / security response / whitepapers / pdf malware.pdf的崛起.pdf，2010年3月。mimicus。
+
+	[25] Charles Smutz and Angelos Stavrou. Malicious PDF Detection Using Metadata and Structural Features. Technical report, 2012. 
+
+	Charles Smutz和Angelos Stavrou。使用元数据和结构特征进行恶意PDF检测。技术报告，2012。
+
+	[26] Charles Smutz and Angelos Stavrou. Malicious PDF Detection Using Metadata and Structural Features. In 28th ACM Annual Computer Security Applications Conference (ACSAC), 2012. 
+
+	Charles Smutz和Angelos Stavrou。使用元数据和结构特征进行恶意PDF检测。在第28届ACM年度计算机安全应用会议（ACSAC）上，2012。
+
+	[27] Nedim ˇSrndic and Pavel Laskov. Mimicus: A Library for 
+
+	Nedim Srndic和Pavel Laskov。 Mimicus：一个图书馆
+
+	Adversarial Classiﬁer Evasion. https://github.com/srndic/ 
+
+	敌对分类逃避。 https://github.com/srndic/
+
+	[28] Nedim ˇSrndic and Pavel Laskov. Detection of Malicious Pdf Files Based on Hierarchical Document Structure. In 20th Network and Distributed System Security Symposium (NDSS), 2013. 
+
+	Nedim Srndic和Pavel Laskov。基于分层文档结构的恶意Pdf文件检测。在第20届网络和分布式系统安全研讨会（NDSS），2013。
+
+	[29] Nedim ˇSrndic and Pavel Laskov. Practical Evasion of a Learning-Based Classiﬁer: A Case Study. In 35th IEEE Symposium on Security and Privacy (Oakland), 2014. 
+
+	Nedim Srndic和Pavel Laskov。基于学习的分类器的实际规避：一个案例研究。在第35届IEEE安全和隐私专题讨论会（奥克兰）上，2014。
+
+	[30] Symantec Corporation. 
+
+	[30]赛门铁克公司。
+
+	Symantec Internet Security 
+
+	Symantec Internet Security
+
+	Threat Report, 2015. 
+
+	威胁报告，2015。
+
+	[31] VirusTotal. Free Online Virus, Malware and URL Scanner. https://www.virustotal.com/. 
+
+	[31] VirusTotal。免费的在线病毒，恶意软件和URL扫描器。 https://www.virustotal.com/。
+
+	R E F ER ENC E S 
+
+	R E F ER ENC E S
+
+	[1] Adobe, Inc. PDF Reference and Adobe Extensions to the PDF Speciﬁcation. http://www.adobe.com/devnet/pdf/ pdf reference.html. 
+
+	[1] Adob​​e公司PDF格式的PDF参考和Adobe扩展。 http://www.adobe.com/devnet/pdf/ pdf reference.html。
+
+	[2] Marco Barreno, Blaine Nelson, Russell Sears, Anthony D Joseph, and J Doug Tygar. Can Machine Learning Be Secure? In First ACM Symposium on Information, Computer and Communications Security (ASIACCS), 2006. 
+
+	[2] Marco Barreno，Blaine Nelson，Russell Sears，Anthony D Joseph和J Doug Tygar。机器学习是否安全？第一届ACM信息，计算机和通信安全研讨会（ASIACCS），2006年。
+
+	[3] Battista Biggio, Giorgio Fumera, and Fabio Roli. Multiple Classiﬁer Systems for Adversarial Classiﬁcation Tasks. In Multiple Classiﬁer Systems. Springer, 2009. 
+
+	[3]巴蒂斯塔·比吉奥，乔治·弗梅拉和法比奥·罗里。用于敌对分类任务的多个分类系统。在多个Classi fi er系统。施普林格，2009年。
+
+	[4] Battista Biggio, Igino Corona, Davide Maiorca, Blaine Nelson, Nedim ˇSrndi ´c, Pavel Laskov, Giorgio Giacinto, and Fabio Roli. Evasion Attacks against Machine Learning at Test Time. In 6th European Machine Learning and Data Mining Conference (ECML/PKDD). 2013. 
+
+	[4]巴蒂斯塔·比吉奥，伊基诺科罗纳，达维德·马奥卡，布莱恩·纳尔逊，内迪姆·斯隆迪，帕维尔·拉斯科夫，乔治·贾科托和法比奥·罗利。在测试时间对逃避机器学习的攻击。第六届欧洲机器学习与数据挖掘大会（ECML / PKDD）。 2013。
+
+	[5] Stephan Chenette. 
+
+	[5] Stephan Chenette。
+
+	Malicious Documents Archive for Signature Testing and Research - Contagio Malware Dump. http://contagiodump.blogspot.de/2010/08/ malicious-documents- archive- for.html. 
+
+	恶意文档存档的签名测试和研究 -  Contagio恶意软件转储。 http://contagiodump.blogspot.de/2010/08/恶意文档 - 档案文件for.html。
+
+	[6] Deepak Chinavle, Pranam Kolari, Tim Oates, and Tim Finin. Ensembles in Adversarial Classiﬁcation for Spam. In 18th ACM Conference on Information and Knowledge Management (CIKM), 2009. 
+
+	Deepak Chinavle，Pranam Kolari，Tim Oates和Tim Finin。垃圾邮件的敌对分类集合。第18届ACM信息与知识管理大会（CIKM），2009。
+
+	[7] Marco Cova, Christopher Kruegel, and Giovanni Vigna. Detection and Analysis of Drive-By-Download Attacks and Malicious JavaScript Code. 
+
+	[7] Marco Cova，Christopher Kruegel和Giovanni Vigna。驱动下载攻击和恶意JavaScript代码的检测和分析。
+
+	In 19th International 
+
+	在第19国际
+
+	World Wide Web Conference (WWW), 2010. 
+
+	万维网会议（WWW），2010。
+
+	[8] CVE Details. Adobe Acrobat Reader — CVE Security 
+
+	[8] CVE详细信息。 Adobe Acrobat Reader  -  CVE安全性
+
+	Vulnerabilities, Versions and Detailed Reports. http: 
+
+	漏洞，版本和详细报告。 HTTP：
+
+	//www.cvedetails.com/product/497. 
+
+	//呜呜呜.吃VE details.com/product/497.
+
+	[9] George E Dahl, Jack W Stokes, Li Deng, and Dong Yu. Large-Scale Malware Classiﬁcation Using Random Projections and Neural Networks. In 38th IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP), 2013. 
+
+	乔治·E·达尔，杰克·斯托克斯，李登和董宇。大规模恶意软件分类使用随机投影和神经网络。第38届IEEE声学，语音和信号处理国际会议（ICASSP），2013年。
+
+	[10] Nilesh Dalvi, Pedro Domingos, Sumit Sanghai, and 
+
+	[10]尼莱什·达尔维，佩德罗·多明戈斯，萨米特·桑吉，
+
+	Deepak Verma. Adversarial Classiﬁcation. 
+
+	Deepak Verma。敌对分类。
+
+	In 10th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD), 2004. 
+
+	第十届ACM SIGKDD国际知识发现与数据挖掘会议（KDD），2004。
+
+	[11] Stephanie Forrest. Genetic Algorithms: Principles of Natural Selection Applied to Computation. Science, 261 (5123), 1993. 
+
+	[11]斯蒂芬妮·福雷斯特。遗传算法：自然选择原理在计算中的应用。科学，261（5123），1993。
+
+	[12] Claudio Guarnieri, Alessandro Tanasi, Jurriaan Bremer, and Mark Schloesser. Cuckoo Sandbox: A Malware Analysis System. http://www.cuckoosandbox.org/. 
+
+	[12]克劳迪奥Guarnieri，Alessandro Tanasi，Jurriaan Bremer和Mark Schloesser。布谷鸟沙盒：恶意软件分析系统。 http://www.cuckoosandbox.org/。
+
+	[13] Mark Harman, William B Langdon, and Westley Weimer. 
+
+	Mark Harman，William B Langdon和Westley Weimer。
+
+	Genetic Programming for Reverse Engineering. 
+
+	遗传编程的逆向工程。
+
+	In 20th IEEE Working Conference on Reverse Engineering (WCRE), 2013. 
+
+	第20届IEEE逆向工程工作会议（WCRE），2013。
+
+	[14] Thomas Hungenberg and Matthias Eckert. INetSim: Internet Services Simulation Suite. http://www.inetsim.org/. 
+
+	[14] Thomas Hungenberg和Matthias Eckert。 INetSim：Internet服务仿真套件。 http://www.inetsim.org/。
+
+	[15] John R Koza. Genetic Programming: On the Programming of Computers by Means of Natural Selection, volume 1. MIT press, 1992. 
+
+	[15]约翰R柯扎。遗传程序设计：关于计算机的自然选择手段，第1卷。麻省理工学院出版社，1992年。
+
+	[16] Pavel Laskov and Nedim ˇSrndi ´c. Static Detection of 
+
+	Pavel Laskov和Nedim Srndi'c。静态检测
+
+	Malicious JavaScript-Bearing PDF Documents. 
+
+	恶意JavaScript的PDF文档。
+
+	In 27th ACM Annual Computer Security Applications Conference (ACSAC), 2011. 
+
+	第27届ACM年度计算机安全应用会议（ACSAC），2011。
+
+	[17] Claire Le Goues, ThanhVu Nguyen, Stephanie Forrest, and Westley Weimer. GenProg: A Generic Method 
+
+	Claire Le Goues，ThanhVu Nguyen，Stephanie Forrest和Westley Weimer。 GenProg：一种通用方法
+
+	14 
+
+	14
+
+	B. Mutated Features in Hidost 
+
+	B. Hidost中的突变特征
+
+	The 24 inserted features and the 19 deleted features in ﬁnding the 2,859 evasive variants against Hidost are listed in Table VII. As with PDFrate, the features that are not listed are not necessarily robust features. 
+
+	表VII中列出了24个插入特征和19个删除特征，用于查找Hidost的2,859个回避变体。与PDFrate一样，没有列出的功能不一定是强大的功能。
+
+	The “counts” are the number of evasive variants mutated that feature. Note that some features are hierarchically dependent in the PDF object structure, so one insertion or deletion may impact many features. For example, inserting a complete Metadata object (as is done in 2,507 of the variants) also introduces several child objects: Metadata/Length, Metadata/Subtype and Metadata/Type. 
+
+	“计数”是突变该特征的回避变体的数量。请注意，某些功能在PDF对象结构中是分层依赖的，因此一个插入或删除可能会影响许多功能。例如，插入一个完整的元数据对象（就像2,507个变体中那样）也引入了几个子对象：元数据/长度，元数据/子类型和元数据/类型。
+
+	TABLE VII. 
+
+	表VII。
+
+	F EATUR E S A LT ER ED EVAD ING H IDO S T 
+
+	F EATUR E S A LT ER ED EVAD ING H IDO S T
+
+	Counts 
+
+	计数
+
+	Inserted Feature 2,507 Metadata 2,507 Metadata/Length 2,507 Metadata/Subtype 2,507 Metadata/Type 2,454 
+
+	插入的特征2,507元数据2,507元数据/长度2,507元数据/子类型2,507元数据/类型2,454
+
+	PageLabels 
+
+	PageLabels
+
+	2,363 
+
+	2,363
+
+	ViewerPreferences/Direction 
+
+	ViewerPreferences /方向
+
+	1,991 
+
+	1,991
+
+	Pages/Resources/ProcSet 
+
+	页/资源/ ProcSet
+
+	1,968 
+
+	1,968
+
+	Pages/Resources 
+
+	页/资源
+
+	1,702 
+
+	1,702
+
+	Pages/Rotate 
+
+	页/旋转
+
+	1,382 
+
+	1,382
+
+	Pages/MediaBox 
+
+	页/媒体框
+
+	825 
+
+	825
+
+	Threads 
+
+	主题
+
+	718 
+
+	718
+
+	OpenAction/MediaBox 
+
+	OpenAction /媒体框
+
+	385 
+
+	385
+
+	OpenAction/Contents/Filter 
+
+	OpenAction /内容/过滤器
+
+	385 
+
+	385
+
+	OpenAction/Contents/Length 
+
+	OpenAction /内容/长度
+
+	369 
+
+	369
+
+	OpenAction/Contents 
+
+	OpenAction /目录
+
+	319 
+
+	319
+
+	OpenAction/Resources 
+
+	OpenAction /资源
+
+	319 
+
+	319
+
+	OpenAction/Resources/ProcSet 
+
+	OpenAction /资源/ ProcSet
+
+	158 
+
+	158
+
+	OpenAction/Rotate 
+
+	OpenAction /旋转
+
+	158 
+
+	158
+
+	OpenAction/CropBox 
+
+	OpenAction /裁剪框
+
+	51 
+
+	51
+
+	OpenAction/Type 
+
+	OpenAction /类型
+
+	51 
+
+	51
+
+	OpenAction 
+
+	OpenAction
+
+	41 
+
+	41
+
+	PageLabels/Nums 
+
+	PageLabels /订购数量
+
+	41 
+
+	41
+
+	PageLabels/Nums/S 
+
+	PageLabels /订购数量/ S
+
+	40 
+
+	40
+
+	PageLayout 
+
+	页面布局
+
+	Counts 
+
+	计数
+
+	Deleted Feature 
+
+	已删除的功能
+
+	1,345 865 615 615 615 502 500 330 54 14 12 12 12 11 9 8 4 3 2 Names/JavaScript/Names/S PageLayout Outlines/Type Outlines Outlines/Count AcroForm/Fields AcroForm OpenAction/JS/Length Pages/Rotate Pages/Resources/ProcSet AcroForm/DR/Encoding/PDFDocEncoding AcroForm/DR/Encoding/PDFDocEncoding/Differences AcroForm/DR/Encoding/PDFDocEncoding/Type Pages/Resources AcroForm/DA Pages/MediaBox OpenAction/S Names/EmbeddedFiles Names 
+
+	1,345 865 615 615 615 502 500 330 54 14 12 12 12 11 9 8 4 3 2名称/ JavaScript /名称/页面布局轮廓/类型轮廓轮廓/计数AcroForm /字段AcroForm OpenAction / JS /长度页面/旋转页面/ ProCSet AcroForm / DR / Encoding / PDFDocEncoding AcroForm / DR / Encoding / PDFDocEncoding / Differences AcroForm / DR / Encoding / PDFDocEncoding / Type Pages / Resources AcroForm / DA Pages / MediaBox OpenAction / S Names / EmbeddedFiles Names
+
+	A P PEND IX 
+
+	一个PEND IX
+
+	A. Mutated Features in PDFrate 
+
+	A. PDFrate中的突变特征
+
+	The 68 features mutated in our experiments evading PDFrate are listed in Table VI. It is important to note, however, that just because a feature does not appear here does not mean it is robust to evasion. The features listed are those that were sufﬁcient for achieving 100% evasion rate in our experiment. Similarly, the unidirectional mutations are how observed in the evasion attack experiment. It doesn’t necessarily mean that these features cannot also be mutated in the reverse direction without corrupting malware samples in practice. 
+
+	表6列出了在我们的实验中突变的68个特征。然而，重要的是要注意，仅仅因为这里没有出现一个特征，并不意味着这个特征对于规避是有效的。列出的特征是那些足以在我们的实验中达到100％逃避率的特征。类似地，单向突变是如何在回避攻击实验中观察到的。这并不一定意味着这些功能也不能在相反的方向上发生变异，而不会在实践中破坏恶意软件样本。
+
+	TABLE VI. 
+
+	表六。
+
+	68 F EATUR E S MOD I FIED EVAD ING PDFRAT E 
+
+	68 F EATUR E S MOD I FIED EVAD ING PDFRAT E
+
+	Feature Name Mutability 
+
+	功能名称可变性
+
+	Feature Name box nonother types box other only count acroform count action count box letter count box other count endobj count endstream count font count image med count image small count image total count image xsmall count javascript count js count obj count objstm count page count page obs count stream createdate mismatch createdate ts createdate tz createdate version ratio creator dot creator lc creator len creator mismatch creator num creator oth creator uc delta ts delta tz image mismatch 
+
+	功能名称框非其他类型框其他只计数acroform计数动作计数框字母计数框其他计数endobj计数endstream计数字体计数图像中位数图像小计图像总计数图像xsmall计数javascript计数js计数obj计数objstm计数页数计数页obs计数流创建不匹配创建ts创建tz创建版本比创建者点创建者lc创建者len创建者不匹配创建者num创建者其他创建者uc delta ts delta tz图像不匹配
+
+	Mutability # " "# "# 
+
+	可变性＃“”＃“＃
+
+	# "# "# "# "# " " " " # # 
+
+	# "# "# "# "# " " " " # #
+
+	"# 
+
+	"#
+
+	# 
+
+	#
+
+	"# 
+
+	"#
+
+	# 
+
+	#
+
+	"# " " # " "# "# "# 
+
+	"# " " # " "# "# "#
+
+	" "# "# "# " # " image totalpx len obj avg len obj max len obj min len stream avg len stream max len stream min pos acroform avg pos acroform max pos acroform min pos box avg pos box max pos box min pos eof avg pos eof max pos eof min pos image avg pos image max pos image min pos page avg pos page max pos page min producer dot producer lc producer len producer mismatch producer num producer oth producer uc ratio imagepx size ratio size obj ratio size page ratio size stream size 
+
+	“”＃“＃”＃“＃”＃“图片totalpx len obj avg len obj max len obj min len len avg len stream max len stream min min acroform avg pos acroform max pos acroform min pos pos avg pos pos max pos pos box min pos eof avg pos eof max pos eof min pos pos avg pos pos max pos pos min min pos page avg pos page max pos page min生产者点生产者lc生产者len生产者不匹配生产商数量生产者其他生产者uc比率imagepx大小比率大小obj比率大小页面比率大小流大小
+
+	" "# "# "# "# 
+
+	" "# "# "# "#
+
+	" "# "# "# "# "# "# "# " " " " " " "# "# "# "# "# "# 
+
+	" "# "# "# "# "# "# "# " " " " " " "# "# "# "# "# "#
+
+	" "# "# "# "# "# "# "# 
+
+	" "# "# "# "# "# "# "#
+
+	" 15 
+	" 15
+
