@@ -1,0 +1,86 @@
+Version 1.4 (September 5th 2011):
+
+- Feature: SWF parser is now able to parse the RawABC tag
+- Feature: Flash Dissector is now able to display code from RawABC tags
+- Feature: Minimizer is now able to minimizer the RawABC tag
+- Feature: Added a way to parse byte arrays as SWF files to make it easier
+           to use the library from external projects.
+- Bugfix: Fixed a bug that led to spontaneous exits of the parser and
+          Flash Dissector.
+
+Version 1.3 (June 19th 2011):
+
+- Feature: It is now possible to dump the content of a SWF file to stdout by
+           doing 'dissector.jar -dump <input file>'.
+- Feature: It is now possible to decompress SWF files by doing
+           'dissector.jar -decompress <input file> -o <output file>'.
+- Feature: It is now possible to open files in SWF Dissector from the command
+           line doing 'dissector.jar <file1> <file2> ... <filen>'.
+- Feature: Function bodies defined by the ActionScript 2 functions
+           DefineFunction and DefineFunction2 are now aligned better in the
+	   GUI to improve readability of the code.
+- Feature: Individual elements of a SWF file can now be dumped to a new file
+           by right-clicking on the elements in the main tree of the GUI.
+- Bugfix: Fixed a bug in the Minimizer that prevented it from working with
+          compressed SWF files.
+
+Version 1.2 (June 5th 2011):
+
+- Feature: Made parsing of files more robust. This became necessary after the
+           recent spike in obfuscated ActionScript code malware.
+- Feature: Unknown ActionScript 2 instructions are now shown in the GUI with
+           their action code.
+- Feature: In ActionScript 2 code, the jump target of ActionIf instructions
+           shown in the GUI is now the adjusted address instead of the raw
+	   relative address. This makes it easier for the user to find out
+	   where a jump is going.
+- Feature: In ActionScript 2 code, the jump target of ActionJump instructions
+           shown in the GUI is now the adjusted address instead of the raw
+	   relative address. This makes it easier for the user to find out
+	   where a jump is going.
+- Feature: Strings defined in ActionScript 2 ConstantPool actions are now
+           surrounded by quotes to make them more readable.
+- Feature: When ActionScript 2 code is shown in the GUI, registers pushed
+           by ActionPush are now easily distinguished from pushed integers.
+- Feature: When ActionScript 2 code is shown in the GUI, constants pushed
+           by ActionPush are now easily distinguished from pushed integers.
+- Feature: When ActionScript 2 code is shown in the GUI, strings pushed
+           by ActionPush are now easily distinguished from pushed integers.
+- Bugfix: In previous versions, the ActionScript 2 actions belonging to a
+          DoAction tag were not shown in the Flash Dissector tree. This has
+	  been fixed.
+- Bugfix: In previous versions, the ActionScript 2 actions belonging to a
+          DoInitAction tag were not shown in the Flash Dissector tree. This has
+	  been fixed.
+- Bugfix: The constant list defined by an ActionScript 2 ConstantPool
+          instruction is now better formatted for improved readability.
+- Bugfix: ActionScript 2 Push instructions were previously not shown in the
+          GUI.
+- Bugfix: ActionScript 2 PushDuplicate instructions were previously not
+          shown in the GUI.
+- Bugfix: ActionScript 2 Pop instructions were previously not shown in the GUI.
+- Bugfix: ActionScript 2 Play instructions were previously not shown in the GUI.
+- Bugfix: ActionScript 2 PreviousFrame instructions were previously not shown
+          in the GUI.
+- Bugfix: ActionScript 2 RandomNumber instructions were previously not shown
+          in the GUI.
+- Bugfix: ActionScript 2 RemoveSprite instructions were previously not shown
+          in the GUI.
+- Bugfix: ActionScript 2 Return instructions were previously not shown
+          in the GUI.
+
+Version 1.1 (May 7th 2011):
+
+- Feature: Much improved display of ActionScript 3 code
+- Feature: Improved the Minimizer to give more status information
+- Feature: Added a way to dump decompressed Flash files to disk from the GUI
+- Feature: Opening SWF files via drag&drop is now possible in Flash Dissector
+- Feature: Added source setup and installation information to the readme file
+- Feature: Added the changes.txt file
+- Bugfix: Fixed a bug in the Minimizer that led to nullpointer exceptions when
+          the output results directory could not be determined
+- Bugfix: Fixed a bug when parsing negative signed 3-byte integer values
+
+Version 1.0 (April 21st 2011):
+
+- Initial release

@@ -45,4 +45,4 @@ def change_file_name(filedir,refunc):
             os.rename(old_filepath,new_filepath)
             print("Rename success：" + old_filepath + " --> " + new_filename)
             
-change_file_name('F:/PDFdata/small_202/pdf',rename_sha1)
+change_file_name('/home/yonah/PDFdata/pdfnormal',rename_sha1)
