@@ -170,3 +170,33 @@ Traceback (most recent call last):
   File "F:\PDFpy\God_with_me\pdf-git\peepdf\PDFCore.py", line 6677, in parse
     file = open(fileName, 'rb')
 IOError: [Errno 13] Permission denied: 'F:\\PDFdata\\small_202\\malpdf'
+Traceback (most recent call last):
+  File "/home/yonah/God_with_me/pdf-git/peepdf/peepdf.py", line 376, in <module>
+    ret, pdf = pdfParser.parse(fileName, options.isForceMode, options.isLooseMode, options.isManualAnalysis)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/PDFCore.py", line 6872, in parse
+    raise('Error: An error has occurred while parsing an indirect object!!')
+TypeError: exceptions must be old-style classes or derived from BaseException, not str
+Traceback (most recent call last):
+  File "/home/yonah/God_with_me/pdf-git/peepdf/peepdf.py", line 376, in <module>
+    ret, pdf = pdfParser.parse(fileName, options.isForceMode, options.isLooseMode, options.isManualAnalysis)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/PDFCore.py", line 6872, in parse
+    raise('Error: An error has occurred while parsing an indirect object!!')
+TypeError: exceptions must be old-style classes or derived from BaseException, not str
+Traceback (most recent call last):
+  File "/home/yonah/God_with_me/pdf-git/peepdf/peepdf.py", line 376, in <module>
+    ret, pdf = pdfParser.parse(fileName, options.isForceMode, options.isLooseMode, options.isManualAnalysis)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/PDFCore.py", line 6872, in parse
+    raise('Error: An error has occurred while parsing an indirect object!!')
+TypeError: exceptions must be old-style classes or derived from BaseException, not str
+Traceback (most recent call last):
+  File "/home/yonah/God_with_me/pdf-git/peepdf/peepdf.py", line 376, in <module>
+    ret, pdf = pdfParser.parse(fileName, options.isForceMode, options.isLooseMode, options.isManualAnalysis)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/PDFCore.py", line 6872, in parse
+    raise('Error: An error has occurred while parsing an indirect object!!')
+TypeError: exceptions must be old-style classes or derived from BaseException, not str
+Traceback (most recent call last):
+  File "/home/yonah/God_with_me/pdf-git/peepdf/peepdf.py", line 376, in <module>
+    ret, pdf = pdfParser.parse(fileName, options.isForceMode, options.isLooseMode, options.isManualAnalysis)
+  File "/home/yonah/God_with_me/pdf-git/peepdf/PDFCore.py", line 6872, in parse
+    raise('Error: An error has occurred while parsing an indirect object!!')
+TypeError: exceptions must be old-style classes or derived from BaseException, not str
