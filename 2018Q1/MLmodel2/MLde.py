@@ -18,6 +18,7 @@ feat = feature.todense()
 list_label = label.tolist()
 list_feat = feat.tolist()
 
+
 # Random Forest Classifier
 def random_forest_classifier(train_x, train_y):
     from sklearn.ensemble import RandomForestClassifier
