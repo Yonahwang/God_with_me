@@ -8,16 +8,17 @@ import datetime
 from sklearn import datasets, linear_model
 from sklearn import metrics
 import pickle
+import matplotlib.pyplot as plt
 import random
 
 
 #Attact= csv.reader(open('/home/yonah/Downloads/mimicus-master/mimicus/bin/text_120.csv','r'))
-f_tarin = csv.reader(open('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv'))
+#f_tarin = csv.reader(open('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv'))
 #mal_tarin1 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/contagio-mal.csv')
 #mal_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/virustotal-mal.csv')
 #ben_tarin1 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/contagio.csv')
 #ben_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
-#f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv')
+f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv')
 #Attact_test = pd.read_csv('/home/yonah/Downloads/mimicus-master/mimicus/bin/text_120.csv')
 
 
@@ -30,7 +31,27 @@ f_tarin = csv.reader(open('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge
 
 
 def data_clear(file):
-    y = file[['class']]
+    #label = file[['class']]
+
+    a = file['class']=='FALSE'
+    b = file['class'] == 'TRUE'
+    file.loc[a,'class'] = False
+    file.loc[b, 'class'] = True
+
+
+    file['class'] = file['class'].astype(bool)
+    file['class'] = file['class'].astype(int)
+    #print file['class']
+    #  print file.loc[file['class']==0]   #  print x ==0 lines
+    y = file['class'].tolist()
+
+    '''for i in np.array(label).tolist():
+        if i == 'Ture':
+            y.append(1)
+        else:
+            y.append(0)'''
+
+    #print y
     X = file[['author_dot', 'author_lc', 'author_len', 'author_mismatch', 'author_num', 'author_oth', 'author_uc',
                 'box_nonother_types', 'box_other_only', 'company_mismatch', 'count_acroform', 'count_acroform_obs',
                 'count_action', 'count_action_obs', 'count_box_a4', 'count_box_legal', 'count_box_letter',
@@ -54,7 +75,15 @@ def data_clear(file):
                 'ratio_size_page', 'ratio_size_stream', 'size', 'subject_dot', 'subject_lc', 'subject_len',
                 'subject_mismatch', 'subject_num', 'subject_oth', 'subject_uc', 'title_dot', 'title_lc', 'title_len',
                 'title_mismatch', 'title_num', 'title_oth', 'title_uc', 'version']]
-    return y,X
+
+    feat_id = X.columns.tolist()
+    XX = np.array(X)
+    Xint = XX.astype(int)
+
+
+
+
+    return y,Xint.tolist(),feat_id
 
 
 # 对测试数据分类
@@ -93,6 +122,29 @@ def predect_calcu(predict, test_y, binary_class=True):
     print('accuracy: %.2f%%' % (100 * accuracy))
     return accuracy, confusion
 
+def plot_importance(f_v,fe_id):
+    f_id = fe_id
+    #f_id = [str(i) for i in range(len(f_v))]
+    f_v = 100.0 * (f_v / f_v.max())
+
+    f_id = np.array(f_id)
+
+    sorted_idx = np.argsort(-f_v)
+
+    pos = np.arange(len(sorted_idx)) + 0.5
+    plt.subplot()
+    plt.title('Feature Importance')
+    #plt.bar(f_id,pos, 0.4, color="green")
+    plt.barh(f_id,pos, 0.4,color='g')
+    #plt.xticks(f_id[sorted_idx], pos)
+    #plt.xlabel('Relative Importance')
+    plt.draw()
+    plt.show()
+
+
+
+
+
 
 def main():
     print('start processing')
@@ -100,7 +152,8 @@ def main():
 
 
     #Train_file = random.sample(f_tarin,len(f_tarin))
-    y,X = data_clear(f_tarin)
+    y,X ,f_id= data_clear(f_tarin)
+
 
 
 
@@ -110,6 +163,10 @@ def main():
     print('******************** RF Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)
+    plot_importance(clf.feature_importances_, f_id)
+
+
+
     predict, predictp = ml_predict(clf, test_x)
     #print'predint : ',list(predict)
     predect_calcu(predict, test_y)
