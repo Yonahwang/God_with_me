@@ -10,6 +10,7 @@ from sklearn import metrics
 import pickle
 import matplotlib.pyplot as plt
 import random
+from pandas import DataFrame
 
 
 #Attact= csv.reader(open('/home/yonah/Downloads/mimicus-master/mimicus/bin/text_120.csv','r'))
@@ -122,23 +123,21 @@ def predect_calcu(predict, test_y, binary_class=True):
     print('accuracy: %.2f%%' % (100 * accuracy))
     return accuracy, confusion
 
-def plot_importance(f_v,fe_id):
-    f_id = fe_id
-    #f_id = [str(i) for i in range(len(f_v))]
-    f_v = 100.0 * (f_v / f_v.max())
 
-    f_id = np.array(f_id)
+def importance_bar(feat, imp):
+    dic = {'feat': feat, 'imp': imp}
+    data = DataFrame(dic)
 
-    sorted_idx = np.argsort(-f_v)
+    newI = data.sort_values(by='imp', axis=0, ascending=False)
+    newI.index = [i for i in range(len(newI))]
+    x_str = newI['feat'].tolist()
+    y = newI['imp'].tolist()
 
-    pos = np.arange(len(sorted_idx)) + 0.5
-    plt.subplot()
-    plt.title('Feature Importance')
-    #plt.bar(f_id,pos, 0.4, color="green")
-    plt.barh(f_id,pos, 0.4,color='g')
-    #plt.xticks(f_id[sorted_idx], pos)
-    #plt.xlabel('Relative Importance')
-    plt.draw()
+    plt.barh(range(len(x_str[0:30])), y[0:30], color='g', tick_label=x_str[0:30])
+    ax = plt.gca()
+    plt.subplots_adjust(left=0.2, bottom=0.1, right=0.9, top=0.8, hspace=0.2, wspace=0.3)
+    plt.setp(ax.xaxis.get_majorticklabels(), rotation=-45)
+    plt.savefig('importance.jpg')
     plt.show()
 
 
@@ -154,17 +153,14 @@ def main():
     #Train_file = random.sample(f_tarin,len(f_tarin))
     y,X ,f_id= data_clear(f_tarin)
 
-
-
-
     from sklearn.cross_validation import train_test_split
     train_x, test_x, train_y, test_y = train_test_split(X, y, random_state=1)
 
     print('******************** RF Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)
-    plot_importance(clf.feature_importances_, f_id)
-
+    #plot_importance(clf.feature_importances_, f_id)
+    importance_bar(f_id,clf.feature_importances_)
 
 
     predict, predictp = ml_predict(clf, test_x)

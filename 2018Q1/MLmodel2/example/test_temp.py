@@ -4,32 +4,34 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from pandas import DataFrame
 
 
-def draw_bar(labels, quants):
-    width = 0.4
-    ind = np.linspace(0.5, 9.5, 10)
-    # make a square figure
-    fig = plt.figure(1)
-    ax = fig.add_subplot(111)
-    # Bar Plot
-    ax.bar(ind - width / 2, quants, width, color='green')
-    # Set the ticks on x-axis
-    ax.set_xticks(ind)
-    ax.set_xticklabels(labels)
-    # labels
-    ax.set_xlabel('Country')
-    ax.set_ylabel('GDP (Billion US dollar)')
-    # title
-    ax.set_title('Top 10 GDP Countries', bbox={'facecolor': '0.8', 'pad': 5})
-    plt.grid(True)
-    plt.show()
-    plt.close()
+name_list = ['author_dot', 'author_lc', 'author_len', 'author_mismatch', 'author_num']
+num_list = [5.39079101e-04,1.15897698e-04,4.84011775e-05,3.51138912e-04,3.85006090e-04]
+dic = {'feat':name_list,'imp':num_list}
+data = DataFrame(dic)
+
+newI = data.sort_values(by='imp',axis=0,ascending=False)
+newI.index = [i for i in range(len(newI))]
+print newI
+x = newI['feat'].tolist()
+y = newI['imp'].tolist()
+
+#num_list = 100.0 * (num_list / num_list.max())
+#f_id = np.array(name_list)
+#sorted_idx = np.argsort(-num_list)
+#pos = np.arange(len(sorted_idx)) + 0.5
 
 
-labels = ['USA', 'China', 'India', 'Japan', 'Germany', 'Russia', 'Brazil', 'UK', 'France', 'Italy']
+#plt.bar(pos[0:30], name_list[sorted_idx][0:30], color='g', tick_label=name_list)
+plt.barh(range(len(x)), y, color='g', tick_label=x)
+ax = plt.gca()
+#set(gca, 'XTick', 1:50, 'XTickLabel', app_name,'FontSize',14)
+#set(gca,'XTickLabelRotation',90)
+plt.subplots_adjust(left=0.2, bottom=0.3, right=0.9, top=0.8,hspace=0.2,wspace=0.3)
+plt.setp( ax.xaxis.get_majorticklabels(), rotation=-45 )
+plt.show()
 
-quants = [15094025.0, 11299967.0, 4457784.0, 4440376.0, 3099080.0, 2383402.0, 2293954.0, 2260803.0, 2217900.0,
-          1846950.0]
 
-draw_bar(labels, quants)
+
