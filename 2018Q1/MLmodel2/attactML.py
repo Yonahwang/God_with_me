@@ -143,8 +143,6 @@ def importance_bar(feat, imp):
 
 
 
-
-
 def main():
     print('start processing')
     #test_y, test_x = data_clear(Attact_test)
