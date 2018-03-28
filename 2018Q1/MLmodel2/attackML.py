@@ -145,10 +145,7 @@ def importance_bar(feat, imp):
 
 def main():
     print('start processing')
-    #test_y, test_x = data_clear(Attact_test)
 
-
-    #Train_file = random.sample(f_tarin,len(f_tarin))
     y,X ,f_id= data_clear(f_tarin)
 
     from sklearn.cross_validation import train_test_split
@@ -158,10 +155,10 @@ def main():
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)
     #plot_importance(clf.feature_importances_, f_id)
-    importance_bar(f_id,clf.feature_importances_)
+    importance_bar(f_id,clf.feature_importances_)   #draw importance plot
 
 
-    predict, predictp = ml_predict(clf, test_x)
+    predict, predictp = ml_predict(clf, test_x)  #test
     #print'predint : ',list(predict)
     predect_calcu(predict, test_y)
     #print'test_y : ',test_y
