@@ -19,7 +19,7 @@ from pandas import DataFrame
 #mal_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/virustotal-mal.csv')
 #ben_tarin1 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/contagio.csv')
 #ben_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
-f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv')
+f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
 #Attact_test = pd.read_csv('/home/yonah/Downloads/mimicus-master/mimicus/bin/text_120.csv')
 
 
@@ -140,16 +140,16 @@ def importance_bar(feat, imp):
     plt.savefig('importance.jpg')
     plt.show()
 
-
-
+def plot_feature_importance():
+    pass # TODO: Fill it
 
 def main():
     print('start processing')
 
-    y,X ,f_id= data_clear(f_tarin)
+    y,X,f_id= data_clear(f_tarin)
 
     from sklearn.cross_validation import train_test_split
-    train_x, test_x, train_y, test_y = train_test_split(X, y, random_state=1)
+    train_x, test_x, train_y, test_y = train_test_split(X, y, random_state=1) # randomize samples
 
     print('******************** RF Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
@@ -169,7 +169,7 @@ def main():
     with open('model_csv2.0.pickle', 'wb') as f:
         pickle.dump(clf, f)
     print('DONE')
-
+	
 
 
 if __name__ == '__main__':

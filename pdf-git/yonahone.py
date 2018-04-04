@@ -360,7 +360,7 @@ def feature_extract(froot): #对输入文件进行特征提取
 
 if __name__ == '__main__':
     start = datetime.datetime.now()
-    feature_extract(file)
+    feature_extract(file) # featureExtraction(), extractFeatures()
     end = datetime.datetime.now()
     print start
     print end
