@@ -116,17 +116,25 @@ def RF(X_train,y_train,X_test,data_y):
     # 模型预测
     return model.predict(X_test), model.score(X_test, data_y)
 
-def AnalysisTofile(name1,test1,p1,p2,p3,p4):
-    df = DataFrame({'name':name1,
-                    'leble':test1,
-                    'RF':p1,
-                    'KNN':p2,
-                    'NNET':p3,
-                    'SVM':p4
+def AnalysisTofile(name1,test1,p1,p2,p3,p4,ac):
+    df = DataFrame(columns=('name', 'leble', 'RF','KNN','NNET','SVM'))  # 生成空的pandas表
+    df['name'] = name1
+    df['leble'] = test1
+    df['RF'] = p1
+    df['KNN'] = p2
+    df['NNET'] = p3
+    df['SVM'] = p4
 
-    })
+    dfac = DataFrame(columns=('name', 'leble', 'RF', 'KNN','NNET','SVM'))  # 生成空的pandas表
+    a = [0,0]
+    for i in ac:
+        a.append(int(100*i))
 
-    return df.head(10)
+    dfac.loc[0] = a
+
+    below = df.loc[0:]
+    newdf = pd.concat([dfac, below], ignore_index=True)
+    return newdf.head(10)
 
 
 def ySpilt(list):
@@ -158,9 +166,9 @@ def main():
     FileOne4, ac4 = NNet(train_x, train_y, test_x, test_y)
     FileOne5, ac5 = SVM (train_x, train_y, test_x, test_y)
 
-    #Li = [ac1,ac2,ac3,ac4,ac5]
+    Li = [ac1,ac3,ac4,ac5]
 
-    print AnalysisTofile(fina, test_y, FileOne1,FileOne3,FileOne4,FileOne5)
+    print AnalysisTofile(fina, test_y, FileOne1,FileOne3,FileOne4,FileOne5,Li)
 
 
 

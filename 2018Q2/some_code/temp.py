@@ -5,11 +5,12 @@
 from pandas import *
 import pandas as pd
 
-a = [0,0]
+ac = [0.99,0.97,0.998]
+ai = []
+for i in ac:
+    i = int(i)
+    ai.append(i)
 
-ac = [0.99,0.97]
-
-c = a + ac
-print c
+print ai
 
 
