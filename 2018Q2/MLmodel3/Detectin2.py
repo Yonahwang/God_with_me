@@ -4,7 +4,7 @@
 import pandas as pd
 import pickle
 
-from attackML import data_clear
+from ML3 import data_clear
 
 f_test = pd.read_csv('/home/yonah/Downloads/mimicus-master/mimicus/bin/F_gdkse.csv')
 
