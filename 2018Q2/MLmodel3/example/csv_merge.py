@@ -24,7 +24,11 @@ def hebing():
     print(u'合并完毕！')
 
 def quchong(file):
+<<<<<<< HEAD
+    df = pd.read_csv(file,header=0, delimiter="\t")
+=======
     df = pd.read_csv(file,header=0,delimiter="\t")
+>>>>>>> 3ce28c15f39244f831401050a841f6ad6a1420be
     datalist = df.drop_duplicates()
     datalist.to_csv(file)
 
