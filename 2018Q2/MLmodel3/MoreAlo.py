@@ -17,9 +17,7 @@ from pandas import DataFrame
 f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/merge_real.csv') # 10K samples, balanced dataset
 
 def data_clear(file):
-    #label = file[['class']]
-    xxxx = pd.DataFrame([1,2,3,4],columns = ['a'])
-    print(xxxx['a'])
+
     c = file['class']
     a = file['class']=='FALSE'
     b = file['class'] == 'TRUE'
