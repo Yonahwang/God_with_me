@@ -6,25 +6,12 @@ from pandas import *
 import csv
 
 
-data = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/merge_real.csv')
+fx = pd.read_excel('/home/yonah/God_with_me/2018Q2/data-set/congagio9K.xlsx')
+print fx.pop(5)
+#fx.to_csv('c9k.csv', encoding='utf-8')
+f1 = pd.read_csv('/home/yonah/God_with_me/2018Q2/data-set/normal_sogpi2K.csv')
+print f1.head(1)
 
+f2 = pd.read_csv('/home/yonah/God_with_me/2018Q2/some_code/c9k.csv') # 2K
 
-#file = csv.reader(open('/home/yonah/God_with_me/2018Q2/MLmodel3/example/merge_real.csv',"r")) # 10K samples, balanced dataset
-
-
-#print f_tarin[0]
-#print file.head(10)
-
-ac = [0.99,0.97,0.998]
-ai = []
-for i in ac:
-    i = int(i)
-    ai.append(i)
-
-print ai
-
-
-c = data.loc[0:1]
-print c
-#print file["0"]
-
+print f2.head(2)

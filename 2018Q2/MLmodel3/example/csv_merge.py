@@ -8,8 +8,9 @@ import glob
 def hebing():
     csv_list = []
 
-    csv_list.append(pd.read_csv('/home/yonah/Downloads/mimicus-master/data/contagio-mal.csv')) # 5K
-    csv_list.append(pd.read_csv('/home/yonah/Downloads/mimicus-master/data/virustotal-mal.csv')) # 5K
+    csv_list.append('/home/yonah/God_with_me/2018Q2/data-set/normal_sogpi2K.csv')  # 2K
+    # fb = pd.read_csv('/home/yonah/God_with_me/tempp/ben1w.csv',sep=None)
+    csv_list.append('/home/yonah/God_with_me/2018Q2/data-set/c9k.csv')
     # csv_list.append('/home/yonah/Downloads/mimicus-master/data/contagio.csv') #5K
     # csv_list.append('/home/yonah/Downloads/mimicus-master/data/google-ben.csv') #5K
     #csv_list.append('/home/yonah/Downloads/mimicus-master/mimicus/bin/contogio_ben9K.csv')  # 9K
@@ -21,18 +22,18 @@ def hebing():
     print(u'正在处理............')
     for i in csv_list:
         fr = open(i,'r').read()
-        with open('merge_real.csv','a') as f:
+        with open('merge_ben1w.csv','a') as f:
             f.write(fr)
     print(u'合并完毕！')
 
 def quchong(file):
 
-    df = pd.read_csv(file,header=0,delimiter="\t")
+    df = pd.read_csv(file,header=0)
 
     datalist = df.drop_duplicates()
     datalist.to_csv(file)
 
 if __name__ == '__main__':
     hebing()
-    quchong("merge_real.csv")
+    quchong("merge_ben1w.csv")
 
