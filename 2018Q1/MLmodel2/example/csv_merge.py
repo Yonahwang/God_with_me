@@ -7,20 +7,12 @@ import glob
 
 def hebing():
     csv_list = []
-    #csv_list.append('/home/yonah/Downloads/mimicus-master/data/contagio-mal.csv') # 5K
-    #csv_list.append('/home/yonah/Downloads/mimicus-master/data/virustotal-mal.csv') # 5K
-    #csv_list.append('/home/yonah/Downloads/mimicus-master/data/contagio.csv') #5K
-    #csv_list.append('/home/yonah/Downloads/mimicus-master/data/google-ben.csv') #5K
-    csv_list.append('/home/yonah/Downloads/mimicus-master/mimicus/bin/contogio_ben9K.csv') #9K
-    csv_list.append('/home/yonah/Downloads/mimicus-master/mimicus/bin/normal_sogpi2K.csv') # 2K
-    #csv_list.append('/home/yonah/God_with_me/2018Q2/data-set/Virus8K.csv') #8K
-    csv_list.append('/home/yonah/God_with_me/2018Q2/data-set/Virus-noParse.csv') # 8K
-
-
-
-
-
-
+    csv_list.append('/home/yonah/God_with_me/2018Q2/MLmodel3/data_set/contogio_ben9K.csv')
+    #csv_list.append('/home/yonah/Downloads/mimicus-master/data/virustotal-mal.csv')
+    #csv_list.append('/home/yonah/Downloads/mimicus-master/data/contagio.csv')
+    #csv_list.append('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
+    #csv_list.append('/home/yonah/Downloads/mimicus-master/data/contagio-nopdfrate.csv')
+    csv_list.append('/home/yonah/God_with_me/2018Q2/MLmodel3/data_set/normal_sogpi2K.csv')
 
     print(u'共发现%s个CSV文件'% len(csv_list))
     print(u'正在处理............')
