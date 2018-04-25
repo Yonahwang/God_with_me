@@ -15,14 +15,14 @@ from pandas import DataFrame
 
 
 #f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/merge_real.csv') # 10K samples, balanced dataset
-f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv')
+f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
 
 def data_clear(file):
 
-    a = file['class']=='FALSE'
-    b = file['class'] == 'TRUE'
-    file.loc[a,'class'] = False
-    file.loc[b, 'class'] = True
+    #a = file['class']=='FALSE'
+    #b = file['class'] == 'TRUE'
+    #file.loc[a,'class'] = False
+    #file.loc[b, 'class'] = True
 
 
     file['class'] = file['class'].astype(bool)
