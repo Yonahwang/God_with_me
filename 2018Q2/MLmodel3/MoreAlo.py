@@ -67,6 +67,7 @@ def data_clear(file):
                 'title_mismatch', 'title_num', 'title_oth', 'title_uc', 'version']]
 
     feat_id = X.columns.tolist()
+
     XX = np.array(X)
     Xint = XX.astype(int)
     return NYY,Xint.tolist()
@@ -129,12 +130,13 @@ def AnalysisTofile(name1,test1,p1,p2,p3,p4,ac):
     a = [0,0]
     for i in ac:
         a.append(int(100*i))
-
     dfac.loc[0] = a
-
     below = df.loc[0:]
     newdf = pd.concat([dfac, below], ignore_index=True)
-    return newdf.head(10)
+    newdf['diff'] = newdf['RF'] - newdf['leble']
+
+    #print newdf.head(10)
+    return newdf[newdf['diff']!= 0]
 
 
 def ySpilt(list):
@@ -168,7 +170,9 @@ def main():
 
     Li = [ac1,ac3,ac4,ac5]
 
-    print AnalysisTofile(fina, test_y, FileOne1,FileOne3,FileOne4,FileOne5,Li)
+    dframe=  AnalysisTofile(fina, test_y, FileOne1,FileOne3,FileOne4,FileOne5,Li)
+    dframe.to_csv("Case_study.csv", index=False, sep=',')
+
 
 
 

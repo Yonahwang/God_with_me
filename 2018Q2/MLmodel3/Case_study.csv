@@ -1,0 +1,6 @@
+name,leble,RF,KNN,NNET,SVM,diff
+0,0,99,97,86,75,99
+/home/fengjiao/MalwarePDFDetection/yo/test1w/Virus2k/VirusShare_00a93d5da262ab229de88bdb54c35cfb.pdf,1,0,0,0,0,-1
+/home/yonah/PDFdata/pdfnormal/0c473816bfa62ea5a4c54651eebe2a025609d751.pdf,0,1,0,0,0,1
+/home/fengjiao/MalwarePDFDetection/yo/test1w/Virus2k/VirusShare_1a1186e91bb538bc7e69120cbc98ad36.pdf,1,0,0,0,0,-1
+/home/fengjiao/MalwarePDFDetection/yo/test1w/Virus2k/VirusShare_001e2710555613a82e94156d3ed9c289.pdf,1,0,0,0,0,-1

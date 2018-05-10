@@ -16,8 +16,8 @@ from pandas import DataFrame
 #mal_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/virustotal-mal.csv')
 #ben_tarin1 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/contagio.csv')
 #ben_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
-f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
-#Attact_test = pd.read_csv('/home/yonah/Downloads/mimicus-master/mimicus/bin/text_120.csv')
+#f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
+f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/data-set/merge_real.csv')
 
 
 
@@ -25,10 +25,10 @@ f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con
 def data_clear(file):
     #label = file[['class']]
 
-    a = file['class']=='FALSE'
+    '''a = file['class']=='FALSE'
     b = file['class'] == 'TRUE'
     file.loc[a,'class'] = False
-    file.loc[b, 'class'] = True
+    file.loc[b, 'class'] = True'''
 
 
     file['class'] = file['class'].astype(bool)
@@ -120,7 +120,7 @@ def predect_calcu(predict, test_y, binary_class=True):
 def plot_feature_importance(feat, imp):
     dic = {'feat': feat, 'imp': imp}
     data = DataFrame(dic)
-
+    data.to_csv("feature_importance.csv", index=False, sep=',')
     newI = data.sort_values(by='imp', axis=0, ascending=False)
     newI.index = [i for i in range(len(newI))]
     x_str = newI['feat'].tolist()
@@ -145,6 +145,7 @@ def AnalysisTofile(name1,test1,predict1):
     table = {'name': name, 'test':test , 'predint': predict}
     import pandas
     frame = pandas.DataFrame(table)
+    frame.to_csv("file_real_predict.csv", index=False, sep=',')
     return frame.head(10)
 
 
@@ -159,7 +160,6 @@ def main():
     print('******************** RF Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)
-
     #plot_feature_importance(f_id,clf.feature_importances_)   #draw importance plot
 
     predict, predictp = ml_predict(clf, test_x)  #test
@@ -168,13 +168,11 @@ def main():
     print('******************** flie analysis *********************')
     print AnalysisTofile(tena, test_y, predict)
 
-
-
     end = datetime.datetime.now()
     print "spend time detction = %d s" % (end - start).seconds
-    with open('model_csv3.0.pickle', 'wb') as f:   # 保存模型
+    '''with open('model_csv3.0.pickle', 'wb') as f:   # 保存模型
         pickle.dump(clf, f)
-    print('DONE')
+    print('DONE')'''
 	
 
 
