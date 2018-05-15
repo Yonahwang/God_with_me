@@ -153,7 +153,6 @@ def Plot_ROC(y_test,y_pred):
 
     fpr_rf, tpr_rf, _ = roc_curve(y_test, y_pred)
 
-
     fpr_rf = [0.] + fpr_rf
     tpr_rf = [0.] + tpr_rf
     plt.figure(1)
