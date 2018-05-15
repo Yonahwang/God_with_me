@@ -12,29 +12,28 @@ import matplotlib.pyplot as plt
 import random
 from pandas import DataFrame
 from sklearn.metrics import roc_curve
+from sklearn.ensemble import (RandomTreesEmbedding, RandomForestClassifier)
 
-#mal_tarin1 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/contagio-mal.csv')
-#mal_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/virustotal-mal.csv')
-#ben_tarin1 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/contagio.csv')
-#ben_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
-#f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
-#f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/data-set/merge_real.csv')
+# mal_tarin1 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/contagio-mal.csv')
+# mal_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/virustotal-mal.csv')
+# ben_tarin1 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/contagio.csv')
+# ben_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
+# f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
+# f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/data-set/merge_real.csv')
 f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
 
 
-
 def data_clear(file):
-    #label = file[['class']]
+    # label = file[['class']]
 
     '''a = file['class']=='FALSE'
     b = file['class'] == 'TRUE'
     file.loc[a,'class'] = False
     file.loc[b, 'class'] = True'''
 
-
     file['class'] = file['class'].astype(bool)
     file['class'] = file['class'].astype(int)
-    #print file['class']
+    # print file['class']
     #  print file.loc[file['class']==0]   #  print x ==0 lines
     y = file['class'].tolist()
     fiName = file['filename'].tolist()
@@ -44,39 +43,36 @@ def data_clear(file):
         else:
             y.append(0)'''
 
-    #print y
+    # print y
     X = file[['author_dot', 'author_lc', 'author_len', 'author_mismatch', 'author_num', 'author_oth', 'author_uc',
-                'box_nonother_types', 'box_other_only', 'company_mismatch', 'count_acroform', 'count_acroform_obs',
-                'count_action', 'count_action_obs', 'count_box_a4', 'count_box_legal', 'count_box_letter',
-                'count_box_other', 'count_box_overlap', 'count_endobj', 'count_endstream', 'count_eof', 'count_font',
-                'count_font_obs', 'count_image_large', 'count_image_med', 'count_image_small', 'count_image_total',
-                'count_image_xlarge', 'count_image_xsmall', 'count_javascript', 'count_javascript_obs', 'count_js',
-                'count_js_obs', 'count_obj', 'count_objstm', 'count_objstm_obs', 'count_page', 'count_page_obs',
-                'count_startxref', 'count_stream', 'count_stream_diff', 'count_trailer', 'count_xref', 'createdate_dot',
-                'createdate_mismatch', 'createdate_ts', 'createdate_tz', 'createdate_version_ratio', 'creator_dot',
-                'creator_lc', 'creator_len', 'creator_mismatch', 'creator_num', 'creator_oth', 'creator_uc', 'delta_ts',
-                'delta_tz', 'image_mismatch', 'image_totalpx', 'keywords_dot', 'keywords_lc', 'keywords_len',
-                'keywords_mismatch', 'keywords_num', 'keywords_oth', 'keywords_uc', 'len_obj_avg', 'len_obj_max',
-                'len_obj_min', 'len_stream_avg', 'len_stream_max', 'len_stream_min', 'moddate_dot', 'moddate_mismatch',
-                'moddate_ts', 'moddate_tz', 'moddate_version_ratio', 'pdfid0_dot', 'pdfid0_lc', 'pdfid0_len',
-                'pdfid0_mismatch', 'pdfid0_num', 'pdfid0_oth', 'pdfid0_uc', 'pdfid1_dot', 'pdfid1_lc', 'pdfid1_len',
-                'pdfid1_mismatch', 'pdfid1_num', 'pdfid1_oth', 'pdfid1_uc', 'pdfid_mismatch', 'pos_acroform_avg',
-                'pos_acroform_max', 'pos_acroform_min', 'pos_box_avg', 'pos_box_max', 'pos_box_min', 'pos_eof_avg',
-                'pos_eof_max', 'pos_eof_min', 'pos_image_avg', 'pos_image_max', 'pos_image_min', 'pos_page_avg',
-                'pos_page_max', 'pos_page_min', 'producer_dot', 'producer_lc', 'producer_len', 'producer_mismatch',
-                'producer_num', 'producer_oth', 'producer_uc', 'ratio_imagepx_size', 'ratio_size_obj',
-                'ratio_size_page', 'ratio_size_stream', 'size', 'subject_dot', 'subject_lc', 'subject_len',
-                'subject_mismatch', 'subject_num', 'subject_oth', 'subject_uc', 'title_dot', 'title_lc', 'title_len',
-                'title_mismatch', 'title_num', 'title_oth', 'title_uc', 'version']]
+              'box_nonother_types', 'box_other_only', 'company_mismatch', 'count_acroform', 'count_acroform_obs',
+              'count_action', 'count_action_obs', 'count_box_a4', 'count_box_legal', 'count_box_letter',
+              'count_box_other', 'count_box_overlap', 'count_endobj', 'count_endstream', 'count_eof', 'count_font',
+              'count_font_obs', 'count_image_large', 'count_image_med', 'count_image_small', 'count_image_total',
+              'count_image_xlarge', 'count_image_xsmall', 'count_javascript', 'count_javascript_obs', 'count_js',
+              'count_js_obs', 'count_obj', 'count_objstm', 'count_objstm_obs', 'count_page', 'count_page_obs',
+              'count_startxref', 'count_stream', 'count_stream_diff', 'count_trailer', 'count_xref', 'createdate_dot',
+              'createdate_mismatch', 'createdate_ts', 'createdate_tz', 'createdate_version_ratio', 'creator_dot',
+              'creator_lc', 'creator_len', 'creator_mismatch', 'creator_num', 'creator_oth', 'creator_uc', 'delta_ts',
+              'delta_tz', 'image_mismatch', 'image_totalpx', 'keywords_dot', 'keywords_lc', 'keywords_len',
+              'keywords_mismatch', 'keywords_num', 'keywords_oth', 'keywords_uc', 'len_obj_avg', 'len_obj_max',
+              'len_obj_min', 'len_stream_avg', 'len_stream_max', 'len_stream_min', 'moddate_dot', 'moddate_mismatch',
+              'moddate_ts', 'moddate_tz', 'moddate_version_ratio', 'pdfid0_dot', 'pdfid0_lc', 'pdfid0_len',
+              'pdfid0_mismatch', 'pdfid0_num', 'pdfid0_oth', 'pdfid0_uc', 'pdfid1_dot', 'pdfid1_lc', 'pdfid1_len',
+              'pdfid1_mismatch', 'pdfid1_num', 'pdfid1_oth', 'pdfid1_uc', 'pdfid_mismatch', 'pos_acroform_avg',
+              'pos_acroform_max', 'pos_acroform_min', 'pos_box_avg', 'pos_box_max', 'pos_box_min', 'pos_eof_avg',
+              'pos_eof_max', 'pos_eof_min', 'pos_image_avg', 'pos_image_max', 'pos_image_min', 'pos_page_avg',
+              'pos_page_max', 'pos_page_min', 'producer_dot', 'producer_lc', 'producer_len', 'producer_mismatch',
+              'producer_num', 'producer_oth', 'producer_uc', 'ratio_imagepx_size', 'ratio_size_obj',
+              'ratio_size_page', 'ratio_size_stream', 'size', 'subject_dot', 'subject_lc', 'subject_len',
+              'subject_mismatch', 'subject_num', 'subject_oth', 'subject_uc', 'title_dot', 'title_lc', 'title_len',
+              'title_mismatch', 'title_num', 'title_oth', 'title_uc', 'version']]
 
     feat_id = X.columns.tolist()
     XX = np.array(X)
     Xint = XX.astype(int)
 
-
-
-
-    return y,Xint.tolist(),feat_id,fiName
+    return y, Xint.tolist(), feat_id, fiName
 
 
 # 对测试数据分类
@@ -116,8 +112,6 @@ def predect_calcu(predict, test_y, binary_class=True):
     return accuracy, confusion
 
 
-
-
 def plot_feature_importance(feat, imp):
     dic = {'feat': feat, 'imp': imp}
     data = DataFrame(dic)
@@ -135,27 +129,24 @@ def plot_feature_importance(feat, imp):
     plt.show()
 
 
-def AnalysisTofile(name1,test1,predict1):
+def AnalysisTofile(name1, test1, predict1):
     name = []
     test = []
-    predict= []
+    predict = []
     for i in range(len(predict1)):
         name.append(name1[i])
         test.append(test1[i])
         predict.append(predict1[i])
-    table = {'name': name, 'test':test , 'predint': predict}
+    table = {'name': name, 'test': test, 'predint': predict}
     import pandas
     frame = pandas.DataFrame(table)
     frame.to_csv("file_real_predict.csv", index=False, sep=',')
     return frame.head(10)
 
-def Plot_ROC(y_test,y_pred):
 
+def Plot_ROC(y_test, y_pred):
     fpr_rf, tpr_rf, _ = roc_curve(y_test, y_pred)
 
-
-    fpr_rf = [0.] + fpr_rf
-    tpr_rf = [0.] + tpr_rf
     plt.figure(1)
     plt.plot([0, 1], [0, 1], 'k--')
     plt.plot(fpr_rf, tpr_rf, label='RF')
@@ -165,7 +156,7 @@ def Plot_ROC(y_test,y_pred):
     plt.legend(loc='best')
     plt.show()
 
-    '''plt.figure(2)
+    plt.figure(2)
     plt.xlim(0, 0.2)
     plt.ylim(0.8, 1)
     plt.plot([0, 1], [0, 1], 'k--')
@@ -174,40 +165,46 @@ def Plot_ROC(y_test,y_pred):
     plt.ylabel('True positive rate')
     plt.title('ROC curve (zoomed in at top left)')
     plt.legend(loc='best')
-    plt.show()'''
+    plt.show()
 
 
 def main():
     print('start processing')
 
-    y,X,f_id,tena= data_clear(f_tarin)
+    y, X, f_id, tena = data_clear(f_tarin)
 
     from sklearn.model_selection import train_test_split
-    train_x, test_x, train_y, test_y = train_test_split(X, y, random_state=1) # randomize samples
+    train_x, test_x, train_y, test_y = train_test_split(X, y, random_state=1)  # randomize samples
 
     print('******************** RF Train Data Info *********************')
-    print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
+    '''print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)
-    #plot_feature_importance(f_id,clf.feature_importances_)   #draw importance plot
+    # plot_feature_importance(f_id,clf.feature_importances_)   #draw importance plot
 
-    predict, predictp = ml_predict(clf, test_x)  #test
-    predect_calcu(predict, test_y)
+    predict, predictp = ml_predict(clf, test_x)  # test
+    predect_calcu(predict, test_y)'''
 
-    '''# The random forest model by itself
-    y_pred_rf = clf.predict_proba(test_x)[:, 1]
-    Plot_ROC(test_y,y_pred_rf)'''
+    # Unsupervised transformation based on totally random trees
+    n_estimator = 10
+    rt = RandomTreesEmbedding(max_depth=3, n_estimators=n_estimator,
+                              random_state=0)
 
+    # Supervised transformation based on random forests
+    rf = RandomForestClassifier(max_depth=3, n_estimators=n_estimator)
+    rf.fit(train_x, train_y)
 
+    # The random forest model by itself
+    y_pred_rf = rf.predict_proba(test_x)[:, 1]
+    Plot_ROC(test_y, y_pred_rf)
 
     print('******************** flie analysis *********************')
-    print AnalysisTofile(tena, test_y, predict)
+    #print AnalysisTofile(tena, test_y, predict)
 
     end = datetime.datetime.now()
     print "spend time detction = %d s" % (end - start).seconds
     '''with open('model_csv3.0.pickle', 'wb') as f:   # 保存模型
         pickle.dump(clf, f)
     print('DONE')'''
-	
 
 
 if __name__ == '__main__':
@@ -216,6 +213,8 @@ if __name__ == '__main__':
 
     end = datetime.datetime.now()
     print "spend time = %d s" % (end - start).seconds
+
+
 
 
 

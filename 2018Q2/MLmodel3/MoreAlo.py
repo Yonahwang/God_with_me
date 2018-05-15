@@ -174,9 +174,6 @@ def main():
     dframe.to_csv("Case_study.csv", index=False, sep=',')
 
 
-
-
-
     #print('******************** flie analysis *********************')
     #print AnalysisTofile(tena, test_y, predict)
     end = datetime.datetime.now()
