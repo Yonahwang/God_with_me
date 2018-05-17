@@ -13,18 +13,19 @@
 -------
 ### Questions： 
 >  
-> - 1)	**What is the problem?**
->   * 针对分类器逃逸，提出了一个`限制对手逃避分类器的模型—EvadeHC`
-> - 2)	**Why is the problem important?**
->  * Learning-based systems have been shown to be vulnerable to evasion through adversarial data manipulation.
-> * 通过对抗数据操作，基于学习的系统已被证明`容易逃避`
->- 3)	**What is the old technique?**
->     * `机器学习`：在安全环境中有很多创新应用[19,22,28]，但是[7,11,12]表明它们可能`易于逃避`,
-> 许伟林在NDSS2016年的会议中的一篇文章，`自动逃逸分类`器，研究了对基于学习的系统的逃避攻击，
-> 可是有研究者讨论如果隐藏分类评分的`简单预防措施足以阻止这些攻击这些技术`，如何与现实中部署的真正黑匣子系统（例如内置于电子邮件服务中的恶意软件检测>器）`相互作用`仍然是一个问题，因为它们不太可能揭示实值分数，而是仅暴露其最终决策
->- 4)	**What is the new technique?**
->  * we propose an `effective hill-climbing` based evasion attack `EvadeHC`
+ - 1)	**What is the problem?**
+   * 针对分类器逃逸，提出了一个`限制对手逃避分类器的模型—EvadeHC`
+ - 2)	**Why is the problem important?**
+        * Learning-based systems have been shown to be vulnerable to evasion through adversarial data manipulation.
+        * 通过对抗数据操作，基于学习的系统已被证明`容易逃避`
+- 3)	**What is the old technique?**
+     * `机器学习`：在安全环境中有很多创新应用[19,22,28]，但是[7,11,12]表明它们可能`易于逃避`,
+ 许伟林在NDSS2016年的会议中的一篇文章，`自动逃逸分类`器，研究了对基于学习的系统的逃避攻击，
+ 可是有研究者讨论如果隐藏分类评分的`简单预防措施足以阻止这些攻击这些技术`，如何与现实中部署的真正黑匣子系统（例如内置于电子邮件服务中的恶意软件检测>器）`相互作用`仍然是一个问题，因为它们不太可能揭示实值分数，而是仅暴露其最终决策
+- 4)	**What is the new technique?**
+  * we propose an `effective hill-climbing` based evasion attack `EvadeHC`
 该解决方案会持续生成随机变形样本，`直至找到规避样本`。实证结果表明EvadeHC 在实验数据集上`获得100％的逃避率`，并且在执行成本方面`胜过基准解决方案高达80倍`，我们还将EvadeHC与逃避黑匣子分类器的最新技术进行比较，即使只能访问`检测器的二进制输出`，EvadeHC仍然`胜过以前的工作`
+
 ![image](./Evading.png) 
 
         * Malice-flipping sample：第一个被检测器检测为良性的样本。
