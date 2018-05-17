@@ -38,7 +38,7 @@ N-gream
 又一次说到深度学习的好处和未来在迁移学习的
 沙箱，溯源，计算，迁移学习，批量标注，情报，行为序列，NLP，Embedding,复杂网络
 
-
+第九个：
 AIModel security 
 	
 
