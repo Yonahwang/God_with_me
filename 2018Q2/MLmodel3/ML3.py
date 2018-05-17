@@ -19,30 +19,28 @@ from sklearn.metrics import roc_curve
 #ben_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
 #f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
 #f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/data-set/merge_real.csv')
-f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
+f_tarin = pd.read_csv('/home/yonah/Data/data-set/merge_20w.csv')   #26w samples all
+#f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
 
 
 
 def data_clear(file):
     #label = file[['class']]
 
-    '''a = file['class']=='FALSE'
+    a = file['class']=='FALSE'
     b = file['class'] == 'TRUE'
     file.loc[a,'class'] = False
-    file.loc[b, 'class'] = True'''
+    file.loc[b, 'class'] = True
 
 
     file['class'] = file['class'].astype(bool)
     file['class'] = file['class'].astype(int)
     #print file['class']
     #  print file.loc[file['class']==0]   #  print x ==0 lines
-    y = file['class'].tolist()
-    fiName = file['filename'].tolist()
-    '''for i in np.array(label).tolist():
-        if i == 'Ture':
-            y.append(1)
-        else:
-            y.append(0)'''
+    y = file[['class', 'filename']]
+    NY = np.array(y)
+    NYY = NY.tolist()
+
 
     #print y
     X = file[['author_dot', 'author_lc', 'author_len', 'author_mismatch', 'author_num', 'author_oth', 'author_uc',
@@ -73,10 +71,7 @@ def data_clear(file):
     XX = np.array(X)
     Xint = XX.astype(int)
 
-
-
-
-    return y,Xint.tolist(),feat_id,fiName
+    return  NYY,Xint.tolist(),feat_id
 
 
 # 对测试数据分类
@@ -135,19 +130,38 @@ def plot_feature_importance(feat, imp):
     plt.show()
 
 
+def table_feature_importance(feat,imp):
+    df = pd.DataFrame(columns=['feature','importance'])
+    df['feature']= feat
+    df['importance'] = imp
+    df.to_csv('impportance_featuer.csv', index=False, sep=',')
+
+
 def AnalysisTofile(name1,test1,predict1):
     name = []
     test = []
-    predict= []
+    predict = []
     for i in range(len(predict1)):
         name.append(name1[i])
         test.append(test1[i])
         predict.append(predict1[i])
-    table = {'name': name, 'test':test , 'predint': predict}
-    import pandas
-    frame = pandas.DataFrame(table)
-    frame.to_csv("file_real_predict.csv", index=False, sep=',')
-    return frame.head(10)
+    df = DataFrame(columns=('name', 'leble', 'RF'))  # 生成空的pandas表
+    df['name'] = name
+    df['leble'] = test
+    df['RF'] = predict
+
+    df['diff'] = df['RF'] - df['leble']
+
+    # print newdf.head(10)
+    return df[df['diff'] != 0]
+
+def ySpilt(list):
+    DF_y = pd.DataFrame(list, columns=['Y', 'finame'])
+    DF = DF_y['Y']
+    DF2 = DF_y['finame']
+    y = DF.tolist()
+    finame = DF2.tolist()
+    return y,finame
 
 def Plot_ROC(y_test,y_pred):
 
@@ -179,16 +193,18 @@ def Plot_ROC(y_test,y_pred):
 def main():
     print('start processing')
 
-    y,X,f_id,tena= data_clear(f_tarin)
+    y,X,f_id= data_clear(f_tarin)
 
     from sklearn.model_selection import train_test_split
-    train_x, test_x, train_y, test_y = train_test_split(X, y, random_state=1) # randomize samples
+    train_x, test_x, train_Y, test_Y = train_test_split(X, y, random_state=5) # randomize samples
+    train_y, _ = ySpilt(train_Y)
+    test_y, fina = ySpilt(test_Y)
 
     print('******************** RF Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
     clf = random_forest_classifier(train_x, train_y)
     #plot_feature_importance(f_id,clf.feature_importances_)   #draw importance plot
-
+    table_feature_importance(f_id,clf.feature_importances_)
     predict, predictp = ml_predict(clf, test_x)  #test
     predect_calcu(predict, test_y)
 
@@ -199,13 +215,13 @@ def main():
 
 
     print('******************** flie analysis *********************')
-    print AnalysisTofile(tena, test_y, predict)
+    #print AnalysisTofile(fina, test_y, predict)
 
     end = datetime.datetime.now()
     print "spend time detction = %d s" % (end - start).seconds
-    '''with open('model_csv3.0.pickle', 'wb') as f:   # 保存模型
-        pickle.dump(clf, f)
-    print('DONE')'''
+    '''with open('model_csv3.1.pickle', 'wb') as f:   # 保存模型
+        pickle.dump(clf, f)'''
+    print('DONE')
 	
 
 
