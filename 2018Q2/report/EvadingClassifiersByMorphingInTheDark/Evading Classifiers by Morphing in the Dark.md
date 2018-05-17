@@ -13,9 +13,9 @@
 -------
 ### Questions： 
 >  
-- 1)	**What is the problem?**
+> - 1)	**What is the problem?**
    * 针对分类器逃逸，提出了一个`限制对手逃避分类器的模型—EvadeHC`
-- 2)	**Why is the problem important?**
+> - 2)	**Why is the problem important?**
   * Learning-based systems have been shown to be vulnerable to evasion through adversarial data manipulation.
  * 通过对抗数据操作，基于学习的系统已被证明`容易逃避`
 - 3)	**What is the old technique?**
@@ -25,7 +25,8 @@
 - 4)	**What is the new technique?**
   * we propose an `effective hill-climbing` based evasion attack `EvadeHC`
 该解决方案会持续生成随机变形样本，`直至找到规避样本`。实证结果表明EvadeHC 在实验数据集上`获得100％的逃避率`，并且在执行成本方面`胜过基准解决方案高达80倍`，我们还将EvadeHC与逃避黑匣子分类器的最新技术进行比较，即使只能访问`检测器的二进制输出`，EvadeHC仍然`胜过以前的工作`
-![Alt text](./B4TA0YMP@L5P`A4D5`HTR.png) ![Alt text](./1525338094177.png)
+![image](./Evading.png) 
+
         * Malice-flipping sample：第一个被检测器检测为良性的样本。
         * Reject-flipping sample：第一个被分类器接受的样本
         * M : 样本在测试器中的结果从恶意到良性所需经过的修改次数
