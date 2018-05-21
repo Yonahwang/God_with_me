@@ -33,7 +33,7 @@ def main():
     for file in pathDir:
         f = file_path + "/" + file
         fr = open(f, 'rb')
-        sh = hashlib.sha1()
+        sh = hashlib.sha256()
         sh.update(fr.read())
         file_sha256.append(sh.hexdigest())
         downf.write(sh.hexdigest() + '\n')
