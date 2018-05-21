@@ -30,6 +30,7 @@ def main():
     pathDir = os.listdir(file_path)
     downf = open("sha245.txt", 'wb')
     file_sha256 = []
+
     for file in pathDir:
         f = file_path + "/" + file
         fr = open(f, 'rb')
@@ -37,6 +38,9 @@ def main():
         sh.update(fr.read())
         file_sha256.append(sh.hexdigest())
         downf.write(sh.hexdigest() + '\n')
+
+
+
     pickle.dump(file_sha256, open('pdf_sha256.pkl', 'wb'))
     downf.close()
 
