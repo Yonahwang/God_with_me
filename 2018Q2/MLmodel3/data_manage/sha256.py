@@ -22,13 +22,14 @@ for file in pathDir:
 
 downf.close()'''
 
+
 def main():
     print 'start...........'
 
     file_path = sys.argv[1]
     #files = []
     pathDir = os.listdir(file_path)
-    downf = open("sha245.txt", 'wb')
+
     file_sha256 = []
 
     for file in pathDir:
@@ -37,14 +38,9 @@ def main():
         sh = hashlib.sha256()
         sh.update(fr.read())
         file_sha256.append(sh.hexdigest())
-        downf.write(sh.hexdigest() + '\n')
+    output = open("tsha1.txt", 'wb')
+    pickle.dump(file_sha256, output)
 
-
-
-    pickle.dump(file_sha256, open('pdf_sha256.pkl', 'wb'))
-    downf.close()
-
-    #print 'A total of %d files got sha256 ' % (len(files))
 
 
 if __name__ == "__main__":

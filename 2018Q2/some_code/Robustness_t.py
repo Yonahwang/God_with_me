@@ -131,7 +131,6 @@ def RF(X_train,y_train,X_test,data_y):
     model.fit(X_train, y_train)
     # 模型预测
     impf = model.feature_importances_
-    print impf
     return model.predict(X_test), model.score(X_test, data_y)
 
 
@@ -186,12 +185,12 @@ if __name__ == '__main__':
     ac3_list = []
     ac4_list = []
     ac5_list = []
-    #fact(135)
+    fact(135)
     y, featu = data_clear(f_tarin,135)
-    classif(featu, y)
+    #classif(featu, y)
     dataframe = pd.DataFrame({'RF': ac1_list, 'KNN': ac3_list, 'NNET': ac4_list, 'SVM': ac5_list})
-    print dataframe
-    #dataframe.to_csv("Robustnes.csv", index=False, sep=',')
+    #print dataframe
+    dataframe.to_csv("Robustnes.csv", index=False, sep=',')
 
     end = datetime.datetime.now()
     print "spend time = %d s" % (end - start).seconds

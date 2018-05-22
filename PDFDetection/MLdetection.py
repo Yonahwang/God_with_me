@@ -127,7 +127,7 @@ def main():
 
     #M = pickle.load('model_csv3.1.pickle','r')
     # 使用模型预测
-    f2 = open('/home/yonah/God_with_me/2018Q2/MLmodel3/model_csv3.1.pickle', 'r')
+    f2 = open('/home/yonah/Data/git_bigFile/model_csv3.1.pickle', 'r')
     s2 = f2.read()
     clf = pickle.loads(s2)
     #clf2.predit(X, y)

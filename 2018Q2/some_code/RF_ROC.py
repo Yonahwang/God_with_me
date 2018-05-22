@@ -149,7 +149,7 @@ def Plot_ROC(y_test, y_pred):
 
     plt.figure(1)
     plt.plot([0, 1], [0, 1], 'k--')
-    plt.plot(fpr_rf, tpr_rf, label='RF')
+    plt.plot(fpr_rf, tpr_rf, label='Model3')
     plt.xlabel('False positive rate')
     plt.ylabel('True positive rate')
     plt.title('ROC curve')

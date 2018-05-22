@@ -19,8 +19,8 @@ from sklearn.metrics import roc_curve
 #ben_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
 #f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
 #f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/data-set/merge_real.csv')
-f_tarin = pd.read_csv('/home/yonah/Data/data-set/merge_20w.csv')   #26w samples all
-#f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
+#f_tarin = pd.read_csv('/home/yonah/Data/data-set/merge_20w.csv')   #26w samples all
+f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
 
 
 
@@ -171,7 +171,7 @@ def Plot_ROC(y_test,y_pred):
     tpr_rf = [0.] + tpr_rf
     plt.figure(1)
     plt.plot([0, 1], [0, 1], 'k--')
-    plt.plot(fpr_rf, tpr_rf, label='RF')
+    plt.plot(fpr_rf, tpr_rf, label='Model3')
     plt.xlabel('False positive rate')
     plt.ylabel('True positive rate')
     plt.title('ROC curve')
