@@ -4,7 +4,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-file = pd.read_csv('/home/yonah/God_with_me/2018Q2/some_code/Robustnes.csv')
+file = pd.read_csv('/home/yonah/God_with_me/2018Q2/plot_set/Robustnes.csv')
 
 
 #X轴，Y轴数据
