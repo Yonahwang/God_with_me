@@ -18,6 +18,7 @@ from pandas import DataFrame
 from sklearn.metrics import roc_curve
 
 t_test = pd.read_csv('./testmal.csv')
+t_test = pd.read_csv('/home/yonah/God_with_me/2018Q2/data-set/FTC.csv')
 
 def data_clear(file):
     #label = file[['class']]
@@ -36,8 +37,6 @@ def data_clear(file):
     NY = np.array(y)
     NYY = NY.tolist()
 
-
-    #print y
     X = file[['author_dot', 'author_lc', 'author_len', 'author_mismatch', 'author_num', 'author_oth', 'author_uc',
                 'box_nonother_types', 'box_other_only', 'company_mismatch', 'count_acroform', 'count_acroform_obs',
                 'count_action', 'count_action_obs', 'count_box_a4', 'count_box_legal', 'count_box_letter',
@@ -61,7 +60,7 @@ def data_clear(file):
                 'ratio_size_page', 'ratio_size_stream', 'size', 'subject_dot', 'subject_lc', 'subject_len',
                 'subject_mismatch', 'subject_num', 'subject_oth', 'subject_uc', 'title_dot', 'title_lc', 'title_len',
                 'title_mismatch', 'title_num', 'title_oth', 'title_uc', 'version']]
-
+    #X = file[feature[:135]]
     feat_id = X.columns.tolist()
     XX = np.array(X)
     Xint = XX.astype(int)
@@ -135,7 +134,7 @@ def main():
     #M.predit(X, test_y)
 
     print('******************** flie analysis *********************')
-    print AnalysisTofile(fina, test_y, predict)
+    #print AnalysisTofile(fina, test_y, predict)
     predect_calcu(predict, test_y)
 
     end = datetime.datetime.now()

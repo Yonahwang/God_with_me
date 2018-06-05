@@ -14,8 +14,8 @@ from pandas import DataFrame
 
 
 
-#f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/merge_real.csv') # 10K samples, balanced dataset
-f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
+f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/data-set/merge_tarin_98477.csv') # 10K samples, balanced dataset
+#f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
 
 def data_clear(file):
 
@@ -77,7 +77,10 @@ def SVM(X_train,y_train,X_test,data_y):
     from sklearn.svm import SVC
     model = SVC(C=1.0)
     # 拟合模型
+    start = datetime.datetime.now()
     model.fit(X_train, y_train)
+    end = datetime.datetime.now()
+    print " SVM Training spend time = %d s" % (end - start).seconds
     # 模型预测
     return model.predict(X_test), model.score(X_test, data_y)
 
@@ -111,11 +114,24 @@ def NB(X_train,y_train,X_test,data_y):
 def RF(X_train,y_train,X_test,data_y):
     from sklearn.ensemble import RandomForestClassifier
     model = RandomForestClassifier(n_estimators=200)  # 根据自己的需要，指定随机森林的树的个数
+    start = datetime.datetime.now()
     model.fit(X_train, y_train)
+    end = datetime.datetime.now()
+    print " RF triningspend time = %d s" % (end - start).seconds
     # 拟合模型
-    model.fit(X_train, y_train)
     # 模型预测
     return model.predict(X_test), model.score(X_test, data_y)
+
+def DT(X_train,y_train,X_test,data_y):
+    from sklearn.tree import DecisionTreeClassifier
+    model = DecisionTreeClassifier(random_state = 0)
+    start = datetime.datetime.now()
+    model.fit(X_train, y_train)
+    end = datetime.datetime.now()
+    print " DT triningspend time = %d s" % (end - start).seconds
+    # 模型预测
+    return model.predict(X_test), model.score(X_test, data_y)
+
 
 def AnalysisTofile(name1,test1,p1,p2,p3,p4,ac):
     df = DataFrame(columns=('name', 'leble', 'RF','KNN','NNET','SVM'))  # 生成空的pandas表
@@ -162,22 +178,35 @@ def main():
 
     print('********************Train Data Info *********************')
     print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
+    start = datetime.datetime.now()
     FileOne1, ac1 = RF(train_x, train_y,test_x,test_y)
-    #FileOne2, ac2 = NB(train_x, train_y, test_x, test_y)
-    FileOne3, ac3 = KNN(train_x, train_y, test_x, test_y)
+    print ac1
+    end = datetime.datetime.now()
+    print " RF spend time = %d s" % (end - start).seconds
+
+    '''start = datetime.datetime.now()
+    FileOne5, ac5 = SVM(train_x, train_y, test_x, test_y)
+    end = datetime.datetime.now()
+    print " SVM spend time detction = %d s" % (end - start).seconds'''
+
+    start = datetime.datetime.now()
+    FileOne2, ac2 = DT(train_x, train_y, test_x, test_y)
+    end = datetime.datetime.now()
+    print ac2
+    print " SVM spend time detction = %d s" % (end - start).seconds
+
+
+    '''FileOne3, ac3 = KNN(train_x, train_y, test_x, test_y)
     FileOne4, ac4 = NNet(train_x, train_y, test_x, test_y)
-    FileOne5, ac5 = SVM (train_x, train_y, test_x, test_y)
 
     Li = [ac1,ac3,ac4,ac5]
 
     dframe=  AnalysisTofile(fina, test_y, FileOne1,FileOne3,FileOne4,FileOne5,Li)
-    dframe.to_csv("Case_study.csv", index=False, sep=',')
+    dframe.to_csv("Case_study.csv", index=False, sep=',')'''
 
 
     #print('******************** flie analysis *********************')
     #print AnalysisTofile(tena, test_y, predict)
-    end = datetime.datetime.now()
-    print "spend time detction = %d s" % (end - start).seconds
     print('DONE')
 
 
@@ -186,4 +215,4 @@ if __name__ == '__main__':
     main()
 
     end = datetime.datetime.now()
-    print "spend time = %d s" % (end - start).seconds
+    #print "spend time = %d s" % (end - start).seconds

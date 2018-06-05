@@ -18,13 +18,20 @@ Se_ver = pd.value_counts(ver)
 labels =  Se_ver.index._data
 values =  Se_ver.values
 
-fig = plt.figure()
+
+
+# 设置x，y轴刻度一致，这样饼图才能是圆的
+plt.axes(aspect=1)  # set this , Figure is round, otherwise it is an ellipse
+# autopct ，show percet
+plt.pie(x=values, labels=labels, autopct='%3.1f %%',
+        labeldistance=1.1, startangle=90)
+plt.show()
+
+
+fig = plt.figure(1)
 plt.pie(values, labels=labels, autopct='%1.2f%%')  # 画饼图（数据，数据对应的标签，百分数保留两位小数点）
 plt.title("Version distribution")
 
 plt.show()
 
 
-
-
-#
