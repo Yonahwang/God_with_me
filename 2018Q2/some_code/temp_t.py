@@ -14,7 +14,6 @@ dfac = DataFrame(columns=('name', 'leble', 'RF','KNN' ))#生成空的pandas表
 dfac.loc[0] = ac
 
 
-
 df1 = DataFrame(columns=('name', 'leble', 'RF','KNN' ))#生成空的pandas表
 df1['name'] = name1
 df1['leble'] = test1
@@ -36,6 +35,8 @@ df = DataFrame({'name':name1,
 })
 
 print df
+
+
 
 
 

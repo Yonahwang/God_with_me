@@ -27,11 +27,10 @@ f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.cs
 def data_clear(file):
     #label = file[['class']]
 
-    a = file['class']=='FALSE'
+    '''a = file['class']=='FALSE'
     b = file['class'] == 'TRUE'
     file.loc[a,'class'] = False
-    file.loc[b, 'class'] = True
-
+    file.loc[b, 'class'] = True'''
 
     file['class'] = file['class'].astype(bool)
     file['class'] = file['class'].astype(int)
@@ -87,7 +86,7 @@ def ml_predict(clf, test_x):
 # Random Forest Classifier
 def random_forest_classifier(train_x, train_y):
     from sklearn.ensemble import RandomForestClassifier
-    model = RandomForestClassifier(n_estimators=200)  # 根据自己的需要，指定随机森林的树的个数
+    model = RandomForestClassifier(n_estimators=100,oob_score= False)  # 根据自己的需要，指定随机森林的树的个数
     model.fit(train_x, train_y)
     return model
 
@@ -137,21 +136,22 @@ def table_feature_importance(feat,imp):
     df.to_csv('impportance_featuer.csv', index=False, sep=',')
 
 
-def AnalysisTofile(name1,test1,predict1):
+def AnalysisTofile(name1,test1,predict1,prob):
     name = []
     test = []
     predict = []
+    proba = []
     for i in range(len(predict1)):
         name.append(name1[i])
         test.append(test1[i])
         predict.append(predict1[i])
-    df = DataFrame(columns=('name', 'leble', 'RF'))  # 生成空的pandas表
+        proba.append(prob[i])
+    df = DataFrame(columns=('name', 'leble', 'RF','Proba'))  # 生成空的pandas表
     df['name'] = name
     df['leble'] = test
     df['RF'] = predict
-
+    df['Proba'] = proba
     df['diff'] = df['RF'] - df['leble']
-
     # print newdf.head(10)
     return df[df['diff'] != 0]
 
@@ -212,11 +212,9 @@ def main():
     y_pred_rf = clf.predict_proba(test_x)[:, 1]
     Plot_ROC(test_y,y_pred_rf)'''
 
-
-
     print('******************** flie analysis *********************')
-    #print AnalysisTofile(fina, test_y, predict)
-
+    proba= clf.predict_proba(test_x)
+    print AnalysisTofile(fina, test_y, predict,proba)
     end = datetime.datetime.now()
     print "spend time detction = %d s" % (end - start).seconds
     '''with open('model_csv3.1.pickle', 'wb') as f:   # 保存模型

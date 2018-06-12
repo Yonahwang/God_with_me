@@ -203,8 +203,6 @@ def main():
 
     dframe=  AnalysisTofile(fina, test_y, FileOne1,FileOne3,FileOne4,FileOne5,Li)
     dframe.to_csv("Case_study.csv", index=False, sep=',')'''
-
-
     #print('******************** flie analysis *********************')
     #print AnalysisTofile(tena, test_y, predict)
     print('DONE')
