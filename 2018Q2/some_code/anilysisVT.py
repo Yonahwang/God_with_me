@@ -26,27 +26,35 @@ def get_tags(info):
         tags = 0
     return tags
 
-def Download_image():
-    ''' image download'''
-    for image_url in get_tags(info):
-        print image_url
-        image_name = image_url.split('/')[-1]
-        # 给文件命名
-        urllib.urlretrieve(image_url,image_name)
+def get_ratio(info):
+    regex = r'>Detection ratio:<[\s\S]*?>Analysis date:<'
+    ratio_code = re.findall(regex,info)
+    print str(ratio_code)
+    ratio_str = re.findall(r".../...",str(ratio_code))
+    ratio = ratio_str[1]
+    print ratio
+    return ratio
 
 
 
 if __name__ == '__main__':
     tags = []
     file_name = []
-    df_tags = DataFrame(columns=['file_name','tags'])
+    ratios = []
+    '''file = files[0]
+    f_name = pathf + "/" + file
+    info = get_content(f_name)
+    print get_ratio(info)'''
+
+    df = DataFrame(columns=['file_name','tags','ratio'])
     for file in files:
         f_name = pathf + "/" + file
         info = get_content(f_name)
-        tag = get_tags(info)
-        if tag != 0:
-            file_name.append(f_name)
-            tags.append(tag)
-    df_tags['file_name'] = file_name
-    df_tags['tags'] = tags
-    print tags
+        ratios.append(get_ratio(info))
+        file_name.append(f_name)
+        tags.append(get_tags(info))
+    df['file_name'] = file_name
+    df['tags'] = tags
+    df['ratio'] = ratios
+    df.to_csv('tags_ratio.csv',index=False,sep=',')
+
