@@ -1,7 +1,7 @@
 
 
 ## Evading Classifiers by Morphing in the Dark
->  `Curtis Hung Dang ->National University of Singapore`
+> Curtis Hung Dang ->National University of Singapore`
 `CCS’17, October 30-November 3, 2017, Dallas, TX, USA`
 
 
