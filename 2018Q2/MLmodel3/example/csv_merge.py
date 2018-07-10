@@ -8,11 +8,11 @@ import glob
 def hebing():
     csv_list = []
 
-    csv_list.append('/home/yonah/God_with_me/2018Q2/data-set/Virus8w.csv')  # 2K
-    # fb = pd.read_csv('/home/yonah/God_with_me/tempp/ben1w.csv',sep=None)
-    csv_list.append('/home/yonah/God_with_me/2018Q2/data-set/merge_real8W.csv')
-    csv_list.append('/home/yonah/God_with_me/2018Q2/data-set/merge_tarin_98477.csv') #5K
-    # csv_list.append('/home/yonah/Downloads/mimicus-master/data/google-ben.csv') #5K
+    csv_list.append('/home/yonah/data/God_with_me/2018Q2/data-set/merge_real8W.csv')  # 2K
+    csv_list.append('/home/yonah/data/God_with_me/2018Q2/MLmodel3/example/adversary7.csv')
+    #fb = pd.read_csv('/home/yonah/God_with_me/tempp/ben1w.csv',sep=None)
+    #csv_list.append('/home/yonah/God_with_me/2018Q2/data-set/merge_tarin_98477.csv') #5K
+    #csv_list.append('/home/yonah/Downloads/mimicus-master/data/google-ben.csv') #5K
     #csv_list.append('/home/yonah/Downloads/mimicus-master/mimicus/bin/contogio_ben9K.csv')  # 9K
     #csv_list.append('/home/yonah/Downloads/mimicus-master/mimicus/bin/normal_sogpi2K.csv')  # 2K
     # csv_list.append('/home/yonah/God_with_me/2018Q2/data-set/Virus8K.csv') #8K
@@ -22,7 +22,7 @@ def hebing():
     print(u'正在处理............')
     for i in csv_list:
         fr = open(i,'r').read()
-        with open('merge_20w.csv','a') as f:
+        with open('adversary7.csv','a') as f:
             f.write(fr)
     print(u'合并完毕！')
 
@@ -35,5 +35,5 @@ def quchong(file):
 
 if __name__ == '__main__':
     hebing()
-    quchong("merge_20w.csv")
+    quchong("adversary7.csv")
 
