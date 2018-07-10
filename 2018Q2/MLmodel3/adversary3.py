@@ -18,9 +18,10 @@ from sklearn.metrics import roc_curve
 # ben_tarin1 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/contagio.csv')
 # ben_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
 # f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
-f_tarin = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/data-set/merge_real8W.csv')
+f_tarin = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/MLmodel3/data_manage/ad778.csv')
 # f_tarin = pd.read_csv('/home/yonah/Data/data-set/merge_20w.csv')   #26w samples all
 #f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
+f_test = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/data-set/F_gdkse.csv')
 
 
 def data_clear(file):
@@ -62,11 +63,22 @@ def data_clear(file):
               'subject_mismatch', 'subject_num', 'subject_oth', 'subject_uc', 'title_dot', 'title_lc', 'title_len',
               'title_mismatch', 'title_num', 'title_oth', 'title_uc', 'version']]
 
+    X = X.copy()
     feat_id = X.columns.tolist()
-    XX = np.array(X)
-    Xint = XX.astype(int)
 
-    return NYY, Xint.tolist(), feat_id
+    for feature in feat_id:
+        a = X[feature] == 'TRUE'
+        b = X[feature] == 'FALSE'
+        X.loc[a, feature] = 1
+        X.loc[b, feature] = 0
+
+    XX = np.array(X)
+    Xint = XX.tolist()
+
+
+    #Xint = XX.astype(float)
+
+    return NYY, Xint, feat_id
 
 
 # 对测试数据分类
@@ -163,14 +175,16 @@ def ySpilt(list):
 def main():
     print('start processing')
     y, X, f_id = data_clear(f_tarin)
+    test_Y,test_x,f_id = data_clear(f_test)
+
     from sklearn.model_selection import train_test_split
-    train_x, test_x, train_Y, test_Y = train_test_split(X, y, random_state=5)  # randomize samples
-    train_y, _ = ySpilt(train_Y)
+    #train_x, test_x, train_Y, test_Y = train_test_split(X, y, random_state=5)  # randomize samples
+    train_y, _ = ySpilt(y)
     test_y, fina = ySpilt(test_Y)
 
     print('******************** RF Train Data Info *********************')
-    print('#train data: %d, dimension: %d' % (len(train_x), len(train_x[0])))
-    clf = random_forest_classifier(train_x, train_y)
+    print('#train data: %d, dimension: %d' % (len(X), len(X[0])))
+    clf = random_forest_classifier(X, train_y)
     # plot_feature_importance(f_id,clf.feature_importances_)   #draw importance plot
     table_feature_importance(f_id, clf.feature_importances_)
     predict, predictp = ml_predict(clf, test_x)  # test

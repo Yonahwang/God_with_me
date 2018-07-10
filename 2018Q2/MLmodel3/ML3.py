@@ -20,7 +20,7 @@ from sklearn.metrics import roc_curve
 #f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
 #f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/data-set/merge_real.csv')
 #f_tarin = pd.read_csv('/home/yonah/Data/data-set/merge_20w.csv')   #26w samples all
-f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
+f_tarin = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
 
 
 
