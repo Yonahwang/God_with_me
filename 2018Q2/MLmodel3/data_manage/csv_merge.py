@@ -10,6 +10,7 @@ def hebing():
 
     csv_list.append('/home/yonah/data/God_with_me/2018Q2/MLmodel3/example/test4K.csv')  # 2K
     csv_list.append('/home/yonah/data/God_with_me/2018Q2/MLmodel3/example/adversary7.csv')
+
     #fb = pd.read_csv('/home/yonah/God_with_me/tempp/ben1w.csv',sep=None)
     #csv_list.append('/home/yonah/God_with_me/2018Q2/data-set/merge_tarin_98477.csv') #5K
     #csv_list.append('/home/yonah/Downloads/mimicus-master/data/google-ben.csv') #5K
