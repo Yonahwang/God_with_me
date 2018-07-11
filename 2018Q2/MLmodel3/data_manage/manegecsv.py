@@ -5,8 +5,10 @@
 import numpy as np
 import pandas as pd
 
-f = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/MLmodel3/example/test_ad.csv')
+f = pd.read_csv('/home/yonah/data/bak/test_ad.csv')
 print f.head(5)
+
+
 '''del f['Unnamed: 138']
 del f['Unnamed: 137']
 del f['Unnamed: 0']
