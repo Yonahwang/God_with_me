@@ -18,7 +18,7 @@ from sklearn.metrics import roc_curve
 # ben_tarin1 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/contagio.csv')
 # ben_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
 # f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
-f_tarin = pd.read_csv('/home/yonah/data/bak/test_ad.csv')
+f_tarin = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/data-set/merge_tarin_98477.csv')
 # f_tarin = pd.read_csv('/home/yonah/Data/data-set/merge_20w.csv')   #26w samples all
 #f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
 f_test = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/data-set/F_gdkse.csv')
@@ -65,12 +65,12 @@ def data_clear(file):
 
     X = X.copy()
     feat_id = X.columns.tolist()
-
+    '''
     for feature in feat_id:
         a = X[feature] == 'TRUE'
         b = X[feature] == 'FALSE'
         X.loc[a, feature] = 1
-        X.loc[b, feature] = 0
+        X.loc[b, feature] = 0'''
 
     XX = np.array(X)
     Xint = XX.tolist()
