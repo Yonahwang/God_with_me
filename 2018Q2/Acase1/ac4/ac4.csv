@@ -1,6 +1,137 @@
-class,filename,author_dot,author_lc,author_len,author_mismatch,author_num,author_oth,author_uc,box_nonother_types,box_other_only,company_mismatch,count_acroform,count_acroform_obs,count_action,count_action_obs,count_box_a4,count_box_legal,count_box_letter,count_box_other,count_box_overlap,count_endobj,count_endstream,count_eof,count_font,count_font_obs,count_image_large,count_image_med,count_image_small,count_image_total,count_image_xlarge,count_image_xsmall,count_javascript,count_javascript_obs,count_js,count_js_obs,count_obj,count_objstm,count_objstm_obs,count_page,count_page_obs,count_startxref,count_stream,count_stream_diff,count_trailer,count_xref,createdate_dot,createdate_mismatch,createdate_ts,createdate_tz,createdate_version_ratio,creator_dot,creator_lc,creator_len,creator_mismatch,creator_num,creator_oth,creator_uc,delta_ts,delta_tz,image_mismatch,image_totalpx,keywords_dot,keywords_lc,keywords_len,keywords_mismatch,keywords_num,keywords_oth,keywords_uc,len_obj_avg,len_obj_max,len_obj_min,len_stream_avg,len_stream_max,len_stream_min,moddate_dot,moddate_mismatch,moddate_ts,moddate_tz,moddate_version_ratio,pdfid0_dot,pdfid0_lc,pdfid0_len,pdfid0_mismatch,pdfid0_num,pdfid0_oth,pdfid0_uc,pdfid1_dot,pdfid1_lc,pdfid1_len,pdfid1_mismatch,pdfid1_num,pdfid1_oth,pdfid1_uc,pdfid_mismatch,pos_acroform_avg,pos_acroform_max,pos_acroform_min,pos_box_avg,pos_box_max,pos_box_min,pos_eof_avg,pos_eof_max,pos_eof_min,pos_image_avg,pos_image_max,pos_image_min,pos_page_avg,pos_page_max,pos_page_min,producer_dot,producer_lc,producer_len,producer_mismatch,producer_num,producer_oth,producer_uc,ratio_imagepx_size,ratio_size_obj,ratio_size_page,ratio_size_stream,size,subject_dot,subject_lc,subject_len,subject_mismatch,subject_num,subject_oth,subject_uc,title_dot,title_lc,title_len,title_mismatch,title_num,title_oth,title_uc,version
-TRUE,/home/yonah/Data/God_with_me/2018Q2/Acase1/ac4/VirusShare_00ba5c43b1cec186c634c24ac21982d3.pdf,0,0,0,0,0,0,0,1,FALSE,0,0,0,1,0,0,0,1,0,0,17,6,1,0,0,0,0,0,0,0,0,1,0,1,0,17,0,0,1,0,1,6,0,1,1,0,0,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,399.5294118,1479,10,1004.333333,1417,269,0,0,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,FALSE,-1,-1,-1,0.860702452,0.860702452,0.860702452,0.999602386,0.999602386,0.999602386,-1,-1,-1,0.858449304,0.858449304,0.858449304,0,0,0,0,0,0,0,0,443.8235033,7544.992455,1257.49979,7545,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4
-TRUE,/home/yonah/Data/God_with_me/2018Q2/Acase1/ac4/FtmpxDwAoE.pdf,0,6,14,1,1,1,6,1,FALSE,0,1,0,1,0,0,0,1,0,0,17,6,2,1,0,0,0,0,0,0,0,6,0,1,0,17,0,0,1,0,2,6,0,1,1,0,1,650616173,10020,1075.754254,1,5,14,1,2,5,2,168532398,-780,0,0,0,4,7,1,0,1,2,399.5294118,1479,10,1004.333333,1417,269,0,1,482083775,10800,797.0961888,0,0,0,0,0,0,0,0,0,0,0,0,0,0,FALSE,0.956035578,0.956035578,0.956035578,0.825158831,0.825158831,0.825158831,0.98386277,0.999618806,0.968106734,-1,-1,-1,0.822998729,0.822998729,0.822998729,1,8,19,1,5,6,0,0,462.9411492,7869.99213,1311.666448,7870,0,0,2,1,0,0,2,0,0,8,1,3,4,1,7
-TRUE,/home/yonah/Data/God_with_me/2018Q2/Acase1/ac4/FCtmpRQQRjJ.pdf,0,0,0,0,0,0,0,1,FALSE,0,0,0,1,0,0,0,1,56,0,90,28,1,20,0,14,0,15,30,0,1,1,0,1,0,162,0,0,15,0,1,28,0,1,1,0,1,1189505269,0,3441.855524,0,0,0,0,0,0,0,-154048751,25200,2,11102992,0,0,0,0,0,0,0,399.5294118,1479,10,910,1417,269,0,1,1343554020,-25200,3887.598438,0,0,0,0,0,0,0,0,0,0,0,0,0,0,FALSE,-1,-1,-1,0.009578554,0.010091926,0.007496794,0.999996537,0.999996537,0.999996537,0.010468267,0.01216988,0.008685845,0.011258505,0.011581126,0.007477168,2,20,35,1,3,9,3,12.81749914,5347.141942,57749.12948,30937.03461,866237,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4
-TRUE,/home/yonah/Data/God_with_me/2018Q2/Acase1/ac4/FTtmpxDwAoE.pdf,0,6,14,1,1,1,6,1,FALSE,0,1,0,1,0,0,0,1,0,0,17,6,2,1,0,0,0,0,0,0,0,6,0,1,0,17,0,0,1,0,2,6,0,1,1,0,1,650616173,10020,1075.754254,1,5,14,1,2,5,2,168532398,-780,0,0,0,4,7,1,0,1,2,399.5294118,1479,10,1004.333333,1417,269,0,1,482083775,10800,797.0961888,0,0,0,0,0,0,0,0,0,0,0,0,0,0,FALSE,0.956035578,0.956035578,0.956035578,0.825158831,0.825158831,0.825158831,0.98386277,0.999618806,0.968106734,-1,-1,-1,0.822998729,0.822998729,0.822998729,1,8,19,1,5,6,0,0,462.9411492,7869.99213,1311.666448,7870,0,0,2,1,0,0,2,0,0,8,1,3,4,1,7
-TRUE,/home/yonah/Data/God_with_me/2018Q2/Acase1/ac4/FTC_tmpAdqVzZ.pdf,0,0,11,1,0,3,8,8,FALSE,0,0,0,1,0,0,4,4,11,0,50,20,2,15,0,0,0,0,0,0,0,1,0,1,0,82,0,0,4,0,2,20,0,2,2,0,1,1262140403,-18000,2434.684419,0,4,13,1,0,3,6,18000,0,0,0,0,0,0,0,0,0,0,399.5294118,1479,10,902.1428571,1417,269,0,1,1262122403,-18000,2434.649697,0,0,0,0,0,0,0,0,0,0,0,0,0,0,FALSE,-1,-1,-1,0.12225365,0.134795653,0.100952944,0.574859701,0.999953363,0.149766039,-1,-1,-1,0.12097564,0.127846783,0.100688669,2,20,35,1,3,9,3,0,784.4756002,16081.74598,3216.349839,64327,0,53,73,1,4,10,6,0,10,21,1,8,2,1,6
+class,TRUE,TRUE,TRUE,TRUE,TRUE,,,
+filename,/home/yonah/Data/God_with_me/2018Q2/Acase1/ac4/VirusShare_00ba5c43b1cec186c634c24ac21982d3.pdf,/home/yonah/Data/God_with_me/2018Q2/Acase1/ac4/FtmpxDwAoE.pdf,/home/yonah/Data/God_with_me/2018Q2/Acase1/ac4/FCtmpRQQRjJ.pdf,/home/yonah/Data/God_with_me/2018Q2/Acase1/ac4/FTtmpxDwAoE.pdf,/home/yonah/Data/God_with_me/2018Q2/Acase1/ac4/FTC_tmpAdqVzZ.pdf,,,
+author_dot,0,0,0,0,0,Match,Match,Match
+author_lc,0,6,0,6,0,No match,,
+author_len,0,14,0,14,11,No match,,
+author_mismatch,0,1,0,1,1,No match,,
+author_num,0,1,0,1,0,No match,,
+author_oth,0,1,0,1,3,No match,,
+author_uc,0,6,0,6,8,No match,,
+box_nonother_types,1,1,1,1,8,Match,No Match,
+box_other_only,FALSE,FALSE,FALSE,FALSE,FALSE,Match,Match,Match
+company_mismatch,0,0,0,0,0,Match,Match,Match
+count_acroform,0,1,0,1,0,No match,,
+count_acroform_obs,0,0,0,0,0,Match,Match,Match
+count_action,1,1,1,1,1,Match,Match,Match
+count_action_obs,0,0,0,0,0,Match,Match,Match
+count_box_a4,0,0,0,0,0,Match,Match,Match
+count_box_legal,0,0,0,0,4,Match,No Match,
+count_box_letter,1,1,1,1,4,Match,No Match,
+count_box_other,0,0,56,0,11,Match,No Match,
+count_box_overlap,0,0,0,0,0,Match,Match,Match
+count_endobj,17,17,90,17,50,Match,No Match,
+count_endstream,6,6,28,6,20,Match,No Match,
+count_eof,1,2,1,2,2,No match,,
+count_font,0,1,20,1,15,No match,,
+count_font_obs,0,0,0,0,0,Match,Match,Match
+count_image_large,0,0,14,0,0,Match,Match,No Match
+count_image_med,0,0,0,0,0,Match,Match,Match
+count_image_small,0,0,15,0,0,Match,Match,No Match
+count_image_total,0,0,30,0,0,Match,Match,No Match
+count_image_xlarge,0,0,0,0,0,Match,Match,Match
+count_image_xsmall,0,0,1,0,0,Match,Match,No Match
+count_javascript,1,6,1,6,1,No match,,
+count_javascript_obs,0,0,0,0,0,Match,Match,Match
+count_js,1,1,1,1,1,Match,Match,Match
+count_js_obs,0,0,0,0,0,Match,Match,Match
+count_obj,17,17,162,17,82,Match,No Match,
+count_objstm,0,0,0,0,0,Match,Match,Match
+count_objstm_obs,0,0,0,0,0,Match,Match,Match
+count_page,1,1,15,1,4,Match,No Match,
+count_page_obs,0,0,0,0,0,Match,Match,Match
+count_startxref,1,2,1,2,2,No match,,
+count_stream,6,6,28,6,20,Match,No Match,
+count_stream_diff,0,0,0,0,0,Match,Match,Match
+count_trailer,1,1,1,1,2,Match,No Match,
+count_xref,1,1,1,1,2,Match,No Match,
+createdate_dot,0,0,0,0,0,Match,Match,Match
+createdate_mismatch,0,1,1,1,1,No match,,
+createdate_ts,-1,650616173,1189505269,650616173,1262140403,No match,,
+createdate_tz,-1,10020,0,10020,-18000,No match,,
+createdate_version_ratio,-1,1075.754254,3441.855524,1075.754254,2434.684419,No match,,
+creator_dot,0,1,0,1,0,No match,,
+creator_lc,0,5,0,5,4,No match,,
+creator_len,0,14,0,14,13,No match,,
+creator_mismatch,0,1,0,1,1,No match,,
+creator_num,0,2,0,2,0,No match,,
+creator_oth,0,5,0,5,3,No match,,
+creator_uc,0,2,0,2,6,No match,,
+delta_ts,0,168532398,-154048751,168532398,18000,No match,,
+delta_tz,0,-780,25200,-780,0,No match,,
+image_mismatch,0,0,2,0,0,Match,Match,No Match
+image_totalpx,0,0,11102992,0,0,Match,Match,No Match
+keywords_dot,0,0,0,0,0,Match,Match,Match
+keywords_lc,0,4,0,4,0,No match,,
+keywords_len,0,7,0,7,0,No match,,
+keywords_mismatch,0,1,0,1,0,No match,,
+keywords_num,0,0,0,0,0,Match,Match,Match
+keywords_oth,0,1,0,1,0,No match,,
+keywords_uc,0,2,0,2,0,No match,,
+len_obj_avg,399.5294118,399.5294118,399.5294118,399.5294118,399.5294118,Match,Match,Match
+len_obj_max,1479,1479,1479,1479,1479,Match,Match,Match
+len_obj_min,10,10,10,10,10,Match,Match,Match
+len_stream_avg,1004.333333,1004.333333,910,1004.333333,902.1428571,Match,No Match,
+len_stream_max,1417,1417,1417,1417,1417,Match,Match,Match
+len_stream_min,269,269,269,269,269,Match,Match,Match
+moddate_dot,0,0,0,0,0,Match,Match,Match
+moddate_mismatch,0,1,1,1,1,No match,,
+moddate_ts,-1,482083775,1343554020,482083775,1262122403,No match,,
+moddate_tz,-1,10800,-25200,10800,-18000,No match,,
+moddate_version_ratio,-1,797.0961888,3887.598438,797.0961888,2434.649697,No match,,
+pdfid0_dot,0,0,0,0,0,Match,Match,Match
+pdfid0_lc,0,0,0,0,0,Match,Match,Match
+pdfid0_len,0,0,0,0,0,Match,Match,Match
+pdfid0_mismatch,0,0,0,0,0,Match,Match,Match
+pdfid0_num,0,0,0,0,0,Match,Match,Match
+pdfid0_oth,0,0,0,0,0,Match,Match,Match
+pdfid0_uc,0,0,0,0,0,Match,Match,Match
+pdfid1_dot,0,0,0,0,0,Match,Match,Match
+pdfid1_lc,0,0,0,0,0,Match,Match,Match
+pdfid1_len,0,0,0,0,0,Match,Match,Match
+pdfid1_mismatch,0,0,0,0,0,Match,Match,Match
+pdfid1_num,0,0,0,0,0,Match,Match,Match
+pdfid1_oth,0,0,0,0,0,Match,Match,Match
+pdfid1_uc,0,0,0,0,0,Match,Match,Match
+pdfid_mismatch,FALSE,FALSE,FALSE,FALSE,FALSE,Match,Match,Match
+pos_acroform_avg,-1,0.956035578,-1,0.956035578,-1,No match,,
+pos_acroform_max,-1,0.956035578,-1,0.956035578,-1,No match,,
+pos_acroform_min,-1,0.956035578,-1,0.956035578,-1,No match,,
+pos_box_avg,0.860702452,0.825158831,0.009578554,0.825158831,0.12225365,No match,,
+pos_box_max,0.860702452,0.825158831,0.010091926,0.825158831,0.134795653,No match,,
+pos_box_min,0.860702452,0.825158831,0.007496794,0.825158831,0.100952944,No match,,
+pos_eof_avg,0.999602386,0.98386277,0.999996537,0.98386277,0.574859701,No match,,
+pos_eof_max,0.999602386,0.999618806,0.999996537,0.999618806,0.999953363,No match,,
+pos_eof_min,0.999602386,0.968106734,0.999996537,0.968106734,0.149766039,No match,,
+pos_image_avg,-1,-1,0.010468267,-1,-1,Match,Match,No Match
+pos_image_max,-1,-1,0.01216988,-1,-1,Match,Match,No Match
+pos_image_min,-1,-1,0.008685845,-1,-1,Match,Match,No Match
+pos_page_avg,0.858449304,0.822998729,0.011258505,0.822998729,0.12097564,No match,,
+pos_page_max,0.858449304,0.822998729,0.011581126,0.822998729,0.127846783,No match,,
+pos_page_min,0.858449304,0.822998729,0.007477168,0.822998729,0.100688669,No match,,
+producer_dot,0,1,2,1,2,No match,,
+producer_lc,0,8,20,8,20,No match,,
+producer_len,0,19,35,19,35,No match,,
+producer_mismatch,0,1,1,1,1,No match,,
+producer_num,0,5,3,5,3,No match,,
+producer_oth,0,6,9,6,9,No match,,
+producer_uc,0,0,3,0,3,Match,No Match,
+ratio_imagepx_size,0,0,12.81749914,0,0,Match,Match,No Match
+ratio_size_obj,443.8235033,462.9411492,5347.141942,462.9411492,784.4756002,No match,,
+ratio_size_page,7544.992455,7869.99213,57749.12948,7869.99213,16081.74598,No match,,
+ratio_size_stream,1257.49979,1311.666448,30937.03461,1311.666448,3216.349839,No match,,
+size,7545,7870,866237,7870,64327,No match,,
+subject_dot,0,0,0,0,0,Match,Match,Match
+subject_lc,0,0,0,0,53,Match,No Match,
+subject_len,0,2,0,2,73,No match,,
+subject_mismatch,0,1,0,1,1,No match,,
+subject_num,0,0,0,0,4,Match,No Match,
+subject_oth,0,0,0,0,10,Match,No Match,
+subject_uc,0,2,0,2,6,No match,,
+title_dot,0,0,0,0,0,Match,Match,Match
+title_lc,0,0,0,0,10,Match,No Match,
+title_len,0,8,0,8,21,No match,,
+title_mismatch,0,1,0,1,1,No match,,
+title_num,0,3,0,3,8,No match,,
+title_oth,0,4,0,4,2,No match,,
+title_uc,0,1,0,1,1,No match,,
+version,4,7,4,7,6,No match,,
