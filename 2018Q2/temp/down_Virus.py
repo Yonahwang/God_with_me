@@ -27,5 +27,3 @@ vt = VirusTotalPublicApi(API_KEY)
 
 response = vt.get_file_report('e7b3f9065d168e45aaf2118afbe39617')
 print(json.dumps(response, sort_keys=False, indent=4))
-
-

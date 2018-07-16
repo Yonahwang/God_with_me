@@ -19,9 +19,10 @@ from sklearn.metrics import roc_curve
 # ben_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
 # f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
 f_tarin = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/data-set/merge_tarin_98477.csv')
+f2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/mimicus/bin/FTC218.csv')
 # f_tarin = pd.read_csv('/home/yonah/Data/data-set/merge_20w.csv')   #26w samples all
 #f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
-f_test = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/data-set/F_gdkse.csv')
+f_test = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/data-set/FC.csv')
 
 
 def data_clear(file):
@@ -175,7 +176,10 @@ def ySpilt(list):
 def main():
     print('start processing')
     y, X, f_id = data_clear(f_tarin)
-    test_Y,test_x,f_id = data_clear(f_test)
+    y2, X2,_ = data_clear(f_test)
+    test_Y,test_x,f_id = data_clear(f2)
+    X = X + X2
+    y = y + y2
 
     from sklearn.model_selection import train_test_split
     #train_x, test_x, train_Y, test_Y = train_test_split(X, y, random_state=5)  # randomize samples
@@ -191,11 +195,11 @@ def main():
     predect_calcu(predict, test_y)
 
 
-    print('******************** flie analysis *********************')
+    '''print('******************** flie analysis *********************')
     proba = clf.predict_proba(test_x)
     print AnalysisTofile(fina, test_y, predict, proba)
     end = datetime.datetime.now()
-    print "spend time detction = %d s" % (end - start).seconds
+    print "spend time detction = %d s" % (end - start).seconds'''
     '''with open('model_csv3.1.pickle', 'wb') as f:   # 保存模型
         pickle.dump(clf, f)'''
     print('DONE')

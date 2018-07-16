@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
+f_tarin = pd.read_csv('/home/yonah/data/ God_with_me/2018Q2/MLmodel3/example/test4K.csv')
 
 
 def get_version(file):
