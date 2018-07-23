@@ -23,7 +23,7 @@ for l in tag_list:
         for t in tag:
             tags.append(t)
 
-df = df = DataFrame(columns=['tag'])
+df = DataFrame(columns=['tag''number'])
 df['file_name'] = Counter(tags)
 df.to_csv('tags_plot.csv',index=False,sep=',')
 print Counter(tags)

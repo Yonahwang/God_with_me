@@ -14,8 +14,8 @@ from pandas import DataFrame
 
 
 
-f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/data-set/merge_tarin_98477.csv') # 10K samples, balanced dataset
-#f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
+#f_tarin = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/data-set/merge_tarin_98477.csv') # 10K samples, balanced dataset
+f_tarin = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/MLmodel3/data_manage/test4K.csv')
 
 def data_clear(file):
 
