@@ -18,21 +18,29 @@ Se_ver = pd.value_counts(ver)
 print Se_ver
 labels =  Se_ver.index._data
 
+label = []
+for la in labels:
+    label.append(la/10.0 +1)
+
+name_list = ['1.0','1.1','1.2','1.3','1.4','1.5','1.6','1.7']
+vaR = [85,7,80,467,815,874,1674,174]
+
 values =  Se_ver.values
 va = values.tolist()
 valu = []
-
-for v in va :
-    val = float(v)/sum(va)
+for v in vaR :
+    val = float(v)/sum(vaR)
     valu.append(int(val*100))
-
 
 print valu
 
 fig = plt.figure()
-plt.bar(labels, valu,0.4,color = "green")
+plt.bar(range(len(valu)),valu,color = "green",tick_label = name_list)
+#index = [0,1,2,3,4,5,6,7]
+#index = [1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7]
+#plt.xticks(index,name_list)
 plt.xlabel("Version")
-plt.ylabel("%")
+plt.ylabel("presentage")
 plt.title("Version distribution")
 plt.show()
 

@@ -121,7 +121,7 @@ class R_randomForest(BaseEstimator):
                 robjects.r('{model} <- randomForest(x={train}[,-1], y={train}[,1], ntree=1000, mtry=43, importance=TRUE)'.format(model=self.model_Rname, train=self.traindata_Rname))
         self.model_trained = True
     
-    def predict(self, X, cutoff=0.5):
+    def predict(self, X, cutoff = 0.5):
         '''
         Classifies novel data points using a trained model. Returns a 
         numpy.array of predictions, one per data point, giving the 

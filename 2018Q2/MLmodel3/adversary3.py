@@ -19,10 +19,10 @@ from sklearn.metrics import roc_curve
 # ben_tarin2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/data/google-ben.csv')
 # f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q1/MLmodel2/example/merge_con.csv') # 10K samples, balanced dataset
 f_tarin = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/data-set/merge_tarin_98477.csv')
-f2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/mimicus/bin/FTC218.csv')
+f2 = pd.read_csv('/home/yonah/Downloads/mimicus-master/mimicus/bin/F_gd218.csv')
 # f_tarin = pd.read_csv('/home/yonah/Data/data-set/merge_20w.csv')   #26w samples all
 #f_tarin = pd.read_csv('/home/yonah/God_with_me/2018Q2/MLmodel3/example/test4K.csv')
-f_test = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/data-set/FC.csv')
+f_test = pd.read_csv('/home/yonah/data/God_with_me/2018Q2/data-set/F_gdkse.csv')
 
 
 def data_clear(file):
@@ -40,29 +40,31 @@ def data_clear(file):
     NYY = NY.tolist()
 
     # print y
-    X = file[['author_dot', 'author_lc', 'author_len', 'author_mismatch', 'author_num', 'author_oth', 'author_uc',
+    #
+    X = file[['author_dot', 'author_mismatch', 'author_num', 'author_oth',
               'box_nonother_types', 'box_other_only', 'company_mismatch', 'count_acroform', 'count_acroform_obs',
               'count_action', 'count_action_obs', 'count_box_a4', 'count_box_legal', 'count_box_letter',
-              'count_box_other', 'count_box_overlap', 'count_endobj', 'count_endstream', 'count_eof', 'count_font',
+              'count_box_other', 'count_box_overlap', 'count_endstream', 'count_eof',
               'count_font_obs', 'count_image_large', 'count_image_med', 'count_image_small', 'count_image_total',
-              'count_image_xlarge', 'count_image_xsmall', 'count_javascript', 'count_javascript_obs', 'count_js',
-              'count_js_obs', 'count_obj', 'count_objstm', 'count_objstm_obs', 'count_page', 'count_page_obs',
+              'count_image_xlarge', 'count_image_xsmall', 'count_javascript_obs', 'count_js',
+              'count_js_obs', 'count_objstm', 'count_objstm_obs', 'count_page', 'count_page_obs',
               'count_startxref', 'count_stream', 'count_stream_diff', 'count_trailer', 'count_xref', 'createdate_dot',
-              'createdate_mismatch', 'createdate_ts', 'createdate_tz', 'createdate_version_ratio', 'creator_dot',
+              'createdate_mismatch', 'createdate_version_ratio', 'creator_dot',
               'creator_lc', 'creator_len', 'creator_mismatch', 'creator_num', 'creator_oth', 'creator_uc', 'delta_ts',
               'delta_tz', 'image_mismatch', 'image_totalpx', 'keywords_dot', 'keywords_lc', 'keywords_len',
               'keywords_mismatch', 'keywords_num', 'keywords_oth', 'keywords_uc', 'len_obj_avg', 'len_obj_max',
               'len_obj_min', 'len_stream_avg', 'len_stream_max', 'len_stream_min', 'moddate_dot', 'moddate_mismatch',
-              'moddate_ts', 'moddate_tz', 'moddate_version_ratio', 'pdfid0_dot', 'pdfid0_lc', 'pdfid0_len',
+               'moddate_tz', 'moddate_version_ratio', 'pdfid0_dot', 'pdfid0_lc', 'pdfid0_len',
               'pdfid0_mismatch', 'pdfid0_num', 'pdfid0_oth', 'pdfid0_uc', 'pdfid1_dot', 'pdfid1_lc', 'pdfid1_len',
               'pdfid1_mismatch', 'pdfid1_num', 'pdfid1_oth', 'pdfid1_uc', 'pdfid_mismatch', 'pos_acroform_avg',
               'pos_acroform_max', 'pos_acroform_min', 'pos_box_avg', 'pos_box_max', 'pos_box_min', 'pos_eof_avg',
               'pos_eof_max', 'pos_eof_min', 'pos_image_avg', 'pos_image_max', 'pos_image_min', 'pos_page_avg',
               'pos_page_max', 'pos_page_min', 'producer_dot', 'producer_lc', 'producer_len', 'producer_mismatch',
-              'producer_num', 'producer_oth', 'producer_uc', 'ratio_imagepx_size', 'ratio_size_obj',
-              'ratio_size_page', 'ratio_size_stream', 'size', 'subject_dot', 'subject_lc', 'subject_len',
+              'producer_num', 'producer_oth', 'producer_uc', 'ratio_imagepx_size', 'ratio_size_obj','moddate_ts',
+              'ratio_size_page', 'ratio_size_stream','subject_dot', 'subject_lc', 'subject_len',
               'subject_mismatch', 'subject_num', 'subject_oth', 'subject_uc', 'title_dot', 'title_lc', 'title_len',
-              'title_mismatch', 'title_num', 'title_oth', 'title_uc', 'version']]
+              'title_mismatch', 'title_num', 'title_oth', 'title_uc', 'version',
+              'count_font','size','count_obj','count_endobj','author_lc', 'author_len','author_uc','count_javascript', 'createdate_ts', 'createdate_tz']]
 
     X = X.copy()
     feat_id = X.columns.tolist()
@@ -171,15 +173,23 @@ def ySpilt(list):
     finame = DF2.tolist()
     return y, finame
 
+'''
+def changeValue(nr,cuto):
+    nrlist = nr.tolist()
+    for i in len(nrlist):
+        Sc = nr.item(i,0)
+        if Sc >= cuto:
+            pre = 1
+        else:
+            pre = 0
 
+    return pre
+'''
 
 def main():
     print('start processing')
     y, X, f_id = data_clear(f_tarin)
-    y2, X2,_ = data_clear(f_test)
-    test_Y,test_x,f_id = data_clear(f2)
-    X = X + X2
-    y = y + y2
+    test_Y, test_x,_ = data_clear(f_test)
 
     from sklearn.model_selection import train_test_split
     #train_x, test_x, train_Y, test_Y = train_test_split(X, y, random_state=5)  # randomize samples
@@ -192,6 +202,7 @@ def main():
     # plot_feature_importance(f_id,clf.feature_importances_)   #draw importance plot
     table_feature_importance(f_id, clf.feature_importances_)
     predict, predictp = ml_predict(clf, test_x)  # test
+    # predict_C = changeValue(predictp,0.4)
     predect_calcu(predict, test_y)
 
 

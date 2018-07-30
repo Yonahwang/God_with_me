@@ -25,6 +25,9 @@ for l in tag_list:
 
 df = DataFrame(columns=['tag''number'])
 df['file_name'] = Counter(tags)
-df.to_csv('tags_plot.csv',index=False,sep=',')
+tagL =  Counter(tags)
+tagL.to_csv('tags_number.csv',index = False,sep = ',')
+
+#df.to_csv('tags_plot.csv',index=False,sep=',')
 print Counter(tags)
 
