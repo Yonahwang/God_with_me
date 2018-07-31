@@ -1,37 +1,32 @@
-tag,file_name
-, 'cve-2012-4151'
-, 'exploit'
-, 'js-embedded'
-, 'file-embedded'
-,'cve-2008-2992'
-,'cve-2008-2551'
-, 'attachment'
-, 'launch-action'
-,'cve-2009-4324'
-, 'cve-2009-4324'
-, 'cve-2013-0641'
-,'flash-embedded'
-, 'cve-2011-0611'
-, 'cve-2010-0188'
-,'invalid-xref'
-, 'cve-2008-2992'
-, 'cve-2010-0806'
-, 'acroform'
-, 'cve-2010-3654'
-, 'cve-2011-2462'
-,'cve-2009-0927'
-, 'flash-embedded'
-,'cve-2007-5659'
-,'cve-2009-0837'
-, 'invalid-xref'
-,'pdf'
-, 'cve-2010-1297'
-,'exploit'
-,'js-embedded'
-, 'autoaction'
-, 'cve-2012-2050'
-, 'cve-2013-2729'
-, 'pdf'
-, 'cve-2007-5659'
-, 'cve-2009-0927'
-, 'cve-2010-2883'
+cve-2007-5659,Overflow,57,Overflow
+cve-2008-2551,Execute Code,7,
+cve-2008-2992,Overflow,12,
+cve-2009-0837,overflow,2,
+cve-2009-0927,Memory Corruption,98,
+cve-2009-4324,Use-after-free vulnerability,11,
+cve-2010-0188,Overflow,207,
+cve-2010-0806,Memory Corruption,9,
+cve-2010-1297,Execute Code,9,
+cve-2010-2883,Overflow,8,
+cve-2010-3654,memory corruption,1,
+cve-2011-0611,Memory Corruption,1,
+cve-2011-2462,Memory Corruption,2,
+cve-2012-2050,Overflow,1,
+cve-2012-4151,Memory Corruption,1,
+cve-2013-0641,Overflow,2,
+cve-2013-2729,Overflow,1,
+,,,
+,,,
+,,,
+,,,
+,,,
+Execute Code,16,,
+Overflow,290,,
+Denial of Service,,,
+Memory Corruption,112,,
+Gain Privilege,,,
+XSS,,,
+Http Response Splitting,,,
+CSRF,,,
+Bypass Something,,,
+Gain Information,,,
