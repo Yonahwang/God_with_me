@@ -11,12 +11,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="test1.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="test1.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/2018Q1/MLmodel2/example/test1.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="shiyanba_Web.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/testme/CTF/shiyanba_Web.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-483">
+              <caret line="21" column="15" lean-forward="false" selection-start-line="21" selection-start-column="15" selection-end-line="21" selection-end-column="15" />
+              <folding>
+                <element signature="e#24#39#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -48,12 +60,13 @@
         <option value="$PROJECT_DIR$/2018Q2/managecve.py" />
         <option value="$PROJECT_DIR$/2018Q2/temp_t.py" />
         <option value="$PROJECT_DIR$/2018Q2/manage_cve.py" />
+        <option value="$PROJECT_DIR$/testme/CTF/shiyanba_Web.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="121" />
-    <option name="y" value="24" />
+    <option name="x" value="387" />
+    <option name="y" value="5" />
     <option name="width" value="1518" />
     <option name="height" value="1009" />
   </component>
@@ -103,7 +116,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.manage_cve">
+  <component name="RunManager" selected="Python.shiyanba_Web">
     <configuration name="manage_cve" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -155,19 +168,19 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <configuration name="spider_baidu" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="shiyanba_Web" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pdf-git/Spider" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/testme/CTF" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="God_with_me" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pdf-git/Spider/spider_baidu.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/testme/CTF/shiyanba_Web.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -190,19 +203,19 @@
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.spider_baidu" />
-      <item index="1" class="java.lang.String" itemvalue="Python.peepdf" />
-      <item index="2" class="java.lang.String" itemvalue="Python.sha256" />
-      <item index="3" class="java.lang.String" itemvalue="Python.manage_cve" />
-      <item index="4" class="java.lang.String" itemvalue="Python.temp_t" />
+      <item index="0" class="java.lang.String" itemvalue="Python.peepdf" />
+      <item index="1" class="java.lang.String" itemvalue="Python.sha256" />
+      <item index="2" class="java.lang.String" itemvalue="Python.manage_cve" />
+      <item index="3" class="java.lang.String" itemvalue="Python.temp_t" />
+      <item index="4" class="java.lang.String" itemvalue="Python.shiyanba_Web" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.manage_cve" />
-        <item index="1" class="java.lang.String" itemvalue="Python.temp_t" />
-        <item index="2" class="java.lang.String" itemvalue="Python.sha256" />
-        <item index="3" class="java.lang.String" itemvalue="Python.peepdf" />
-        <item index="4" class="java.lang.String" itemvalue="Python.spider_baidu" />
+        <item index="0" class="java.lang.String" itemvalue="Python.shiyanba_Web" />
+        <item index="1" class="java.lang.String" itemvalue="Python.manage_cve" />
+        <item index="2" class="java.lang.String" itemvalue="Python.temp_t" />
+        <item index="3" class="java.lang.String" itemvalue="Python.sha256" />
+        <item index="4" class="java.lang.String" itemvalue="Python.peepdf" />
       </list>
     </recent_temporary>
   </component>
@@ -220,9 +233,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="121" y="24" width="1518" height="1009" extended-state="0" />
+    <frame x="387" y="5" width="1518" height="1009" extended-state="0" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20987654" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21262003" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -271,7 +284,7 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/sogou.py">
+    <entry file="file://$PROJECT_DIR$/2018Q1/MLmodel2/example/test1.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -279,154 +292,54 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/sogou.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/sogou.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/sogou.py" />
     <entry file="file://$PROJECT_DIR$/2018Q2/manage_cve.py" />
     <entry file="file://$PROJECT_DIR$/2018Q2/temp_t.py" />
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/sogou.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="460">
-          <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="30" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="9" column="33" lean-forward="false" selection-start-line="9" selection-start-column="33" selection-end-line="9" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/sogou.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py" />
     <entry file="file://$PROJECT_DIR$/pdf-t/managee/sha256.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="506">
           <caret line="22" column="14" lean-forward="false" selection-start-line="22" selection-start-column="14" selection-end-line="22" selection-end-column="14" />
           <folding>
             <element signature="e#43#57#0" expanded="true" />
-            <marker date="1526986745068" expanded="true" signature="516:518" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/MLdetection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="667">
-          <caret line="38" column="4" lean-forward="false" selection-start-line="38" selection-start-column="4" selection-end-line="38" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="9" column="33" lean-forward="false" selection-start-line="9" selection-start-column="33" selection-end-line="9" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/pdf-git/MLdetection.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py" />
     <entry file="file://$PROJECT_DIR$/pdf-t/managee/sha256.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="506">
           <caret line="22" column="14" lean-forward="false" selection-start-line="22" selection-start-column="14" selection-end-line="22" selection-end-column="14" />
           <folding>
             <element signature="e#43#57#0" expanded="true" />
-            <marker date="1526986745068" expanded="true" signature="516:518" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/MLdetection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="667">
-          <caret line="38" column="4" lean-forward="false" selection-start-line="38" selection-start-column="4" selection-end-line="38" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="9" column="33" lean-forward="false" selection-start-line="9" selection-start-column="33" selection-end-line="9" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/pdf-git/MLdetection.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py" />
     <entry file="file://$PROJECT_DIR$/pdf-t/managee/sha256.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="460">
           <caret line="20" column="24" lean-forward="true" selection-start-line="20" selection-start-column="24" selection-end-line="20" selection-end-column="24" />
           <folding>
             <element signature="e#43#57#0" expanded="true" />
-            <marker date="1526986745068" expanded="true" signature="516:518" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/MLdetection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="667">
-          <caret line="38" column="4" lean-forward="false" selection-start-line="38" selection-start-column="4" selection-end-line="38" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="9" column="33" lean-forward="false" selection-start-line="9" selection-start-column="33" selection-end-line="9" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/google.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="9" column="14" lean-forward="false" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
-          <folding>
-            <element signature="e#44#65#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_baidu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1587">
-          <caret line="74" column="30" lean-forward="false" selection-start-line="74" selection-start-column="30" selection-end-line="74" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/peepdf/peepdf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="851">
-          <caret line="37" column="29" lean-forward="true" selection-start-line="37" selection-start-column="29" selection-end-line="37" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/google.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="5" column="30" lean-forward="true" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
-          <folding>
-            <element signature="e#44#65#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_baidu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1587">
-          <caret line="74" column="30" lean-forward="true" selection-start-line="74" selection-start-column="30" selection-end-line="74" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/pdf-git/MLdetection.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/google.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_baidu.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/peepdf/peepdf.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/google.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_baidu.py" />
     <entry file="file://$USER_HOME$/Documents/Tencent Files/634272867/FileRecv/spider_b2_upload_gb.py" />
     <entry file="file://D:/Python35/Lib/codecs.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -435,20 +348,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_baidu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="823">
-          <caret line="74" column="30" lean-forward="false" selection-start-line="74" selection-start-column="30" selection-end-line="74" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/peepdf/peepdf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="37" column="29" lean-forward="false" selection-start-line="37" selection-start-column="29" selection-end-line="37" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_baidu.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/peepdf/peepdf.py" />
     <entry file="file://$PROJECT_DIR$/pdf-t/managee/change_file_name.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="690">
@@ -456,41 +357,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/google.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-591">
-          <caret line="9" column="14" lean-forward="false" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
-          <folding>
-            <element signature="e#44#65#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/MLdetection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="653">
-          <caret line="71" column="0" lean-forward="true" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/google.py" />
+    <entry file="file://$PROJECT_DIR$/pdf-git/MLdetection.py" />
     <entry file="file://$PROJECT_DIR$/pdf-t/managee/sha256.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
           <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
           <folding>
             <element signature="e#43#57#0" expanded="true" />
-            <marker date="1526986745068" expanded="true" signature="516:518" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="18" column="43" lean-forward="true" selection-start-line="18" selection-start-column="43" selection-end-line="18" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/spider_b2_upload_gb.py" />
     <entry file="file://D:/Python27/Lib/re.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
@@ -500,19 +379,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/2018Q2/temp_t.py" />
     <entry file="file://$PROJECT_DIR$/2018Q2/manage_cve.py" />
-    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/sogou.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="9" column="9" lean-forward="false" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/pdf-git/Spider/sogou.py" />
     <entry file="file://$PROJECT_DIR$/2018Q1/MLmodel2/example/test1.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/testme/CTF/shiyanba_Web.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-483">
+          <caret line="21" column="15" lean-forward="false" selection-start-line="21" selection-start-column="15" selection-end-line="21" selection-end-column="15" />
+          <folding>
+            <element signature="e#24#39#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
