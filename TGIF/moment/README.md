@@ -1,4 +1,3 @@
-
 # TGIF
 
 ## Moment 
@@ -36,6 +35,3 @@ cake
 白板编程笔记集
 ![avatar](IMG_7895.JPG)
 ![avatar](IMG_7896.JPG)
-
-
-
